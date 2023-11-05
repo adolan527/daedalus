@@ -1,0 +1,6 @@
+# ninja log v5
+8	138	7207371573046707	CMakeFiles/GeneralizedRobotArm.dir/objectManipulation/createNewObject.c.obj	c67f4775e1b61042
+3	123	7207384899510783	CMakeFiles/GeneralizedRobotArm.dir/main.c.obj	9f7a489deb995066
+138	305	7207388122502492	GeneralizedRobotArm.exe	6df4555ca993d415
+3	137	7207388120920240	CMakeFiles/GeneralizedRobotArm.dir/structs.c.obj	daf2ab5164eae07f
+1	336	7209277119010615	build.ninja	b88e7dbcdc4cd213

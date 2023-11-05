@@ -1,0 +1,3 @@
+C:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/CMakeFiles/GeneralizedRobotArm.dir
+C:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/CMakeFiles/rebuild_cache.dir
