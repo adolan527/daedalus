@@ -1,0 +1,26 @@
+classDiagram
+    class Object{
+        char name[20]
+        double density
+        enum Shape
+        char face
+        char hole
+    }
+    Object *--Parametric-start
+    Object *--Parametric-end
+    Object *--size
+
+    class Parametric-start{
+        double constant
+        double meter
+    }
+    class Parametric-end{
+        double constant
+        double meter
+    }
+    class size{
+        double xlength
+        double ywidth
+        double zheight
+        double thickness
+    }

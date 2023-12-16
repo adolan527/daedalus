@@ -171,15 +171,7 @@ void printObject(Object *current){
         default:
             break;
     }
-    return;
-};
 
-void printAllObjects(Object global[100]){
-    for(int i = 0;i<100;i++){
-        if(global->name[0]==0){
-            return;
-        }
-        printObject(&global[i]);
-    }
 }
+
 

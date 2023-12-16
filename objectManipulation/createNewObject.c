@@ -32,7 +32,7 @@ Rectangle* newRectangle(){
 RectangleTube* newRectangleTube(){
 
 
-
+    return NULL;
 }
 
 
