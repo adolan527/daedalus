@@ -43,8 +43,8 @@ display-->[*] : Save and close project
 }
 state CreateProject {
 [*] --> initInfo : Get name, author, path.
-initInfo --> duplicateCheck
-duplicateCheck --> createDirectory
+initInfo --> doesProjectExist
+doesProjectExist --> createDirectory
 createDirectory --> [*]
 }
 %%switch : <input>

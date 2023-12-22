@@ -21,7 +21,7 @@ void removeWhitespace(char *srcString, char *destString){
     }
 }
 
-void stringifyRectangle(Rectangle *rectangle, char *destString){
+void stringifyRectangle(struct Rectangle *rectangle, char *destString){
     char buffer[75] = "";
 
     sprintf(buffer,"Length (x): %.2f | Width (y): %.2f | Height (z): %.2f"
@@ -134,11 +134,6 @@ int decodeParametric(char *string, Parametric *destFunction){
     return 0;
 }
 
-int decodePolynomial(char *string, Polynomial *destFunction){
-
-
-
-}
 
 double computePolynomial(Polynomial *function, double input){
     double sum = 0;
@@ -151,27 +146,6 @@ double computePolynomial(Polynomial *function, double input){
     return sum;
 }
 
-void printObject(Object *current){
-    char buffer[75];
-    printf("%s:\n",current->name);
-    stringifyParametric(&current->x_start,buffer);
-    printf("Start: %s | ",buffer);
-    stringifyParametric(&current->x_end,buffer);
-    printf("End: %s\n",buffer);
-    printf("Density: %.2lf\n",current->density);
-    stringifyPolynomial(&current->area,buffer);
-    printf("Area: %s\n",buffer);
-    switch(current->shape){
-        case Rect:
-            stringifyRectangle(current->shapeData,buffer);
-            printf("Rectangle:\n%s",buffer);
-            break;
-        case RectTube:
-            break;
-        default:
-            break;
-    }
 
-}
 
 

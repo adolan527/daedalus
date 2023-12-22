@@ -1,5 +1,11 @@
 #include <stdio.h>
 #include "projectManagement/fileManagement.h"
+#ifndef CSV_CSV_H
+#include "../csvLib/csv.h"
+#include "../csvLib/csvUtils.h"
+#endif
+
+
 
 int main() {
     initProgram();
