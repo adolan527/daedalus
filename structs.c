@@ -21,7 +21,7 @@ void removeWhitespace(char *srcString, char *destString){
     }
 }
 
-void stringifyRectangle(struct Rectangle *rectangle, char *destString){
+void stringifyRectangle(struct ShapeRectangle *rectangle, char *destString){
     char buffer[75] = "";
 
     sprintf(buffer,"Length (x): %.2f | Width (y): %.2f | Height (z): %.2f"

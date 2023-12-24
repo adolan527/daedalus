@@ -46,14 +46,14 @@ typedef enum{
     sTriangle,
 }Shape;
 
-struct Rectangle{
+struct ShapeRectangle{
     double xLength;
     double yWidth;
     double zHeight;
     double thickness;//thickness of 0 = solidbody
 };
 
-struct RectangleTube{
+struct ShapeRectangleTube{
     double xLength;
     double yWidth;
     double zHeight;
@@ -63,18 +63,18 @@ struct RectangleTube{
 };
 
 
-struct Sphere{
+struct ShapeSphere{
     double radius;
     double thickness;//thickness of 0 = solidbody
 };
 
-struct Cylinder{
+struct ShapeCylinder{
     double radius;
     double height;
     double thickness;//thickness of 0 = solidbody
 };
 
-struct TriangularPrism{
+struct ShapeTriangularPrism{
     double xLength;
     double yWidth;
     double zHeight;
@@ -94,7 +94,7 @@ typedef struct {
 
 void removeWhitespace(char *srcString, char *destString);//src and dst can be the same and it still works
 
-void stringifyRectangle(struct Rectangle *shape, char *destString);
+void stringifyRectangle(struct ShapeRectangle *shape, char *destString);
 
 void stringifyParametric(Parametric *function, char *destString);
 

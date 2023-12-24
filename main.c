@@ -1,16 +1,16 @@
 #include <stdio.h>
-#include "projectManagement/fileManagement.h"
-#ifndef CSV_CSV_H
+#include "projectManagement/projectManagement.h"
 #include "../csvLib/csv.h"
 #include "../csvLib/csvUtils.h"
-#endif
+#include "display/drawMain.h"
 
+int main(){
+    //drawMain();
 
-
-int main() {
     initProgram();
     char name[20];
     char notes[20];
+    Project current;
     while(1){
         printf("Enter a name:");
         scanf("%s",name);
@@ -21,9 +21,24 @@ int main() {
             deleteProject(name);
         }
         else{
-            printf("\nEnter some notes:");
-            scanf("%s",notes);
-            createProject(name,notes);
+            if(doesProjectExist(name)==1){
+                printf("That projects exists\n");
+                current = openProject(name);
+                char buf = fgetc(current.info);
+                while(buf!=-1){
+                    fputc(buf,stdout);
+                    buf = fgetc(current.info);
+                }
+
+                displayCSV(&current.objects,0,0,1,stdout);
+                closeProject(&current);
+            }
+            else{
+                printf("\nEnter some notes:");
+                scanf("%s",notes);
+                createProject(name,notes);
+            }
+
         }
 
 

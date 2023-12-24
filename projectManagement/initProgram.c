@@ -2,7 +2,7 @@
 // Created by Aweso on 12/15/2023.
 //
 
-#include "fileManagement.h"
+#include "projectManagement.h"
 
 
 #define HEADERSIZE 17
@@ -36,6 +36,9 @@ int makeConfig(){
     fclose(config);
     return 0;
 }
+
+
+
 
 int initProgram() {
     if (doesConfigExist() == 0) {

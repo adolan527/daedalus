@@ -3,14 +3,14 @@ classDiagram
         Ignore the methods, thats just due to formatting
         Otherwise it leaves this box empty and it looks bad()
     }
-    TorqueCalculatorDirectory <|-- Projects
-    Projects <|-- projectA
-    Projects <|-- projectB
-    Projects <|-- projectC
+    TorqueCalculatorDirectory <|-- projects
+    projects <|-- projectA
+    projects <|-- projectB
+    projects <|-- projectC
     TorqueCalculatorDirectory : error.log
     TorqueCalculatorDirectory : config.dat
     TorqueCalculatorDirectory : torqueCalculator.exe()
-class Projects{
+class projects{
 projects.dat
 projectDirectories()
 }

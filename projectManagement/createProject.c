@@ -2,18 +2,20 @@
 // Created by Aweso on 12/15/2023.
 //
 
-#include "fileManagement.h"
+#include "projectManagement.h"
 
 
 
 
 int createProject(char *name, char *notes){
-    chdir("projects/");
+
     if(doesProjectExist(name) == 1){
         //project already exists
         printf("Already exists");
         return 1;
     }
+    chdir("projects");
+
     //make project folder
     mkdir(name);
     chdir(name);
