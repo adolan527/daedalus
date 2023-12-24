@@ -39,32 +39,47 @@ typedef struct{
 }Parametric;
 
 typedef enum{
-    Rect,
-    RectTube,
-
+    sRectangle,
+    sRectangleTube,
+    sSphere,
+    sCylinder,
+    sTriangle,
 }Shape;
 
-
-typedef struct{
+struct ShapeRectangle{
     double xLength;
     double yWidth;
     double zHeight;
     double thickness;//thickness of 0 = solidbody
-}Rectangle;
+};
 
-typedef struct{
+struct ShapeRectangleTube{
     double xLength;
     double yWidth;
     double zHeight;
     double thickness;
     char holeFace; //x,y, or z to denote which face has the hole through it.
     //If x then atlas arm, if y then atlas claw, if z then atlas bevel gearbox,
+};
 
-}RectangleTube;
 
-#define SHAPE_LIST_STRING "0: Rectangle, 1: Rectangle Tube"
-#define MAX_SHAPE_INDEX 1
+struct ShapeSphere{
+    double radius;
+    double thickness;//thickness of 0 = solidbody
+};
 
+struct ShapeCylinder{
+    double radius;
+    double height;
+    double thickness;//thickness of 0 = solidbody
+};
+
+struct ShapeTriangularPrism{
+    double xLength;
+    double yWidth;
+    double zHeight;
+    double thickness;//thickness of 0 = solidbody
+};
 
 
 typedef struct {
@@ -72,7 +87,6 @@ typedef struct {
     Parametric x_start; //in inches
     Parametric x_end; //in inches
     double density; //lb/in
-    Polynomial area; //cross sectional area
     Shape shape;
     void *shapeData;
 
@@ -80,7 +94,7 @@ typedef struct {
 
 void removeWhitespace(char *srcString, char *destString);//src and dst can be the same and it still works
 
-void stringifyRectangle(Rectangle *shape, char *destString);
+void stringifyRectangle(struct ShapeRectangle *shape, char *destString);
 
 void stringifyParametric(Parametric *function, char *destString);
 
@@ -94,6 +108,5 @@ double computePolynomial(Polynomial *function, double input);
 
 void printObject(Object *current);
 
-void printAllObjects(Object global[100]);
 
 #endif //GENERALIZEDROBOTARM_STRUCTS_H
