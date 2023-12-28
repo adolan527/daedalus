@@ -3,11 +3,41 @@
 #include "../csvLib/csv.h"
 #include "../csvLib/csvUtils.h"
 #include "display/drawMain.h"
+#include "objectManagement/tqcObjects.h"
+
+int projectCount = 0;
 
 int main(){
-    //drawMain();
+    /*
+    Polynomial temp = {{2,0,3},4};
+    char buffer[50] = {0};
+    stringifyPolynomial(&temp,buffer);
+    printf("%s\n",buffer);
+    printf("Integrated over 0 to 10 is: %f",integratePolynomial(&temp,0,10));
+     */
 
-    initProgram();
+    if(initProgram()==1){
+        printf("Init failed");
+        return 0;
+    }
+    if(initDraw()==1){
+        printf("Init draw failed");
+        return 0;
+    }
+    if(drawMain(LOGO)==1){
+        if(initDraw()==1){
+            printf("Init draw failed");
+            return 0;
+        }
+        while(drawMain(SETTINGS)==1){
+            if(initDraw()==1){
+                printf("Init draw failed");
+                return 0;
+            }
+        }
+    }
+
+    return 0;
     char name[20];
     char notes[20];
     Project current;
@@ -19,6 +49,9 @@ int main(){
             printf("Enter a name to delete:");
             scanf("%s",name);
             deleteProject(name);
+        }
+        else if(name[0]=='p'){
+            printf("Project count: %d",projectCount);
         }
         else{
             if(doesProjectExist(name)==1){

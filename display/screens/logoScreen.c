@@ -77,7 +77,7 @@ void UpdateLogoScreen(void)
 {
     if (state == 0)                 // State 0: Top-left square corner blink logic
     {
-        framesCounter++;
+        framesCounter+=2;
 
         if (framesCounter == 80)
         {
@@ -101,7 +101,7 @@ void UpdateLogoScreen(void)
     }
     else if (state == 3)            // State 3: "raylib" text-write animation logic
     {
-        framesCounter++;
+        framesCounter+=2;
 
         if (lettersCount < 10)
         {
@@ -113,14 +113,14 @@ void UpdateLogoScreen(void)
         }
         else    // When all letters have appeared, just fade out everything
         {
-            if (framesCounter > 200)
+            if (framesCounter > 50)
             {
                 alpha -= 0.02f;
 
                 if (alpha <= 0.0f)
                 {
                     alpha = 0.0f;
-                    finishScreen = 1;   // Jump to next screen
+                    finishScreen = TITLE;   // Jump to next screen
                 }
             }
         }
@@ -172,6 +172,6 @@ void UnloadLogoScreen(void)
 // Logo Screen should finish?
 int FinishLogoScreen(void)
 {
-    return 1;
+    //return 1;
     return finishScreen;
 }
