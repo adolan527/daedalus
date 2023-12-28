@@ -8,13 +8,16 @@
 #define TORQUECALCULATOR_DRAWMAIN_H
 
 #include "raylib.h"
+#include "stdio.h"
+#include "string.h"
+#include "stdlib.h"
+#include "../projectManagement/projectManagement.h"
 
 
-
-int drawMain(void);
 
 
 typedef enum GameScreen {
+    REINIT = -2,
     UNKNOWN = -1,
     LOGO = 0,
     TITLE = 1,
@@ -32,15 +35,35 @@ typedef struct{
     Color textColor;
     bool isSelected;
     bool isPressed;
+    bool isToggle;
 }Button;
+
+
+
+typedef struct{
+    Color white;
+    Color black;
+    Color light;
+    Color dark;
+    Color accent1;
+    Color accent2;
+}ColorPalette;
+
+int drawMain(GameScreen startingScreen);
+int initDraw(void);
+
 
 //----------------------------------------------------------------------------------
 // Global Variables Declaration (shared by several modules)
 //----------------------------------------------------------------------------------
 extern GameScreen currentScreen;
 
-extern const int screenWidth;
-extern const int screenHeight;
+extern int screenWidth;
+extern int screenHeight;
+extern char windowMode;
+extern char drawLogo;
+extern ColorPalette theme;
+extern ColorPalette palettes[10];
 
 
 //----------------------------------------------------------------------------------
@@ -109,7 +132,7 @@ int FinishOpenProjectScreen(void);
 
 
 
-void DrawButton(Button source);
+void DrawButton(Button *source);
 void PressButton(Button *source);
 void UnPressButton(Button *source);
 bool IsButtonPressed(Button *source);

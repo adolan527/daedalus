@@ -5,7 +5,6 @@
 #ifndef TORQUECALCULATOR_FILEMANAGEMENT_H
 #define TORQUECALCULATOR_FILEMANAGEMENT_H
 
-#endif //TORQUECALCULATOR_FILEMANAGEMENT_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,6 +14,13 @@
 
 #include "../../csvLib/csv.h"
 #include "../../csvLib/csvUtils.h"
+
+#define MAX_PROJECT_COUNT 25
+
+#define CONFIG_HEADER_SIZE 17
+
+extern int projectCount;
+
 
 
 typedef struct{
@@ -36,3 +42,11 @@ int doesProjectExist(char *name);
 
 int closeProject(Project *source);
 
+int getProjectCount();
+
+char * getProjectNames();
+
+int makeConfig(int width, int height,char wMode, char doLogo);
+
+
+#endif //TORQUECALCULATOR_FILEMANAGEMENT_H

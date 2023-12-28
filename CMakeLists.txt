@@ -34,25 +34,29 @@ set(HEADERS
 
 set(SOURCES
     "projectManagement/createProject.c"
-        "structs.c"
-        "projectManagement/initProgram.c"
-        "projectManagement/deleteProject.c"
-        "projectManagement/openProject.c"
-        "projectManagement/openProject.c"
-        "projectManagement/doesProjectExist.c"
-        "projectManagement/closeProject.c"
-        "../csvLib/csv.c"
-        "../csvLib/csvUtils.c"
-        "display/initDraw.c"
-        "display/drawMain.c"
-        "display/screens/titleScreen.c"
-        "display/screens/settingsScreen.c"
-        "display/screens/editObjectScreen.c"
-        "display/screens/createProjectScreen.c"
-        "display/screens/projectMainScreen.c"
-        "display/screens/logoScreen.c"
-        display/buttons.c
-        display/screens/openProjectScreen.c
+    "objectManagement/tqcObjects.c"
+    "projectManagement/initProgram.c"
+    "projectManagement/deleteProject.c"
+    "projectManagement/openProject.c"
+    "projectManagement/openProject.c"
+    "projectManagement/doesProjectExist.c"
+    "projectManagement/closeProject.c"
+    "../csvLib/csv.c"
+    "../csvLib/csvUtils.c"
+    "display/initDraw.c"
+    "display/drawMain.c"
+    "display/screens/titleScreen.c"
+    "display/screens/settingsScreen.c"
+    "display/screens/editObjectScreen.c"
+    "display/screens/createProjectScreen.c"
+    "display/screens/projectMainScreen.c"
+    "display/screens/logoScreen.c"
+    display/buttons.c
+    display/screens/openProjectScreen.c
+    projectManagement/getProjectCount.c
+    projectManagement/getProjectNames.c
+    display/colorPalettes.c
+    objectManagement/objectList.c
 )
 
 # Our Project

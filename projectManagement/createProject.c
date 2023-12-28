@@ -8,7 +8,10 @@
 
 
 int createProject(char *name, char *notes){
-
+    if(getProjectCount() >= MAX_PROJECT_COUNT){
+        printf("Maximum amount of projects reached");
+        return 1;
+    }
     if(doesProjectExist(name) == 1){
         //project already exists
         printf("Already exists");
@@ -43,7 +46,7 @@ int createProject(char *name, char *notes){
     system("dir /b/a:d > projects.dat");
     chdir("..");
 
-
+    projectCount++;
     return 0;
 }
 

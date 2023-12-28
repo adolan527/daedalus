@@ -28,8 +28,7 @@ GameScreen currentScreen = LOGO;
 //----------------------------------------------------------------------------------
 // Local Variables Definition (local to this module)
 //----------------------------------------------------------------------------------
-const int screenWidth = 1600;
-const int screenHeight = 900;
+
 
 // Required variables to manage screen transitions (fade-in, fade-out)
 static float transAlpha = 0.0f;
@@ -47,23 +46,52 @@ static void TransitionToScreen(int screen); // Request transition to next screen
 static void UpdateTransition(void);         // Update transition effect
 static void DrawTransition(void);           // Draw transition effect (full-screen rectangle)
 
-static void UpdateDrawFrame(void);          // Update and draw one frame
+static int UpdateDrawFrame(void);          // Update and draw one frame
 
 //----------------------------------------------------------------------------------
 // Main entry point
 //----------------------------------------------------------------------------------
-int drawMain(void)
+int drawMain(GameScreen startingScreen)
 {
+
+    int returnValue = 0;
     // Initialization
     //---------------------------------------------------------
     InitWindow(screenWidth, screenHeight, "raylib game template");
+    if(windowMode == 'f'){
+        if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
 
+        if(IsWindowFullscreen()==false)ToggleFullscreen();
+    }
+    else if(windowMode == 'b'){
+        if(IsWindowFullscreen()==true)ToggleFullscreen();
 
+        if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == false)ToggleBorderlessWindowed();
+    }
+    else{
+        if(IsWindowFullscreen()==true)ToggleFullscreen();
+        if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
+
+    }
     // Load global data (assets that must be available in all screens, i.e. font)
-
+    if(drawLogo == 'f' && startingScreen == LOGO){
+        startingScreen = TITLE;
+    }
 
     // Setup and init first screen
-    currentScreen = LOGO;
+    currentScreen = startingScreen;
+
+    switch (currentScreen)
+    {
+        case LOGO: InitLogoScreen(); break;
+        case TITLE: InitTitleScreen(); break;
+        case SETTINGS: InitSettingsScreen(); break;
+        case CREATEPROJECT: InitCreateProjectScreen(); break;
+        case PROJECTMAIN: InitProjectMainScreen(); break;
+        case EDITOBJECT: InitEditObjectScreen(); break;
+        case OPENPROJECT: InitOpenProjectScreen(); break;
+        default: break;
+    }
     InitLogoScreen();
 
 #if defined(PLATFORM_WEB)
@@ -75,7 +103,10 @@ int drawMain(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        UpdateDrawFrame();
+        if(UpdateDrawFrame()==1){
+            returnValue = 1;
+            break;
+        }
     }
 #endif
 
@@ -99,7 +130,7 @@ int drawMain(void)
     CloseWindow();          // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
-    return 0;
+    return returnValue;
 }
 
 //----------------------------------------------------------------------------------
@@ -214,7 +245,7 @@ static void DrawTransition(void)
 }
 
 // Update and draw game frame
-static void UpdateDrawFrame(void)
+static int UpdateDrawFrame(void)
 {
     // Update
     //----------------------------------------------------------------------------------
@@ -241,7 +272,7 @@ static void UpdateDrawFrame(void)
             case SETTINGS:
             {
                 UpdateSettingsScreen();
-
+                if(FinishSettingsScreen()==REINIT)return 1;
                 if(FinishSettingsScreen()!=-1){
                     TransitionToScreen(FinishSettingsScreen());
                 }
@@ -310,4 +341,5 @@ static void UpdateDrawFrame(void)
 
     EndDrawing();
     //----------------------------------------------------------------------------------
+    return 0;
 }

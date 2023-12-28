@@ -12,6 +12,7 @@ int deleteProject(char *name){
     snprintf(buffer,25,"rmdir /S/Q %s\\",name);
     retVal = system(buffer);
     system("dir /b/a:d > projects.dat");
+    projectCount--;
 
     return retVal;
 }

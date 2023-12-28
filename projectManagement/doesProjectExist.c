@@ -7,13 +7,13 @@ int doesProjectExist(char *name){
     chdir("projects");
     system("dir /b/a:d > projects.dat");
 
-    FILE *projects = fopen("projects.dat", "rb");
+    FILE *projects = fopen("projects.dat", "r");
     if(projects == NULL){
         return 0;
     }
 
     while(!feof(projects)){
-        char buffer[50] = {0};
+        char buffer[21] = {0};
         int bufferIndex = 0;
         for(int buf = fgetc(projects); buf != '\n' && buf != '\r'; buf=fgetc(projects)){
             if(buf == -1){
