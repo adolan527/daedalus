@@ -14,6 +14,7 @@
 
 #include "../../csvLib/csv.h"
 #include "../../csvLib/csvUtils.h"
+#include "../objectManagement/tqcObjects.h"
 
 #define MAX_PROJECT_COUNT 25
 
@@ -26,9 +27,11 @@ extern int projectCount;
 typedef struct{
     char name[20];
     FILE *info;
-    CSV objects;
+    ObjectList objList;
+    CSV objCSV;
 }Project;
 
+void previewProjectInfo(char *dest,int destSize, char *name);
 
 int createProject(char *name, char *notes);
 

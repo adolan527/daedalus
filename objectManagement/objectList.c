@@ -11,14 +11,25 @@ void appendObject(ObjectList *source, Object *data){
     ObjectNode *new = malloc(sizeof(ObjectNode));
     new->data = data;
     new->next = NULL;
-    source->tail->next = new;
+    if(source->tail != NULL) source->tail->next = new;
+    if(source->head == NULL) source->head = new;
     source->tail = new;
 }
 
 void closeObjectList(ObjectList *source){
+    printf("H: %p, T: %p\n",source->head,source->tail);
+    int i = 0;
     if(source->head == NULL) return;
     for(ObjectNode* current = source->head; current->next != NULL; current = current->next){
-        free(current->data);
+        printf("I: %d\n",i++);
+        if(current->data->model!=NULL){
+            UnloadModel(*current->data->model);
+            free(current->data->model);
+        }
+        if(current->data!=NULL){
+            free(current->data);
+        }
+
         free(current);
     }
 }
@@ -38,6 +49,7 @@ void deleteObject(ObjectList *source, int index){
         ObjectNode *temp = source->head;
         source->head = source->head->next;
         free(temp->data);
+        UnloadModel(*temp->data->model);
         free(temp);
         return;
     }
@@ -48,6 +60,7 @@ void deleteObject(ObjectList *source, int index){
             target = current->next;
             current->next = current->next->next;
             free(target->data);
+            UnloadModel(*target->data->model);
             free(target);
             return;
         }
@@ -68,11 +81,13 @@ void insertObject(ObjectList *source, Object *data, int index){
         if(currentIndex == index - 1){
             new->next = current->next;
             current->next = new;
+            if(new->next==NULL){
+                source->tail = new;
+            }
             return;
         }
         currentIndex++;
     }
-    free(new);
 }
 
 

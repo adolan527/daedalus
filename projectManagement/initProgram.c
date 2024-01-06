@@ -66,6 +66,7 @@ int initProgram() {
     }
     fclose(error);
     retVal += mkdir("projects/");
+    retVal += mkdir("resources/");
     retVal += system("dir /b/a:d projects\\ > projects/projects.dat");
 
     return retVal;

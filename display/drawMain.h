@@ -7,12 +7,14 @@
 #ifndef TORQUECALCULATOR_DRAWMAIN_H
 #define TORQUECALCULATOR_DRAWMAIN_H
 
-#include "raylib.h"
+#include "../main.h"
+
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
 #include "../projectManagement/projectManagement.h"
-
+#include "../objectManagement/tqcObjects.h"
+#include "raymath.h"
 
 
 
@@ -51,7 +53,8 @@ typedef struct{
 
 int drawMain(GameScreen startingScreen);
 int initDraw(void);
-
+void LoadMaterialsTextures(void);
+void UnloadMaterialsTextures(void);
 
 //----------------------------------------------------------------------------------
 // Global Variables Declaration (shared by several modules)
@@ -64,7 +67,12 @@ extern char windowMode;
 extern char drawLogo;
 extern ColorPalette theme;
 extern ColorPalette palettes[10];
+extern tqcMaterial tqcMaterials[10];
+#define SPACING 16
+#define GETSPACING(_size) (_size < SPACING ? 1 : _size/SPACING)
+extern Font globalFont;
 
+#define CYLINDERRING 64
 
 //----------------------------------------------------------------------------------
 // Logo Screen Functions Declaration
@@ -136,5 +144,12 @@ void DrawButton(Button *source);
 void PressButton(Button *source);
 void UnPressButton(Button *source);
 bool IsButtonPressed(Button *source);
+
+
+void DrawTextInRectangle(char *text,Rectangle rect, int rowCount, Color textColor, Color background, Color border);
+
+void DrawObject(Object *source, float pmt);
+void ModelObject(Object *obj);
+void ReModelObject(Object *obj);
 
 #endif //TORQUECALCULATOR_DRAWMAIN_H

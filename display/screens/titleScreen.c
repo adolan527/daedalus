@@ -171,6 +171,7 @@ void DrawTitleScreen(void)
     }
     int fontSize = screenHeight/2;
     int textWidth = MeasureText("Torque Calculator",fontSize);
+
     while(textWidth+screenWidth/10>screenWidth){
         fontSize-=8;
         textWidth = MeasureText("Torque Calculator",fontSize);

@@ -114,40 +114,42 @@ double computeObject(Object *source, float t){
     // TODO Luckily, the simple shapes that this program supports all have very easy to calculate -
     // TODO centers of mass.
     Polynomial areaFunction = {0};
+    double xPosition = cmpPmt(source->xPos,t);
+    double xEnd = xPosition + source->data.xLength;
     double integral = 0;
     switch(source->type){
         case sRectangle:{
             if(source->data.thickness == 0){
                 areaFunction.order = 1;
                 areaFunction.coefficients[0] = source->data.yHeight * source->data.zDepth;
-                integral = integratePolynomial(&areaFunction, cmpPmt(source->x_start,t),cmpPmt(source->x_end,t));
-                return integral * source->density;
+                integral = integratePolynomial(&areaFunction, xPosition, xEnd);
+                return integral * source->material.density;
             }
             else{
                 switch(source->data.facing){
                     case 'x':{
                         areaFunction.order = 1;
                         areaFunction.coefficients[0] = 2 * source->data.thickness * (source->data.yHeight + source->data.zDepth - 2);
-                        integral = integratePolynomial(&areaFunction,cmpPmt(source->x_start,t),cmpPmt(source->x_end,t));
-                        return integral * source->density;
+                        integral = integratePolynomial(&areaFunction, xPosition, xEnd);
+                        return integral * source->material.density;
                     }
                     case 'y':{
                         areaFunction.order = 1;
                         areaFunction.coefficients[0] = source->data.yHeight * source->data.zDepth;
-                        integral = integratePolynomial(&areaFunction,cmpPmt(source->x_start,t),cmpPmt(source->x_end,t)+source->data.thickness);
-                        integral += integratePolynomial(&areaFunction, cmpPmt(source->x_end,t) - source->data.thickness,cmpPmt(source->x_end,t));
+                        integral = integratePolynomial(&areaFunction, xPosition, xEnd + source->data.thickness);
+                        integral += integratePolynomial(&areaFunction, xEnd - source->data.thickness,xEnd);
                         areaFunction.coefficients[0] = 2 * source->data.yHeight * source->data.thickness;
-                        integral += integratePolynomial(&areaFunction,cmpPmt(source->x_start,t) + source->data.thickness,cmpPmt(source->x_end,t) - source->data.thickness);
-                        return integral * source->density;
+                        integral += integratePolynomial(&areaFunction, xPosition + source->data.thickness, xEnd - source->data.thickness);
+                        return integral * source->material.density;
                     }
                     case 'z':{
                         areaFunction.order = 1;
                         areaFunction.coefficients[0] = source->data.yHeight * source->data.zDepth;
-                        integral = integratePolynomial(&areaFunction,cmpPmt(source->x_start,t),cmpPmt(source->x_end,t)+source->data.thickness);
-                        integral += integratePolynomial(&areaFunction, cmpPmt(source->x_end,t) - source->data.thickness,cmpPmt(source->x_end,t));
+                        integral = integratePolynomial(&areaFunction, xPosition, xEnd + source->data.thickness);
+                        integral += integratePolynomial(&areaFunction, xEnd - source->data.thickness,xEnd);
                         areaFunction.coefficients[0] = 2 * source->data.zDepth * source->data.thickness;
-                        integral += integratePolynomial(&areaFunction,cmpPmt(source->x_start,t) + source->data.thickness,cmpPmt(source->x_end,t) - source->data.thickness);
-                        return integral * source->density;
+                        integral += integratePolynomial(&areaFunction, xPosition + source->data.thickness, xEnd - source->data.thickness);
+                        return integral * source->material.density;
                     }
                 }
             }
@@ -158,8 +160,8 @@ double computeObject(Object *source, float t){
                 case 'x':{
                     areaFunction.order = 2;
                     areaFunction.coefficients[0] = 2 * M_PI * source->data.zDepth;
-                    integral = integratePolynomial(&areaFunction, cmpPmt(source->x_start,t),cmpPmt(source->x_end,t));
-                    return integral * source->density;
+                    integral = integratePolynomial(&areaFunction, xPosition, xEnd);
+                    return integral * source->material.density;
                 }
                 case 'y':{
 
@@ -171,14 +173,14 @@ double computeObject(Object *source, float t){
         }
             break;
         case sSphere:{
-            float xCenter = cmpPmt(source->x_start,t);
+            float xCenter = cmpPmt(source->xPos, t);
             areaFunction.coefficients[0] = -1;
             areaFunction.coefficients[1] = 2 * xCenter;
             areaFunction.coefficients[2] = (source->data.xLength * source->data.xLength) - (xCenter * xCenter);
             areaFunction.order = 2;
             integral = integratePolynomial(&areaFunction,xCenter - source->data.xLength, xCenter + source->data.xLength);
             integral *= M_PI;
-            integral *= source->density;
+            integral *= source->material.density;
             return integral;
         }
     }

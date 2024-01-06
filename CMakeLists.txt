@@ -57,6 +57,12 @@ set(SOURCES
     projectManagement/getProjectNames.c
     display/colorPalettes.c
     objectManagement/objectList.c
+        display/drawTextInRectangle.c
+        projectManagement/previewProjectInfo.c
+        display/drawObject.c
+        main.h
+        display/materials.c
+        display/modelObject.c
 )
 
 # Our Project

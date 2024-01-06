@@ -4,7 +4,7 @@
 #include "projectManagement.h"
 
 int closeProject(Project *source){
-    closeCSV(&source->objects);
+    closeCSV(&source->objCSV);
     fclose(source->info);
     return 0;
 }

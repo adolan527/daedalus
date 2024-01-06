@@ -241,6 +241,46 @@ build CMakeFiles/torqueCalculator.dir/objectManagement/objectList.c.obj: C_COMPI
   OBJECT_DIR = CMakeFiles\torqueCalculator.dir
   OBJECT_FILE_DIR = CMakeFiles\torqueCalculator.dir\objectManagement
 
+build CMakeFiles/torqueCalculator.dir/display/drawTextInRectangle.c.obj: C_COMPILER__torqueCalculator_unscanned_Debug C$:/Users/Aweso/CLionProjects/torqueCalculator/display/drawTextInRectangle.c || cmake_object_order_depends_target_torqueCalculator
+  DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
+  DEP_FILE = CMakeFiles\torqueCalculator.dir\display\drawTextInRectangle.c.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src/external/glfw/include
+  OBJECT_DIR = CMakeFiles\torqueCalculator.dir
+  OBJECT_FILE_DIR = CMakeFiles\torqueCalculator.dir\display
+
+build CMakeFiles/torqueCalculator.dir/projectManagement/previewProjectInfo.c.obj: C_COMPILER__torqueCalculator_unscanned_Debug C$:/Users/Aweso/CLionProjects/torqueCalculator/projectManagement/previewProjectInfo.c || cmake_object_order_depends_target_torqueCalculator
+  DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
+  DEP_FILE = CMakeFiles\torqueCalculator.dir\projectManagement\previewProjectInfo.c.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src/external/glfw/include
+  OBJECT_DIR = CMakeFiles\torqueCalculator.dir
+  OBJECT_FILE_DIR = CMakeFiles\torqueCalculator.dir\projectManagement
+
+build CMakeFiles/torqueCalculator.dir/display/drawObject.c.obj: C_COMPILER__torqueCalculator_unscanned_Debug C$:/Users/Aweso/CLionProjects/torqueCalculator/display/drawObject.c || cmake_object_order_depends_target_torqueCalculator
+  DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
+  DEP_FILE = CMakeFiles\torqueCalculator.dir\display\drawObject.c.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src/external/glfw/include
+  OBJECT_DIR = CMakeFiles\torqueCalculator.dir
+  OBJECT_FILE_DIR = CMakeFiles\torqueCalculator.dir\display
+
+build CMakeFiles/torqueCalculator.dir/display/materials.c.obj: C_COMPILER__torqueCalculator_unscanned_Debug C$:/Users/Aweso/CLionProjects/torqueCalculator/display/materials.c || cmake_object_order_depends_target_torqueCalculator
+  DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
+  DEP_FILE = CMakeFiles\torqueCalculator.dir\display\materials.c.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src/external/glfw/include
+  OBJECT_DIR = CMakeFiles\torqueCalculator.dir
+  OBJECT_FILE_DIR = CMakeFiles\torqueCalculator.dir\display
+
+build CMakeFiles/torqueCalculator.dir/display/modelObject.c.obj: C_COMPILER__torqueCalculator_unscanned_Debug C$:/Users/Aweso/CLionProjects/torqueCalculator/display/modelObject.c || cmake_object_order_depends_target_torqueCalculator
+  DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
+  DEP_FILE = CMakeFiles\torqueCalculator.dir\display\modelObject.c.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src -IC:/Users/Aweso/CLionProjects/torqueCalculator/cmake-build-debug/_deps/raylib-src/src/external/glfw/include
+  OBJECT_DIR = CMakeFiles\torqueCalculator.dir
+  OBJECT_FILE_DIR = CMakeFiles\torqueCalculator.dir\display
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target torqueCalculator
@@ -249,7 +289,7 @@ build CMakeFiles/torqueCalculator.dir/objectManagement/objectList.c.obj: C_COMPI
 #############################################
 # Link the executable torqueCalculator.exe
 
-build torqueCalculator.exe: C_EXECUTABLE_LINKER__torqueCalculator_Debug CMakeFiles/torqueCalculator.dir/main.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/createProject.c.obj CMakeFiles/torqueCalculator.dir/objectManagement/tqcObjects.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/initProgram.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/deleteProject.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/openProject.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/doesProjectExist.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/closeProject.c.obj CMakeFiles/torqueCalculator.dir/C_/Users/Aweso/CLionProjects/csvLib/csv.c.obj CMakeFiles/torqueCalculator.dir/C_/Users/Aweso/CLionProjects/csvLib/csvUtils.c.obj CMakeFiles/torqueCalculator.dir/display/initDraw.c.obj CMakeFiles/torqueCalculator.dir/display/drawMain.c.obj CMakeFiles/torqueCalculator.dir/display/screens/titleScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/settingsScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/editObjectScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/createProjectScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/projectMainScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/logoScreen.c.obj CMakeFiles/torqueCalculator.dir/display/buttons.c.obj CMakeFiles/torqueCalculator.dir/display/screens/openProjectScreen.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/getProjectCount.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/getProjectNames.c.obj CMakeFiles/torqueCalculator.dir/display/colorPalettes.c.obj CMakeFiles/torqueCalculator.dir/objectManagement/objectList.c.obj | _deps/raylib-build/raylib/libraylib.a _deps/raylib-build/raylib/external/glfw/src/libglfw3.a || _deps/raylib-build/raylib/external/glfw/src/libglfw3.a _deps/raylib-build/raylib/libraylib.a
+build torqueCalculator.exe: C_EXECUTABLE_LINKER__torqueCalculator_Debug CMakeFiles/torqueCalculator.dir/main.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/createProject.c.obj CMakeFiles/torqueCalculator.dir/objectManagement/tqcObjects.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/initProgram.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/deleteProject.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/openProject.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/doesProjectExist.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/closeProject.c.obj CMakeFiles/torqueCalculator.dir/C_/Users/Aweso/CLionProjects/csvLib/csv.c.obj CMakeFiles/torqueCalculator.dir/C_/Users/Aweso/CLionProjects/csvLib/csvUtils.c.obj CMakeFiles/torqueCalculator.dir/display/initDraw.c.obj CMakeFiles/torqueCalculator.dir/display/drawMain.c.obj CMakeFiles/torqueCalculator.dir/display/screens/titleScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/settingsScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/editObjectScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/createProjectScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/projectMainScreen.c.obj CMakeFiles/torqueCalculator.dir/display/screens/logoScreen.c.obj CMakeFiles/torqueCalculator.dir/display/buttons.c.obj CMakeFiles/torqueCalculator.dir/display/screens/openProjectScreen.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/getProjectCount.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/getProjectNames.c.obj CMakeFiles/torqueCalculator.dir/display/colorPalettes.c.obj CMakeFiles/torqueCalculator.dir/objectManagement/objectList.c.obj CMakeFiles/torqueCalculator.dir/display/drawTextInRectangle.c.obj CMakeFiles/torqueCalculator.dir/projectManagement/previewProjectInfo.c.obj CMakeFiles/torqueCalculator.dir/display/drawObject.c.obj CMakeFiles/torqueCalculator.dir/display/materials.c.obj CMakeFiles/torqueCalculator.dir/display/modelObject.c.obj | _deps/raylib-build/raylib/libraylib.a _deps/raylib-build/raylib/external/glfw/src/libglfw3.a || _deps/raylib-build/raylib/external/glfw/src/libglfw3.a _deps/raylib-build/raylib/libraylib.a
   FLAGS = -g
   LINK_LIBRARIES = _deps/raylib-build/raylib/libraylib.a  -lopengl32  -lglu32  -lwinmm  _deps/raylib-build/raylib/external/glfw/src/libglfw3.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\torqueCalculator.dir

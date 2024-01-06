@@ -13,7 +13,7 @@ char * getProjectNames(){
         return 0;
     }
     for(int i = 0;i<projectCount;i++){
-        fgets(&names[i*20],20,projects);
+        fscanf_s(projects,"%s",&names[i*20],20);
     }
     chdir("../");
     return names;

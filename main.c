@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "main.h"
 #include "projectManagement/projectManagement.h"
 #include "../csvLib/csv.h"
 #include "../csvLib/csvUtils.h"
@@ -63,7 +64,7 @@ int main(){
                     buf = fgetc(current.info);
                 }
 
-                displayCSV(&current.objects,0,0,1,stdout);
+                displayCSV(&current.objCSV,0,0,1,stdout);
                 closeProject(&current);
             }
             else{

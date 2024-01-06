@@ -43,6 +43,14 @@ static float bigButtonWidth = 250;
 static Button deleteBut;
 static Button openBut;
 static Button backBut;
+static int cursorCounter = 0;
+static int tooltipIndex = 0;
+#define MAXTOOLTIPTEXTSIZE 300
+static char tooltipText[MAXTOOLTIPTEXTSIZE] = {0};
+const static int tooltipWait = 50;
+static float tooltipHeight = 200;
+static float tooltipWidth = 500;
+static int tooltipRows = 6;
 
 //----------------------------------------------------------------------------------
 // OpenProject Screen Functions Definition
@@ -52,12 +60,17 @@ static Button backBut;
 void InitOpenProjectScreen(void)
 {
     // TODO: Initialize OpenProject screen variables here!
+    cursorCounter = 0;
+    tooltipIndex = 0;
+    memset(tooltipText,0,MAXTOOLTIPTEXTSIZE);
     framesCounter = 0;
     finishScreen = -1;
     buttonHeight = screenHeight/9;
     buttonWidth = screenWidth * 63.0f/400.0f;
+    tooltipHeight = buttonHeight * 2;
+    tooltipWidth = buttonWidth * 2;
+    tooltipRows = (int)(tooltipHeight * (6.0f/170.0f));
     for(int i = 0;i < projectCount;i++){
-        //printf("Project %d\n",i);
         projectNames = getProjectNames();
         strncpy(projectButtons[i].text,&projectNames[i*20],20);
         projectButtons[i].color = theme.dark;
@@ -110,9 +123,26 @@ void InitOpenProjectScreen(void)
 void UpdateOpenProjectScreen(void)
 {
     // TODO: Update OpenProject screen variables here!
+    bool isAButtonSelected = false;
     for(int i = 0;i<projectCount;i++){
-        IsButtonPressed(&projectButtons[i]);
+        if(IsButtonPressed(&projectButtons[i])){
+            finishScreen = PROJECTMAIN;
+        }
+        if(projectButtons[i].isSelected){
+            isAButtonSelected = true;
+            tooltipIndex = i;
+        }
     }
+    if(isAButtonSelected)cursorCounter++;
+    else {cursorCounter = 0;}
+
+    if(cursorCounter>=tooltipWait && tooltipText[0] == 0){
+        previewProjectInfo(tooltipText,MAXTOOLTIPTEXTSIZE,projectButtons[tooltipIndex].text);
+    }
+    else if(cursorCounter < tooltipWait){
+        memset(tooltipText,0,MAXTOOLTIPTEXTSIZE);
+    }
+    //printf("TT: \n%s\n",tooltipText);
     IsButtonPressed(&openBut);
     IsButtonPressed(&deleteBut);
     if(IsButtonPressed(&backBut))finishScreen = TITLE;
@@ -130,6 +160,21 @@ void DrawOpenProjectScreen(void)
     DrawButton(&openBut);
     DrawButton(&deleteBut);
     DrawButton(&backBut);
+
+
+    if(cursorCounter>=tooltipWait){
+        HideCursor();
+        if(GetMouseX() + tooltipWidth > screenWidth){
+            DrawTextInRectangle(tooltipText,(Rectangle){GetMouseX()- tooltipWidth,GetMouseY(),tooltipWidth,tooltipHeight},tooltipRows,theme.black,theme.white,theme.black);
+
+        }
+        else{
+            DrawTextInRectangle(tooltipText,(Rectangle){GetMouseX(),GetMouseY(),tooltipWidth,tooltipHeight},tooltipRows,theme.black,theme.white,theme.black);
+        }
+    }
+    else{
+        if(IsCursorHidden())ShowCursor();
+    }
 }
 
 // OpenProject Screen Unload logic
@@ -137,6 +182,7 @@ void UnloadOpenProjectScreen(void)
 {
     // TODO: Unload OpenProject screen variables here!
     free(projectNames);
+    if(IsCursorHidden())ShowCursor();
 }
 
 // OpenProject Screen should finish?

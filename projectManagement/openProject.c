@@ -14,9 +14,9 @@ Project openProject(char *name){
     FILE *objFile = fopen(filename, "r+");
     if(objFile == NULL) return proj;
 
-    proj.objects = openCSV(objFile, DEFAULT_SETTINGS);
+    proj.objCSV = openCSV(objFile, DEFAULT_SETTINGS);
     fclose(objFile);
-    if(proj.objects.rows == NULL){
+    if(proj.objCSV.rows == NULL){
         return proj;
     }
 

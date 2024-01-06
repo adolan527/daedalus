@@ -65,9 +65,10 @@ void InitSettingsScreen(void)
             resolutionIndex = 2;
         }
     }
+
     doLogoBut = (Button){
             "",
-            {screenWidth*0.05 + MeasureText("Do Logo Animation: ",screenHeight/24), screenHeight/2-screenHeight/48, screenHeight/12, screenHeight/12},
+            {screenWidth*0.05 + MeasureTextEx(globalFont,"Do Logo Animation: ",screenHeight/16,GETSPACING(screenHeight/24)).x, (screenHeight * .49), screenHeight/12, screenHeight/12},
             theme.accent2,
             theme.accent2,
             false,
@@ -94,7 +95,7 @@ void InitSettingsScreen(void)
     };
     resolutionBut = (Button){
             "Resolution",
-            {screenWidth*0.05 + MeasureText("Resolution: ",screenHeight/12), screenHeight/12, screenWidth/4, screenHeight/8},
+            {screenWidth*0.05 + MeasureTextEx(globalFont,"Resolution: ",screenHeight/12,GETSPACING(screenHeight/12)).x, screenHeight/12, screenWidth/4, screenHeight/8},
             theme.accent1,
             theme.white,
             false,
@@ -210,7 +211,7 @@ void DrawSettingsScreen(void)
     DrawButton(&resolutionBut);
     DrawButton(&fullscreenBut);
     DrawButton(&borderlessBut);
-    DrawText("Do Logo Animation:",screenWidth*0.05,screenHeight*0.5,screenHeight/24,theme.accent1);
+    DrawTextEx(globalFont,"Do Logo Animation:",(Vector2){screenWidth*0.05,screenHeight*0.5},screenHeight/16,GETSPACING(screenHeight/24),theme.accent1);
     DrawButton(&doLogoBut);
     if(doLogoBut.isPressed == false){
         DrawRectangle(doLogoBut.rect.x + doLogoBut.rect.width * 0.1,
@@ -228,7 +229,7 @@ void DrawSettingsScreen(void)
         case 'w': DrawRectangleLinesEx(windowBut.rect,5,theme.accent2); break;
         case 'b': DrawRectangleLinesEx(borderlessBut.rect,5,theme.accent2); break;
     }
-    DrawText("Resolution:",screenWidth*0.05,screenHeight*0.1,screenHeight/12,theme.accent1);
+    DrawTextEx(globalFont,"Resolution:",(Vector2){screenWidth*0.05,screenHeight*0.1},screenHeight/12,GETSPACING(screenHeight/12),theme.accent1);
 
 
 }
