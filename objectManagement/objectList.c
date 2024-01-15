@@ -1,7 +1,7 @@
 //
 // Created by Aweso on 12/26/2023.
 //
-#include "tqcObjects.h"
+#include "calculations.h"
 
 ObjectList initObjectList(){
     return (ObjectList){NULL,NULL};

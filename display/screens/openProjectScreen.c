@@ -26,7 +26,6 @@
 *
 **********************************************************************************************/
 
-#include "raylib.h"
 #include "../drawMain.h"
 
 //----------------------------------------------------------------------------------
@@ -70,9 +69,9 @@ void InitOpenProjectScreen(void)
     tooltipHeight = buttonHeight * 2;
     tooltipWidth = buttonWidth * 2;
     tooltipRows = (int)(tooltipHeight * (6.0f/170.0f));
+    projectNames = getProjectNames();
     for(int i = 0;i < projectCount;i++){
-        projectNames = getProjectNames();
-        strncpy(projectButtons[i].text,&projectNames[i*20],20);
+        strncpy(projectButtons[i].text,&projectNames[i*NAMESIZE],NAMESIZE);
         projectButtons[i].color = theme.dark;
         projectButtons[i].textColor = theme.white;
         projectButtons[i].isSelected = false;
@@ -84,7 +83,7 @@ void InitOpenProjectScreen(void)
         projectButtons[i].rect.height = buttonHeight;
         //printf("x:%f, y:%f, w:%f, h:%f\n",projectButtons[i].rect.x,projectButtons[i].rect.y,projectButtons[i].rect.width,projectButtons[i].rect.height);
     }
-
+    free(projectNames);
     bigButtonHeight = 2 * buttonHeight;
     //bigButtonWidth = screenWidth * 0.9 * 5/16 - screenWidth/480;
     bigButtonWidth = screenWidth * 67/240;
@@ -127,6 +126,7 @@ void UpdateOpenProjectScreen(void)
     for(int i = 0;i<projectCount;i++){
         if(IsButtonPressed(&projectButtons[i])){
             finishScreen = PROJECTMAIN;
+            openProject(projectButtons[i].text);
         }
         if(projectButtons[i].isSelected){
             isAButtonSelected = true;
@@ -145,15 +145,14 @@ void UpdateOpenProjectScreen(void)
     //printf("TT: \n%s\n",tooltipText);
     IsButtonPressed(&openBut);
     IsButtonPressed(&deleteBut);
-    if(IsButtonPressed(&backBut))finishScreen = TITLE;
+    if(IsButtonPressed(&backBut) || IsMouseButtonPressed(MOUSE_BUTTON_SIDE))finishScreen = TITLE;
 }
 
 // OpenProject Screen Draw logic
 void DrawOpenProjectScreen(void)
 {
     // TODO: Draw OpenProject screen here!
-    DrawRectangle(0, 0, screenWidth, screenHeight, theme.light);
-
+    DrawRectangle(0,0,screenWidth,screenHeight,theme.light);
     for(int i = 0;i<projectCount;i++){
         DrawButton(&projectButtons[i]);
     }
@@ -181,7 +180,7 @@ void DrawOpenProjectScreen(void)
 void UnloadOpenProjectScreen(void)
 {
     // TODO: Unload OpenProject screen variables here!
-    free(projectNames);
+    //free(projectNames);
     if(IsCursorHidden())ShowCursor();
 }
 

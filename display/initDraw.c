@@ -15,7 +15,7 @@ int initDraw(){
     screenWidth = 0;
     screenHeight = 0;
 
-    theme = palettes[0];
+    theme = palettes[4];
 
     FILE *config = fopen("config.dat","r");
     fseek(config,CONFIG_HEADER_SIZE+1,SEEK_CUR);
@@ -46,7 +46,7 @@ int initDraw(){
 
     LoadMaterialsTextures();
 
-    globalFont = LoadFont("resources/default.ttf");
+    globalFont = LoadFont("resources/default.otf");
 
     if(windowMode == 'f'){
         if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
@@ -63,7 +63,6 @@ int initDraw(){
         if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
 
     }
-
 
     return 0;
 }

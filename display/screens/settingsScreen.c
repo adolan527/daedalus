@@ -23,7 +23,6 @@
 *
 **********************************************************************************************/
 
-#include "raylib.h"
 #include "../drawMain.h"
 
 //----------------------------------------------------------------------------------
@@ -134,7 +133,7 @@ void InitSettingsScreen(void)
     switch(windowMode){
         case 'f': PressButton(&fullscreenBut); break;
         case 'w': PressButton(&windowBut); break;
-        case 'b': PressButton(&borderlessBut); break;
+        case 'b': PressButton(&borderlessBut);{} break;
     }
     if(newDoLogo == 't')PressButton(&doLogoBut);
 }
@@ -186,15 +185,22 @@ void UpdateSettingsScreen(void)
             newWM = 'b';
             if (windowBut.isPressed)UnPressButton(&windowBut);
             if (fullscreenBut.isPressed)UnPressButton(&fullscreenBut);
+
         }
     }
-    if(IsButtonPressed(&backBut))finishScreen = TITLE;
+    if(IsButtonPressed(&backBut) || IsMouseButtonPressed(MOUSE_BUTTON_SIDE))finishScreen = TITLE;
 
 
 
     if(IsButtonPressed(&applyBut)){
         if(presetResolutions[resolutionIndex] != screenHeight || newWM != windowMode || newDoLogo != drawLogo){
-            makeConfig(presetResolutions[resolutionIndex]*16/9,presetResolutions[resolutionIndex],newWM,newDoLogo);
+            if(newWM == 'b'){
+                makeConfig(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()),newWM,newDoLogo);
+            }
+            else{
+                makeConfig(presetResolutions[resolutionIndex]*16/9,presetResolutions[resolutionIndex],newWM,newDoLogo);
+
+            }
             finishScreen = REINIT;
         }
 

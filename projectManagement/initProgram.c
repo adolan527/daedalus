@@ -4,8 +4,6 @@
 
 #include "projectManagement.h"
 
-
-
 const char header[CONFIG_HEADER_SIZE] = "torqueCalculator";
 
 int doesConfigExist(){
@@ -36,7 +34,6 @@ int makeConfig(int width, int height,char wMode,char doLogo){
     fputs(header,config);
     //Other config stuff
     //To be implemented
-    //fputs("\nres:1600x900\n",config);
     fprintf(config,"\nres:%dx%d\n",width,height);
     fprintf(config,"window:%c\n",wMode);
     fprintf(config,"logo:%c\n",doLogo);
@@ -49,22 +46,40 @@ int makeConfig(int width, int height,char wMode,char doLogo){
 
 
 int initProgram() {
+    int retVal = 0;
+
     if (doesConfigExist() == 0) {
         //program is already initialized
         getProjectCount();
-        return 0;
+        retVal += readMaterials();
+        retVal += readColors();
+        return retVal;
     }
     const int defaultWidth = 1600;
     const int defaultHeight = 900;
     const char defaultWMode = 'w';
     const char defaultDoLogo = 't';
-    int retVal = 0;
     retVal += makeConfig(defaultWidth,defaultHeight,defaultWMode,defaultDoLogo);
     FILE *error = fopen("error.log","w");
     if(error == NULL){
         return 1;
     }
     fclose(error);
+
+
+
+    FILE *materials = fopen("materials.dat","w");
+    if(materials == NULL){
+        return 1;
+    }
+    fclose(materials);
+
+    FILE *colors = fopen("colors.dat","w");
+    if(colors == NULL){
+        return 1;
+    }
+    fclose(colors);
+
     retVal += mkdir("projects/");
     retVal += mkdir("resources/");
     retVal += system("dir /b/a:d projects\\ > projects/projects.dat");

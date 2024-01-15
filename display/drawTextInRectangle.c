@@ -20,7 +20,10 @@ void DrawTextInRectangle(char *text, Rectangle rect, int rowCount, Color textCol
             buffer[j] = text[i + j];
         }
         buffer[j] = '\0';
-        DrawTextEx(globalFont,buffer,(Vector2){rect.x + rect.width * 0.05, rect.y + rect.height * (((float)row / (float)rowCount) + 0.075)},rect.height / (float)rowCount,(rect.height / (float)rowCount < 10 ? 1 : rect.height / (float)rowCount/10),textColor);
+        DrawTextEx(globalFont,buffer,
+                   (Vector2){rect.x + rect.width * 0.05, rect.y + rect.height * (((float)row / (float)rowCount) + 0.075)},
+                   rect.height / (float)rowCount,
+                   (rect.height / (float)rowCount < 10 ? 1 : rect.height / (float)rowCount/10),textColor);
         memset(buffer, 0, CHAR_PER_LINE + 1);
         i += j;
         row++;

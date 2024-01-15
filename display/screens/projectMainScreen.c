@@ -25,47 +25,30 @@
 
 #include "raylib.h"
 #include "../drawMain.h"
-#include "../../objectManagement/tqcObjects.h"
+#include "../../objectManagement/calculations.h"
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
 static int framesCounter = 0;
 static int finishScreen = 0;
-static ObjectList objects = {NULL,NULL};
 static Camera camera;
 
-static Object dummy = {
-        "Dummy",
-        {0,1},
-        0,5,
-        sRectangle,
-        {10,5,7,0,'x',false},
-        (tqcMaterial){0},
-        NULL
-};
-static Object cylinder = {
-        "Cylinder",
-        {5,-2},
-        3,-1,
-        sCylinder,
-        {1,7,1,0,'y',false},
-        (tqcMaterial){0},
-        NULL
-};
-static Object *cyl;
-static Object *dum;
 
-static Ray line={0};
 static float crosshairSize;
-static Texture2D texture;
-
 extern bool doesMouseUpdateCamera; //Added in rcamera.h. Changes behavior of UpdateCamera function.
-static Mesh cubeMesh;
+
+static Button NewObjBut, NewObjSave, NewObjCanc, BackButton, MaterialButton;
+static bool IsNewObjectScreeenOpen;
+
+static TextBox *name, *xPosC, *xPosM, *yPos, *zPos, *xLength, *yHeight, *zDepth, *thickness, *material;
+
 //----------------------------------------------------------------------------------
 // ProjectMain Screen Functions Definition
 //----------------------------------------------------------------------------------
 static float parameter = 0;
+static int index = 0;
+
 
 // ProjectMain Screen Initialization logic
 void InitProjectMainScreen(void)
@@ -81,64 +64,156 @@ void InitProjectMainScreen(void)
     crosshairSize = screenHeight/250;
     framesCounter = 0;
     finishScreen = -1;
-    doesMouseUpdateCamera = false;
+    doesMouseUpdateCamera = true;
+    IsNewObjectScreeenOpen = false;
 
 
-    dum = malloc(sizeof(Object));
-    cyl = malloc(sizeof(Object));
-    dummy.material = tqcMaterials[0];
-    cylinder.material = tqcMaterials[2];
-    *dum = dummy;
-    *cyl = cylinder;
+    name = InitTextBox((Rectangle){screenWidth*.795,screenHeight*.03,screenWidth*.19,screenHeight*.05},20);
+    strcpy(name->text,"Name");
+    name->textIndex+=4;
 
-    appendObject(&objects,dum);
-    appendObject(&objects,cyl);
-    for(ObjectNode *obj = objects.head; obj != NULL; obj = obj->next){
+    //Position elements
+
+    xPosC = InitTextBox((Rectangle){screenWidth*.795,screenHeight*.1125,screenWidth*.04,screenHeight*.025},6);
+    strcpy(xPosC->text,"X C");
+    xPosC->textIndex+=3;
+
+    xPosM = InitTextBox((Rectangle){screenWidth*.84,screenHeight*.1125,screenWidth*.04,screenHeight*.025},6);
+    strcpy(xPosM->text,"X M");
+    xPosM->textIndex+=3;
+
+    yPos = InitTextBox((Rectangle){screenWidth*.885,screenHeight*.1125,screenWidth*.04,screenHeight*.025},6);
+    strcpy(yPos->text,"Y");
+    yPos->textIndex+=1;
+
+    zPos = InitTextBox((Rectangle){screenWidth*.93,screenHeight*.1125,screenWidth*.04,screenHeight*.025},6);
+    strcpy(zPos->text,"Z");
+    zPos->textIndex+=1;
+
+    //Size elements
+
+    xLength = InitTextBox((Rectangle){screenWidth*.795,screenHeight*.175,screenWidth*.04,screenHeight*.025},6);
+    strcpy(xLength->text,"X");
+    xLength->textIndex+=1;
+
+    yHeight = InitTextBox((Rectangle){screenWidth*.84,screenHeight*.175,screenWidth*.04,screenHeight*.025},6);
+    strcpy(yHeight->text,"Y");
+    yHeight->textIndex+=1;
+
+    zDepth = InitTextBox((Rectangle){screenWidth*.885,screenHeight*.175,screenWidth*.04,screenHeight*.025},6);
+    strcpy(zDepth->text,"Z");
+    zDepth->textIndex+=1;
+
+    //Other
+
+    thickness = InitTextBox((Rectangle){screenWidth*.795 + MeasureTextEx(globalFont,"Thickness:  ",screenHeight/32, GETSPACING(screenHeight/32)).x,
+                                        screenHeight*.175 + MeasureTextEx(globalFont,"Thickness:  ",screenHeight/32, GETSPACING(screenHeight/32)).y,
+                                        screenWidth*.075,screenHeight*.025},10);
+    strcpy(thickness->text,"T");
+    thickness->textIndex+=1;
+
+    material = InitTextBox((Rectangle){screenWidth*.885,screenHeight*.24,screenWidth*.08,screenHeight*.05},20);
+    strcpy(material->text,"M");
+    material->textIndex+=1;
+
+
+    NewObjBut = (Button){
+            "New Object",
+            (Rectangle){screenWidth*.025,screenHeight*.025,screenWidth*.08,screenHeight*0.1},
+            theme.light,
+            theme.white,
+            false,
+            false,
+            false
+    };
+
+    NewObjCanc = (Button){
+            "Cancel",
+            (Rectangle){screenWidth*.9,screenHeight*.5,screenWidth*.08,screenHeight*0.08},
+            theme.dark,
+            theme.white,
+            false,
+            false,
+            false
+    };
+
+    MaterialButton = (Button){
+        "Material",
+        (Rectangle){screenWidth*.795,screenHeight*.24, screenWidth*.085,screenHeight*0.05},
+        theme.accent2,
+        theme.white,
+        false,
+        false,
+        true
+    };
+
+    NewObjSave = (Button){
+            "Save",
+            (Rectangle){screenWidth*.8,screenHeight*.5,screenWidth*.08,screenHeight*0.08},
+            theme.accent1,
+            theme.white,
+            false,
+            false,
+            false
+    };
+
+    BackButton = (Button){
+            "Back",
+            (Rectangle){screenWidth*0.89,screenHeight*0.875,screenWidth*.1,screenHeight*0.1},
+            theme.dark,
+            theme.white,
+            false,
+            false,
+            false
+    };
+
+
+
+
+    for(ObjectNode *obj = currentProject.objList.head; obj != NULL; obj = obj->next){
         ModelObject(obj->data);
     }
-}
 
+}
 // ProjectMain Screen Update logic
 void UpdateProjectMainScreen(void)
 {
     // TODO: Update ProjectMain screen variables here!
-    static int index = 0;
+    if(!IsTextBoxActive(name) &&
+       !IsTextBoxActive(xPosC) &&
+       !IsTextBoxActive(xPosM) &&
+       !IsTextBoxActive(yPos) &&
+       !IsTextBoxActive(zPos) &&
+       !IsTextBoxActive(xLength) &&
+       !IsTextBoxActive(yHeight) &&
+       !IsTextBoxActive(zDepth) &&
+       !IsTextBoxActive(material)){
+        UpdateCamera(&camera, CAMERA_THIRD_PERSON);
 
-    UpdateCamera(&camera, CAMERA_THIRD_PERSON);
-    framesCounter++;
-    if(IsKeyPressed(KEY_SPACE)){
-
-        line = GetMouseRay((Vector2){screenWidth/2.0f,screenHeight/2.0f},camera);
-        RayCollision rc = GetRayCollisionBox(line,(BoundingBox){(Vector3){0,0,0},(Vector3){10,10,10}});
-        if(rc.hit == true)printf("X: %f, Y: %f, Z: %f\n",rc.point.x,rc.point.y,rc.point.z);
-        float buffer;
-
-
-        if(cyl->data.facing=='x'){
-            buffer = cyl->data.xLength;
-            cyl->data.xLength = cyl->data.yHeight;
-            cyl->data.yHeight = buffer;
-            cyl->data.facing='y';
-            ReModelObject(cyl);
-        }
-        else if(cyl->data.facing=='z'){
-            buffer = cyl->data.zDepth;
-            cyl->data.zDepth = cyl->data.xLength;
-            cyl->data.xLength = buffer;
-            cyl->data.facing='x';
-            ReModelObject(cyl);
-        }
-        else{
-            buffer = cyl->data.yHeight;
-            cyl->data.yHeight = cyl->data.zDepth;
-            cyl->data.zDepth = buffer;
-            cyl->data.facing='z';
-            ReModelObject(cyl);
-        }
-
-        printf("F: %c\n",cyl->data.facing);
-        //parameter++;
     }
+    framesCounter++;
+    if(IsButtonPressed(&NewObjBut)){
+        IsNewObjectScreeenOpen = true;
+    }
+    if(IsNewObjectScreeenOpen){
+        if(IsButtonPressed(&NewObjSave)) IsNewObjectScreeenOpen = false;
+        if(IsButtonPressed(&NewObjCanc)) IsNewObjectScreeenOpen = false;
+        if(IsButtonPressed(&MaterialButton)){
+            if(MaterialButton.isPressed==true){
+                memset(MaterialButton.text,0,20);
+                strcpy(MaterialButton.text,"Weight");
+            }
+            else{
+                memset(MaterialButton.text,0,20);
+                strcpy(MaterialButton.text,"Material");
+            }
+        }
+    }
+
+    if(IsButtonPressed(&BackButton) || IsMouseButtonPressed(MOUSE_BUTTON_SIDE)){
+        finishScreen = OPENPROJECT;
+    }
+
 
     if(IsKeyDown(KEY_LEFT_SHIFT) || IsMouseButtonDown(MOUSE_BUTTON_MIDDLE)){
         if(!IsCursorHidden()){
@@ -157,15 +232,17 @@ void UpdateProjectMainScreen(void)
         doesMouseUpdateCamera = false;
     }
 
+
+
+
 }
 
 // ProjectMain Screen Draw logic
 void DrawProjectMainScreen(void)
 {
     // TODO: Draw ProjectMain screen here!
-    //ClearBackground(theme.white);
     BeginMode3D(camera);
-    for(ObjectNode *node = objects.head;node!=NULL;node = node->next){
+    for(ObjectNode *node = currentProject.objList.head;node!=NULL;node = node->next){
 
         DrawObject(node->data,parameter);
 
@@ -173,9 +250,45 @@ void DrawProjectMainScreen(void)
 
 
     DrawGrid(15, 1.0f);
-    DrawRay(line,BLACK);
 
     EndMode3D();
+
+    DrawButton(&NewObjBut);
+    DrawButton(&BackButton);
+
+    if(IsNewObjectScreeenOpen){
+
+        DrawRectangle(screenWidth*.79,screenHeight*.025,screenWidth*.20,screenHeight*.5725,theme.light);
+        DrawRectangleLines(screenWidth*.79,screenHeight*.025,screenWidth*.20,screenHeight*.5725,theme.black);
+
+        DrawTextBox(name);
+
+        DrawTextEx(globalFont,"Position XYZ:",(Vector2){screenWidth*.795,screenHeight*.0825},screenHeight/32,GETSPACING(screenHeight/24),theme.black);
+
+        DrawTextBox(xPosC);
+        DrawTextBox(xPosM);
+        DrawTextBox(yPos);
+        DrawTextBox(zPos);
+
+        DrawTextEx(globalFont,"Size XYZ:",(Vector2){screenWidth*.795,screenHeight*.14},screenHeight/32,GETSPACING(screenHeight/24),theme.black);
+
+
+        DrawTextBox(xLength);
+        DrawTextBox(yHeight);
+        DrawTextBox(zDepth);
+
+        DrawTextEx(globalFont,"Thickness:",(Vector2){screenWidth*.795,screenHeight*.2025},screenHeight/32,GETSPACING(screenHeight/24),theme.black);
+        DrawTextBox(thickness);
+
+        DrawTextEx(globalFont,"Material:",(Vector2){screenWidth*.795,screenHeight*.265},screenHeight/32,GETSPACING(screenHeight/24),theme.black);
+        DrawTextBox(material);
+
+        DrawButton(&NewObjSave);
+        DrawButton(&NewObjCanc);
+        DrawButton(&MaterialButton);
+
+
+    }
 
 
     DrawRectangle(screenWidth*0.49,screenHeight*0.4975,screenWidth*0.02,crosshairSize,BLACK);
@@ -187,8 +300,7 @@ void DrawProjectMainScreen(void)
 void UnloadProjectMainScreen(void)
 {
     // TODO: Unload ProjectMain screen variables here!
-    closeObjectList(&objects);
-    UnloadTexture(texture);
+    closeProject();
 }
 
 // ProjectMain Screen should finish?

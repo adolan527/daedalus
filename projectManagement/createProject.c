@@ -39,7 +39,6 @@ int createProject(char *name, char *notes){
     if(objects == NULL){
         return 1;
     }
-    fputs("name,startC,startM,endC,endM,density,shape,xlength,ywidth,zheight,thickness,face,hole\n",objects);
     fclose(objects);
 
     chdir("..");

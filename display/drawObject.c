@@ -55,7 +55,8 @@ void DrawObject(Object *source, float pmt){
             break;
         }
         case sSphere:
-            
+            DrawModel(*source->model,(Vector3){cmpPmt(source->xPos, pmt), source->yPos, source->zPos},1,source->material.color);
+
             break;
     }
 }

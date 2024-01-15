@@ -3,8 +3,10 @@
 //
 #include "projectManagement.h"
 
-int closeProject(Project *source){
-    closeCSV(&source->objCSV);
-    fclose(source->info);
+int closeProject(){
+    writeObjects(&currentProject.objList);
+    closeObjectList(&currentProject.objList);
+    memset(&currentProject,0,sizeof(Project));
+
     return 0;
 }

@@ -42,7 +42,7 @@ void ModelObject(Object *obj){
             break;
         }
         case sSphere:{
-            tempMesh = GenMeshSphere(obj->data.xLength,4,4);
+            tempMesh = GenMeshSphere(obj->data.xLength,20,20);
         }
     }
 
