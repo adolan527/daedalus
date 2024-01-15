@@ -34,13 +34,12 @@ set(HEADERS
 
 set(SOURCES
     "projectManagement/createProject.c"
-    "objectManagement/tqcObjects.c"
+    "objectManagement/calculations.c"
     "projectManagement/initProgram.c"
     "projectManagement/deleteProject.c"
     "projectManagement/openProject.c"
     "projectManagement/openProject.c"
-    "projectManagement/doesProjectExist.c"
-    "projectManagement/closeProject.c"
+        "projectManagement/closeProject.c"
     "../csvLib/csv.c"
     "../csvLib/csvUtils.c"
     "display/initDraw.c"
@@ -53,10 +52,15 @@ set(SOURCES
     "display/screens/logoScreen.c"
     display/buttons.c
     display/screens/openProjectScreen.c
-    projectManagement/getProjectCount.c
-    projectManagement/getProjectNames.c
-    display/colorPalettes.c
-    objectManagement/objectList.c
+        objectManagement/objectList.c
+        display/drawTextInRectangle.c
+        display/drawObject.c
+        main.h
+        display/materials.c
+        display/modelObject.c
+        projectManagement/projectUtils.c
+        projectManagement/dataIO.c
+        display/textbox.c
 )
 
 # Our Project

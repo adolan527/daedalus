@@ -6,47 +6,15 @@
 #define TORQUECALCULATOR_FILEMANAGEMENT_H
 
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+
 #include <sys/stat.h>
-
-
-#include "../../csvLib/csv.h"
-#include "../../csvLib/csvUtils.h"
-
-#define MAX_PROJECT_COUNT 25
-
-#define CONFIG_HEADER_SIZE 17
-
-extern int projectCount;
-
-
-
-typedef struct{
-    char name[20];
-    FILE *info;
-    CSV objects;
-}Project;
-
-
-int createProject(char *name, char *notes);
-
-int initProgram();
-
-int deleteProject(char *name);
-
-Project openProject(char *name);
+#include "../main.h"
 
 int doesProjectExist(char *name);
 
-int closeProject(Project *source);
+int readColors();
 
-int getProjectCount();
+int readMaterials();
 
-char * getProjectNames();
-
-int makeConfig(int width, int height,char wMode, char doLogo);
-
-
+int readObjects();
 #endif //TORQUECALCULATOR_FILEMANAGEMENT_H

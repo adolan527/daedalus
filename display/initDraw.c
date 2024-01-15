@@ -8,12 +8,15 @@ int screenHeight = 0;
 char windowMode = 'w';
 char drawLogo = 't';
 ColorPalette theme;
+Font globalFont;
 
 int initDraw(){
+
     screenWidth = 0;
     screenHeight = 0;
 
-    theme = palettes[GetRandomValue(0,4)];
+    theme = palettes[4];
+
     FILE *config = fopen("config.dat","r");
     fseek(config,CONFIG_HEADER_SIZE+1,SEEK_CUR);
     char buffer[16] = {0};
@@ -35,6 +38,31 @@ int initDraw(){
 
     fclose(config);
 
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+
+    InitWindow(screenWidth, screenHeight, "Torque Calculator");
+
+    SetExitKey(KEY_NULL);
+
+    LoadMaterialsTextures();
+
+    globalFont = LoadFont("resources/default.otf");
+
+    if(windowMode == 'f'){
+        if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
+
+        if(IsWindowFullscreen()==false)ToggleFullscreen();
+    }
+    else if(windowMode == 'b'){
+        if(IsWindowFullscreen()==true)ToggleFullscreen();
+
+        if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == false)ToggleBorderlessWindowed();
+    }
+    else{
+        if(IsWindowFullscreen()==true)ToggleFullscreen();
+        if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
+
+    }
 
     return 0;
 }

@@ -7,11 +7,8 @@
 #ifndef TORQUECALCULATOR_DRAWMAIN_H
 #define TORQUECALCULATOR_DRAWMAIN_H
 
-#include "raylib.h"
-#include "stdio.h"
-#include "string.h"
-#include "stdlib.h"
-#include "../projectManagement/projectManagement.h"
+#include "../main.h"
+
 
 
 
@@ -29,7 +26,7 @@ typedef enum GameScreen {
 }GameScreen;
 
 typedef struct{
-    char text[20];
+    char text[NAMESIZE];
     Rectangle rect;
     Color color;
     Color textColor;
@@ -38,20 +35,21 @@ typedef struct{
     bool isToggle;
 }Button;
 
-
-
 typedef struct{
-    Color white;
-    Color black;
-    Color light;
-    Color dark;
-    Color accent1;
-    Color accent2;
-}ColorPalette;
+    char *text;
+    Rectangle rect;
+    int charCount;
+    float textSize;
+    int textIndex;
+    bool isTyping;
+}TextBox;
+
+
 
 int drawMain(GameScreen startingScreen);
 int initDraw(void);
-
+void LoadMaterialsTextures(void);
+void UnloadMaterialsTextures(void);
 
 //----------------------------------------------------------------------------------
 // Global Variables Declaration (shared by several modules)
@@ -62,9 +60,12 @@ extern int screenWidth;
 extern int screenHeight;
 extern char windowMode;
 extern char drawLogo;
-extern ColorPalette theme;
-extern ColorPalette palettes[10];
 
+#define SPACING 16
+#define GETSPACING(_size) (_size < SPACING ? 1 : _size/SPACING)
+extern Font globalFont;
+
+#define CYLINDERRING 64
 
 //----------------------------------------------------------------------------------
 // Logo Screen Functions Declaration
@@ -136,5 +137,17 @@ void DrawButton(Button *source);
 void PressButton(Button *source);
 void UnPressButton(Button *source);
 bool IsButtonPressed(Button *source);
+
+
+void DrawTextInRectangle(char *text,Rectangle rect, int rowCount, Color textColor, Color background, Color border);
+
+void DrawTextBox(TextBox *source);
+void CloseTextBox(TextBox *t);
+TextBox* InitTextBox(Rectangle rect, int charCount);
+bool IsTextBoxActive(TextBox *source);
+
+void DrawObject(Object *source, float pmt);
+void ModelObject(Object *obj);
+void ReModelObject(Object *obj);
 
 #endif //TORQUECALCULATOR_DRAWMAIN_H

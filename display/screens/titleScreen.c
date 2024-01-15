@@ -23,9 +23,7 @@
 *
 **********************************************************************************************/
 
-#include "raylib.h"
 #include "../drawMain.h"
-#include <stdio.h>
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
@@ -162,7 +160,6 @@ void DrawTitleScreen(void)
 {
     // TODO: Draw TITLE screen here!
 
-    DrawRectangle(0, 0, screenWidth, screenHeight, theme.white);
     for(int i = 0; i<triangleCount;i++){
 
         DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
@@ -171,6 +168,7 @@ void DrawTitleScreen(void)
     }
     int fontSize = screenHeight/2;
     int textWidth = MeasureText("Torque Calculator",fontSize);
+
     while(textWidth+screenWidth/10>screenWidth){
         fontSize-=8;
         textWidth = MeasureText("Torque Calculator",fontSize);

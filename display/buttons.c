@@ -12,21 +12,24 @@ void DrawButton(Button *source) {
                       source->rect.height * 0.9f};
     }
     else{
-        tempButton = (Rectangle){source->rect.x,
-                                 source->rect.y,
-                                 source->rect.width,
-                                 source->rect.height};
+        tempButton = source->rect;
+
     }
     DrawRectangleRec(tempButton, source->color);
+    DrawRectangleLinesEx(tempButton,tempButton.height/20,(source->color.r == theme.black.r ? theme.white:theme.black));
     int textSize = tempButton.height;
+    int spacing = (textSize < SPACING ? 1 : textSize/SPACING);
 
-    while(MeasureText(source->text,textSize)+tempButton.width/10>tempButton.width){
+    Vector2 measuredSize = MeasureTextEx(globalFont,source->text,textSize,spacing);
+    while(measuredSize.x + tempButton.width/10>tempButton.width || measuredSize.y + tempButton.height/10>tempButton.height){
         textSize-=2;
+        spacing = (textSize < SPACING ? 1 : textSize/SPACING);
+        measuredSize = MeasureTextEx(globalFont,source->text,textSize,spacing);
     }
+    Vector2 textPosition = {tempButton.x + (tempButton.width - measuredSize.x)/2, measuredSize.y/20 + tempButton.y + (tempButton.height - measuredSize.y)/2};
 
-    DrawText(source->text,tempButton.x+tempButton.width/20,tempButton.y + (tempButton.height-textSize)/2,textSize,source->textColor);
+    DrawTextEx(globalFont, source->text, textPosition,textSize,spacing,source->textColor);
     if(source->isSelected == true && source->isPressed == false) DrawRectangleRec(tempButton,(Color){255,255,255,64});
-
 }
 
 void PressButton(Button *source){

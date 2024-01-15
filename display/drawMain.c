@@ -36,6 +36,8 @@ static bool onTransition = false;
 static bool transFadeOut = false;
 static int transFromScreen = -1;
 static GameScreen transToScreen = UNKNOWN;
+static bool exitWindow = false;
+static bool exitRequest = false;
 
 //----------------------------------------------------------------------------------
 // Local Functions Declaration
@@ -48,6 +50,8 @@ static void DrawTransition(void);           // Draw transition effect (full-scre
 
 static int UpdateDrawFrame(void);          // Update and draw one frame
 
+
+
 //----------------------------------------------------------------------------------
 // Main entry point
 //----------------------------------------------------------------------------------
@@ -57,22 +61,7 @@ int drawMain(GameScreen startingScreen)
     int returnValue = 0;
     // Initialization
     //---------------------------------------------------------
-    InitWindow(screenWidth, screenHeight, "raylib game template");
-    if(windowMode == 'f'){
-        if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
 
-        if(IsWindowFullscreen()==false)ToggleFullscreen();
-    }
-    else if(windowMode == 'b'){
-        if(IsWindowFullscreen()==true)ToggleFullscreen();
-
-        if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == false)ToggleBorderlessWindowed();
-    }
-    else{
-        if(IsWindowFullscreen()==true)ToggleFullscreen();
-        if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
-
-    }
     // Load global data (assets that must be available in all screens, i.e. font)
     if(drawLogo == 'f' && startingScreen == LOGO){
         startingScreen = TITLE;
@@ -101,13 +90,17 @@ int drawMain(GameScreen startingScreen)
     //--------------------------------------------------------------------------------------
 
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
+    while(!exitWindow){
+        if(WindowShouldClose() || IsKeyPressed(KEY_ESCAPE)) exitRequest = true;
+
         if(UpdateDrawFrame()==1){
             returnValue = 1;
             break;
         }
     }
+
+
+
 #endif
 
     // De-Initialization
@@ -126,7 +119,8 @@ int drawMain(GameScreen startingScreen)
     }
 
     // Unload global data loaded
-
+    UnloadMaterialsTextures();
+    UnloadFont(globalFont);
     CloseWindow();          // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
@@ -249,8 +243,15 @@ static int UpdateDrawFrame(void)
 {
     // Update
     //----------------------------------------------------------------------------------
-
-    if (!onTransition)
+    if(exitRequest){
+        if (IsKeyPressed(KEY_Y)){
+            exitWindow = true;
+        }
+        else if (IsKeyPressed(KEY_N)||IsKeyPressedRepeat(KEY_ESCAPE)) {
+            exitRequest = false;
+        }
+    }
+    else if (!onTransition)
     {
         switch(currentScreen)
         {
@@ -320,7 +321,7 @@ static int UpdateDrawFrame(void)
     //----------------------------------------------------------------------------------
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    ClearBackground(theme.white);
 
     switch(currentScreen)
     {
@@ -338,6 +339,12 @@ static int UpdateDrawFrame(void)
     if (onTransition) DrawTransition();
 
     //DrawFPS(10, 10);
+
+    if(exitRequest){
+        DrawRectangle(0,0,screenWidth,screenHeight,(Color){theme.black.r,theme.black.g,theme.black.b,200});
+        DrawText("Confirm exit: [Y/N]",screenWidth/4,screenHeight/2,screenHeight/10,theme.accent1);
+
+    }
 
     EndDrawing();
     //----------------------------------------------------------------------------------
