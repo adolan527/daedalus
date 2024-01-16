@@ -12,8 +12,9 @@ The program does create one directory and two files in whatever directory you pu
  - Configuration and settings
  - Data structures and architecture
  - Some of the math
+ - 3D rendering of objects
 ### What needs to get done
- - 3D rendering of assemblies/projects
+ - Ability to create projects and objects
  - The rest of the math
  - More GUI
  - Better UI
@@ -23,6 +24,11 @@ The program does create one directory and two files in whatever directory you pu
 1. Download the .exe [here:](https://github.com/adolan527/torqueCalculator/blob/main/cmake-build-debug/torqueCalculator.exe)
 2. Create a directory/folder and put the .exe into said directory.
 3. Run the program
+4. Download [this](https://github.com/adolan527/torqueCalculator/tree/main/cmake-build-debug/projects) file into the projects folder.
+5. Download everything inside of the [resources](https://github.com/adolan527/torqueCalculator/tree/main/cmake-build-debug/resources) folder into your resources folder.
+6. Replace the generated colors.dat and materials.dat with two files found inside of [here:](https://github.com/adolan527/torqueCalculator/blob/main/cmake-build-debug)
 
-A couple of files will be created, some of which will be empty. Namely the information regarding colors, materials, and textures. This will be included later as the project develops.
-Currently, (1/16/2024) there is no way to run the 3D assembly part of the program unless you manually create project files. That will be implemented before February.
+This process is more complicated right now because a lot of the glue that would be holding parts of the program together has yet to be implemented. 
+
+   
+
