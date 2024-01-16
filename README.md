@@ -1,6 +1,7 @@
-A WIP program that will allow for very basic CAD assemblies that are used to calculate the torque required to move an assembly.
+A WIP program that will allow for very basic CAD assemblies and the calculation of how much torque is required to rotate said assemblies around an axis.
+Intended to be useful for robotics design, such as in FRC.
 
-Documentation folder has (somewhat deprecated) diagrams.
+The documentation folder has (somewhat deprecated) diagrams.
 
 A working executable can be found [here](https://github.com/adolan527/torqueCalculator/blob/main/cmake-build-debug/torqueCalculator.exe)
 The program does create one directory and two files in whatever directory you put it in.
@@ -17,3 +18,11 @@ The program does create one directory and two files in whatever directory you pu
  - More GUI
  - Better UI
 
+
+## Guide to Running
+1. Download the .exe [here:](https://github.com/adolan527/torqueCalculator/blob/main/cmake-build-debug/torqueCalculator.exe)
+2. Create a directory/folder and put the .exe into said directory.
+3. Run the program
+
+A couple of files will be created, some of which will be empty. Namely the information regarding colors, materials, and textures. This will be included later as the project develops.
+Currently, (1/16/2024) there is no way to run the 3D assembly part of the program unless you manually create project files. That will be implemented before February.
