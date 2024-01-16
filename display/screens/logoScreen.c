@@ -132,34 +132,35 @@ void DrawLogoScreen(void)
 {
     if (state == 0)         // Draw blinking top-left square corner
     {
-        if ((framesCounter/10)%2) DrawRectangle(logoPositionX, logoPositionY, 16, 16, BLACK);
+        if ((framesCounter/10)%2) DrawRectangle(logoPositionX, logoPositionY, 16, 16, theme.black);
     }
     else if (state == 1)    // Draw bars animation: top and left
     {
-        DrawRectangle(logoPositionX, logoPositionY, topSideRecWidth, 16, BLACK);
-        DrawRectangle(logoPositionX, logoPositionY, 16, leftSideRecHeight, BLACK);
+        DrawRectangle(logoPositionX, logoPositionY, topSideRecWidth, 16, theme.black);
+        DrawRectangle(logoPositionX, logoPositionY, 16, leftSideRecHeight, theme.black);
     }
     else if (state == 2)    // Draw bars animation: bottom and right
     {
-        DrawRectangle(logoPositionX, logoPositionY, topSideRecWidth, 16, BLACK);
-        DrawRectangle(logoPositionX, logoPositionY, 16, leftSideRecHeight, BLACK);
+        DrawRectangle(logoPositionX, logoPositionY, topSideRecWidth, 16, theme.black);
+        DrawRectangle(logoPositionX, logoPositionY, 16, leftSideRecHeight, theme.black);
 
-        DrawRectangle(logoPositionX + 240, logoPositionY, 16, rightSideRecHeight, BLACK);
-        DrawRectangle(logoPositionX, logoPositionY + 240, bottomSideRecWidth, 16, BLACK);
+        DrawRectangle(logoPositionX + 240, logoPositionY, 16, rightSideRecHeight, theme.black);
+        DrawRectangle(logoPositionX, logoPositionY + 240, bottomSideRecWidth, 16, theme.black);
     }
     else if (state == 3)    // Draw "raylib" text-write animation + "powered by"
     {
-        DrawRectangle(logoPositionX, logoPositionY, topSideRecWidth, 16, Fade(BLACK, alpha));
-        DrawRectangle(logoPositionX, logoPositionY + 16, 16, leftSideRecHeight - 32, Fade(BLACK, alpha));
+        DrawRectangle(logoPositionX, logoPositionY, topSideRecWidth, 16, Fade(theme.black, alpha));
+        DrawRectangle(logoPositionX, logoPositionY + 16, 16, leftSideRecHeight - 32, Fade(theme.black, alpha));
 
-        DrawRectangle(logoPositionX + 240, logoPositionY + 16, 16, rightSideRecHeight - 32, Fade(BLACK, alpha));
-        DrawRectangle(logoPositionX, logoPositionY + 240, bottomSideRecWidth, 16, Fade(BLACK, alpha));
 
-        DrawRectangle(GetScreenWidth()/2 - 112, GetScreenHeight()/2 - 112, 224, 224, Fade(RAYWHITE, alpha));
+        DrawRectangle(logoPositionX + 240, logoPositionY + 16, 16, rightSideRecHeight - 32, Fade(theme.black, alpha));
+        DrawRectangle(logoPositionX, logoPositionY + 240, bottomSideRecWidth, 16, Fade(theme.black, alpha));
 
-        DrawText(TextSubtext("raylib", 0, lettersCount), GetScreenWidth()/2 - 44, GetScreenHeight()/2 + 48, 50, Fade(BLACK, alpha));
+        DrawRectangle(GetScreenWidth()/2 - 112, GetScreenHeight()/2 - 112, 224, 224, Fade(theme.white, alpha));
 
-        if (framesCounter > 20) DrawText("powered by", logoPositionX, logoPositionY - 27, 20, Fade(DARKGRAY, alpha));
+        DrawText(TextSubtext("raylib", 0, lettersCount), GetScreenWidth()/2 - 44, GetScreenHeight()/2 + 48, 50, Fade(theme.black, alpha));
+
+        if (framesCounter > 20) DrawText("powered by", logoPositionX, logoPositionY - 27, 20, Fade(theme.dark, alpha));
     }
 }
 

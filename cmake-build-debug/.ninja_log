@@ -224,3 +224,8 @@
 150	464	7269995636785206	torqueCalculator.exe	81de1f7832ce57f8
 6	156	7269996817916435	CMakeFiles/torqueCalculator.dir/display/screens/settingsScreen.c.obj	773b7fb744c233e4
 156	434	7269996820577577	torqueCalculator.exe	81de1f7832ce57f8
+8	183	7270024105779437	CMakeFiles/torqueCalculator.dir/display/screens/logoScreen.c.obj	24fbd7125d6cfc8f
+183	504	7270024108868898	torqueCalculator.exe	81de1f7832ce57f8
+13	266	7270541731280740	CMakeFiles/torqueCalculator.dir/main.c.obj	bcbe409b8be3f9ba
+6	267	7270541731280740	CMakeFiles/torqueCalculator.dir/display/initDraw.c.obj	fbc9c36d5bcf822a
+267	1291	7270541741431616	torqueCalculator.exe	81de1f7832ce57f8

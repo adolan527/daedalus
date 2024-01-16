@@ -15,7 +15,11 @@ int initDraw(){
     screenWidth = 0;
     screenHeight = 0;
 
+
     theme = palettes[4];
+    if(*(int*)(&theme.white)==0){
+        theme=palettes[0];
+    }
 
     FILE *config = fopen("config.dat","r");
     fseek(config,CONFIG_HEADER_SIZE+1,SEEK_CUR);
