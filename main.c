@@ -17,10 +17,10 @@ tqcMaterial tqcMaterials[MATERIALS_COUNT] = {
 };
 
 ColorPalette palettes[PALETTE_COUNT] ={
-        /*
+
         {//basic
                 RAYWHITE,BLACK,SKYBLUE,DARKGRAY,DARKGREEN,MAROON
-        },
+        }/*,
         {//advanced red/yellow/green/white
                 RAYWHITE,
                          BLACK,
