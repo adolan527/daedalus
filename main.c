@@ -5,7 +5,7 @@ int projectCount = 0;
 
 Project currentProject = {0};
 
-tqcMaterial tqcMaterials[MATERIALS_COUNT] = {
+tqcMaterial tqcMaterials[TQCMATERIALS_COUNT] = {
 /*
         {"6061-Aluminum", 0.09754374,LIGHTGRAY, {0}},
         {"6063-Aluminum", 0.09718247,LIGHTGRAY, {0}},

@@ -3,6 +3,18 @@
 //
 #include "calculations.h"
 
+
+int isObjectInList(ObjectList *list, Object *source){
+    int i = 0;
+    for(ObjectNode *current = list->head; current != NULL; current = current->next){
+        if(strcmp(current->data->name,source->name)==0){
+            return i;
+        }
+        i++;
+    }
+    return -1;
+}
+
 ObjectList initObjectList(){
     return (ObjectList){NULL,NULL};
 }
@@ -42,6 +54,7 @@ Object * getObjectPointer(ObjectList *source, int index){
         }
         currentIndex++;
     }
+    return NULL;
 }
 
 void deleteObject(ObjectList *source, int index){

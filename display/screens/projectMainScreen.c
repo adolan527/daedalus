@@ -27,6 +27,7 @@
 #include "../drawMain.h"
 #include "../../objectManagement/calculations.h"
 
+
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
@@ -35,13 +36,15 @@ static int finishScreen = 0;
 static Camera camera;
 
 
+
+static ObjectBoxGUI box;
+
 static float crosshairSize;
 extern bool doesMouseUpdateCamera; //Added in rcamera.h. Changes behavior of UpdateCamera function.
+static bool IsObjectScreenOpen;
+static Button backBut, newObjBut;
 
-static Button NewObjBut, NewObjSave, NewObjCanc, BackButton, MaterialButton;
-static bool IsNewObjectScreeenOpen;
 
-static TextBox *name, *xPosC, *xPosM, *yPos, *zPos, *xLength, *yHeight, *zDepth, *thickness, *material;
 
 //----------------------------------------------------------------------------------
 // ProjectMain Screen Functions Definition
@@ -53,6 +56,8 @@ static int index = 0;
 // ProjectMain Screen Initialization logic
 void InitProjectMainScreen(void)
 {
+
+
     // TODO: Initialize ProjectMain screen variables here!
 
     camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
@@ -65,59 +70,14 @@ void InitProjectMainScreen(void)
     framesCounter = 0;
     finishScreen = -1;
     doesMouseUpdateCamera = true;
-    IsNewObjectScreeenOpen = false;
+    IsObjectScreenOpen = false;
+
+    box.pos = (Vector2){screenWidth*.79,screenHeight*.025};
+
+    InitOBGUI(&box);
 
 
-    name = InitTextBox((Rectangle){screenWidth*.795,screenHeight*.03,screenWidth*.19,screenHeight*.05},20);
-    strcpy(name->text,"Name");
-    name->textIndex+=4;
-
-    //Position elements
-
-    xPosC = InitTextBox((Rectangle){screenWidth*.795,screenHeight*.1125,screenWidth*.04,screenHeight*.025},6);
-    strcpy(xPosC->text,"X C");
-    xPosC->textIndex+=3;
-
-    xPosM = InitTextBox((Rectangle){screenWidth*.84,screenHeight*.1125,screenWidth*.04,screenHeight*.025},6);
-    strcpy(xPosM->text,"X M");
-    xPosM->textIndex+=3;
-
-    yPos = InitTextBox((Rectangle){screenWidth*.885,screenHeight*.1125,screenWidth*.04,screenHeight*.025},6);
-    strcpy(yPos->text,"Y");
-    yPos->textIndex+=1;
-
-    zPos = InitTextBox((Rectangle){screenWidth*.93,screenHeight*.1125,screenWidth*.04,screenHeight*.025},6);
-    strcpy(zPos->text,"Z");
-    zPos->textIndex+=1;
-
-    //Size elements
-
-    xLength = InitTextBox((Rectangle){screenWidth*.795,screenHeight*.175,screenWidth*.04,screenHeight*.025},6);
-    strcpy(xLength->text,"X");
-    xLength->textIndex+=1;
-
-    yHeight = InitTextBox((Rectangle){screenWidth*.84,screenHeight*.175,screenWidth*.04,screenHeight*.025},6);
-    strcpy(yHeight->text,"Y");
-    yHeight->textIndex+=1;
-
-    zDepth = InitTextBox((Rectangle){screenWidth*.885,screenHeight*.175,screenWidth*.04,screenHeight*.025},6);
-    strcpy(zDepth->text,"Z");
-    zDepth->textIndex+=1;
-
-    //Other
-
-    thickness = InitTextBox((Rectangle){screenWidth*.795 + MeasureTextEx(globalFont,"Thickness:  ",screenHeight/32, GETSPACING(screenHeight/32)).x,
-                                        screenHeight*.175 + MeasureTextEx(globalFont,"Thickness:  ",screenHeight/32, GETSPACING(screenHeight/32)).y,
-                                        screenWidth*.075,screenHeight*.025},10);
-    strcpy(thickness->text,"T");
-    thickness->textIndex+=1;
-
-    material = InitTextBox((Rectangle){screenWidth*.885,screenHeight*.24,screenWidth*.08,screenHeight*.05},20);
-    strcpy(material->text,"M");
-    material->textIndex+=1;
-
-
-    NewObjBut = (Button){
+    newObjBut = (Button){
             "New Object",
             (Rectangle){screenWidth*.025,screenHeight*.025,screenWidth*.08,screenHeight*0.1},
             theme.light,
@@ -127,37 +87,9 @@ void InitProjectMainScreen(void)
             false
     };
 
-    NewObjCanc = (Button){
-            "Cancel",
-            (Rectangle){screenWidth*.9,screenHeight*.5,screenWidth*.08,screenHeight*0.08},
-            theme.dark,
-            theme.white,
-            false,
-            false,
-            false
-    };
 
-    MaterialButton = (Button){
-        "Material",
-        (Rectangle){screenWidth*.795,screenHeight*.24, screenWidth*.085,screenHeight*0.05},
-        theme.accent2,
-        theme.white,
-        false,
-        false,
-        true
-    };
 
-    NewObjSave = (Button){
-            "Save",
-            (Rectangle){screenWidth*.8,screenHeight*.5,screenWidth*.08,screenHeight*0.08},
-            theme.accent1,
-            theme.white,
-            false,
-            false,
-            false
-    };
-
-    BackButton = (Button){
+    backBut = (Button){
             "Back",
             (Rectangle){screenWidth*0.89,screenHeight*0.875,screenWidth*.1,screenHeight*0.1},
             theme.dark,
@@ -166,7 +98,6 @@ void InitProjectMainScreen(void)
             false,
             false
     };
-
 
 
 
@@ -179,38 +110,94 @@ void InitProjectMainScreen(void)
 void UpdateProjectMainScreen(void)
 {
     // TODO: Update ProjectMain screen variables here!
-    if(!IsTextBoxActive(name) &&
-       !IsTextBoxActive(xPosC) &&
-       !IsTextBoxActive(xPosM) &&
-       !IsTextBoxActive(yPos) &&
-       !IsTextBoxActive(zPos) &&
-       !IsTextBoxActive(xLength) &&
-       !IsTextBoxActive(yHeight) &&
-       !IsTextBoxActive(zDepth) &&
-       !IsTextBoxActive(material)){
-        UpdateCamera(&camera, CAMERA_THIRD_PERSON);
 
-    }
     framesCounter++;
-    if(IsButtonPressed(&NewObjBut)){
-        IsNewObjectScreeenOpen = true;
+    if(IsButtonPressed(&newObjBut)){
+        IsObjectScreenOpen = true;
+        InitOBGUI(&box);
     }
-    if(IsNewObjectScreeenOpen){
-        if(IsButtonPressed(&NewObjSave)) IsNewObjectScreeenOpen = false;
-        if(IsButtonPressed(&NewObjCanc)) IsNewObjectScreeenOpen = false;
-        if(IsButtonPressed(&MaterialButton)){
-            if(MaterialButton.isPressed==true){
-                memset(MaterialButton.text,0,20);
-                strcpy(MaterialButton.text,"Weight");
+
+    if(IsObjectScreenOpen){
+        switch(UpdateOBGUI(&box)){
+            case DOCANCEL:
+                IsObjectScreenOpen = false;
+                CloseOBGUI(&box);
+                break;
+            case DOSAVE:{
+                box.companion = calloc(1,sizeof(Object));
+
+                GetObjFromOBGUI(&box);
+                ModelObject(box.companion);
+                Object *destPointer = NULL;
+                for(ObjectNode* node = currentProject.objList.head; node->next != NULL; node = node->next){
+                    if(strcmp(node->data->name,box.companion->name)==0){
+                        destPointer = node->data;
+                        break;
+                   }
+                }
+                if(destPointer==NULL){
+                    appendObject(&currentProject.objList,box.companion);
+                }
+                else{
+                    printf("This object already exists\n");
+                    *destPointer = *box.companion;
+                    free(box.companion);
+                    box.companion = NULL;
+                }
+                CloseOBGUI(&box);
+                IsObjectScreenOpen = false;
+                break;
             }
-            else{
-                memset(MaterialButton.text,0,20);
-                strcpy(MaterialButton.text,"Material");
+            case DODELETE:{
+                int objectIndex = isObjectInList(&currentProject.objList,box.companion);
+                if(objectIndex!=-1){
+                    deleteObject(&currentProject.objList,objectIndex);
+                }
+                IsObjectScreenOpen = false;
+                CloseOBGUI(&box);
+                break;
+            }
+            case ISTYPING:
+                break;
+            case DOFACING:
+                break;
+            default:
+                printf("Unknown UpdateOBGUI return value\n");
+            case DONOTHING:
+                if(!IsKeyDown(KEY_LEFT_CONTROL)) UpdateCamera(&camera, CAMERA_THIRD_PERSON);
+                break;
+        }
+    }
+    else{
+        if(!IsKeyDown(KEY_LEFT_CONTROL)) UpdateCamera(&camera, CAMERA_THIRD_PERSON);
+
+        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            Object *closest =NULL;
+            float closestDistance = 10000000;
+            for(ObjectNode *node = currentProject.objList.head;node!=NULL;node = node->next){
+                Ray mouse;
+                mouse = GetMouseRay(GetMousePosition(),camera);
+
+                RayCollision collision = GetRayCollisionBox(mouse,node->data->box);
+                if(collision.hit == true){
+                    if(collision.distance<closestDistance){
+                        closestDistance = collision.distance;
+                        closest = node->data;
+                    }
+                    printf("Collision with object: %s\n",node->data->name);
+                }
+            }
+            if(closest!=NULL){
+                IsObjectScreenOpen = true;
+                InitOBGUI(&box);
+                box.companion = closest;
+                GetOBGUIFromObj(&box);
             }
         }
     }
 
-    if(IsButtonPressed(&BackButton) || IsMouseButtonPressed(MOUSE_BUTTON_SIDE)){
+
+    if(IsButtonPressed(&backBut) || IsMouseButtonPressed(MOUSE_BUTTON_SIDE)){
         finishScreen = OPENPROJECT;
     }
 
@@ -243,63 +230,35 @@ void DrawProjectMainScreen(void)
     // TODO: Draw ProjectMain screen here!
     BeginMode3D(camera);
     for(ObjectNode *node = currentProject.objList.head;node!=NULL;node = node->next){
-
         DrawObject(node->data,parameter);
+        if(node->data==box.companion){
+            DrawBoundingBox(node->data->box,theme.dark);
+
+        }
 
     }
 
-
-    DrawGrid(15, 1.0f);
+    DrawGrid(20, 1.0f);
 
     EndMode3D();
 
-    DrawButton(&NewObjBut);
-    DrawButton(&BackButton);
+    DrawButton(&newObjBut);
+    DrawButton(&backBut);
 
-    if(IsNewObjectScreeenOpen){
-
-        DrawRectangle(screenWidth*.79,screenHeight*.025,screenWidth*.20,screenHeight*.5725,theme.light);
-        DrawRectangleLines(screenWidth*.79,screenHeight*.025,screenWidth*.20,screenHeight*.5725,theme.black);
-
-        DrawTextBox(name);
-
-        DrawTextEx(globalFont,"Position XYZ:",(Vector2){screenWidth*.795,screenHeight*.0825},screenHeight/32,GETSPACING(screenHeight/24),theme.black);
-
-        DrawTextBox(xPosC);
-        DrawTextBox(xPosM);
-        DrawTextBox(yPos);
-        DrawTextBox(zPos);
-
-        DrawTextEx(globalFont,"Size XYZ:",(Vector2){screenWidth*.795,screenHeight*.14},screenHeight/32,GETSPACING(screenHeight/24),theme.black);
-
-
-        DrawTextBox(xLength);
-        DrawTextBox(yHeight);
-        DrawTextBox(zDepth);
-
-        DrawTextEx(globalFont,"Thickness:",(Vector2){screenWidth*.795,screenHeight*.2025},screenHeight/32,GETSPACING(screenHeight/24),theme.black);
-        DrawTextBox(thickness);
-
-        DrawTextEx(globalFont,"Material:",(Vector2){screenWidth*.795,screenHeight*.265},screenHeight/32,GETSPACING(screenHeight/24),theme.black);
-        DrawTextBox(material);
-
-        DrawButton(&NewObjSave);
-        DrawButton(&NewObjCanc);
-        DrawButton(&MaterialButton);
-
-
+    if(IsObjectScreenOpen){
+        DrawOBGUI(&box);
     }
-
-
     DrawRectangle(screenWidth*0.49,screenHeight*0.4975,screenWidth*0.02,crosshairSize,BLACK);
     DrawRectangle((screenWidth-crosshairSize)/2,screenHeight*0.485,crosshairSize,screenHeight*0.03,BLACK);
-    //DrawCircle(screenWidth/2,screenHeight/2,5,BLUE);
 }
 
 // ProjectMain Screen Unload logic
 void UnloadProjectMainScreen(void)
 {
     // TODO: Unload ProjectMain screen variables here!
+    if(IsObjectScreenOpen){
+        CloseOBGUI(&box);
+    }
     closeProject();
 }
 

@@ -45,6 +45,36 @@ typedef struct{
 }TextBox;
 
 
+#define OBGUITBCOUNT 10
+typedef struct{
+    Vector2 pos;
+    TextBox *tb[OBGUITBCOUNT];
+    Button saveBut, cancelBut, materialBut, typeBut, facingBut, deleteBut;
+    Object *companion;
+}ObjectBoxGUI;
+
+typedef enum{
+    obgName,
+    obgXPosC,
+    obgXPosM,
+    obgYPos,
+    obgZPos,
+    obgXLength,
+    obgYHeight,
+    obgZDepth,
+    obgThickness,
+    obgMaterial //10 total
+}OBGUITEXTBOXES;
+
+typedef enum{
+    DONOTHING,
+    DOSAVE,
+    DOCANCEL,
+    ISTYPING,
+    DOFACING,
+    DODELETE
+}OBGUIRET;
+
 
 int drawMain(GameScreen startingScreen);
 int initDraw(void);
@@ -149,5 +179,13 @@ bool IsTextBoxActive(TextBox *source);
 void DrawObject(Object *source, float pmt);
 void ModelObject(Object *obj);
 void ReModelObject(Object *obj);
+
+void InitOBGUI(ObjectBoxGUI *source);
+void DrawOBGUI(ObjectBoxGUI *source);
+void CloseOBGUI(ObjectBoxGUI *source);
+OBGUIRET UpdateOBGUI(ObjectBoxGUI *source);
+void GetObjFromOBGUI(ObjectBoxGUI *source);
+void GetOBGUIFromObj(ObjectBoxGUI *source);
+
 
 #endif //TORQUECALCULATOR_DRAWMAIN_H

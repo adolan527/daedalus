@@ -48,16 +48,19 @@ bool IsTextBoxActive(TextBox *source){
                 source->textIndex--;
                 source->text[source->textIndex] = 0;
             }
-            if(textSize.x < source->rect.width && textSize.y < source->rect.height){
+            if(textSize.x < source->rect.width && textSize.y < source->rect.height*.9){
                 source->textSize /=0.8f;
             }
             return true;
         }
-        if(source->textIndex < source->charCount && c != 0){
+        else if(source->textIndex < source->charCount && c != 0 && c!= KEY_LEFT_SHIFT){
+            if(!IsKeyDown(KEY_LEFT_SHIFT)){
+                c = c | 0x20;
+            }
 
             source->text[source->textIndex] = (char)c;
             source->textIndex++;
-            if(textSize.x >= source->rect.width && textSize.y >= source->rect.height){
+            if(textSize.x >= source->rect.width && textSize.y >= source->rect.height*.9){
                 source->textSize *=0.8f;
             }
         }

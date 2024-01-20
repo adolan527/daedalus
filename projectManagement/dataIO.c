@@ -24,7 +24,7 @@ int readMaterials(){
     if(materials == NULL){
         return 1;
     }
-    for(int i = 0;i < MATERIALS_COUNT && !feof(materials); i++){
+    for(int i = 0; i < TQCMATERIALS_COUNT && !feof(materials); i++){
         if( fread(tqcMaterials[i].name,NAMESIZE,1,materials)!=1 ||
             fread(&tqcMaterials[i].density,sizeof(double),1,materials) != 1 ||
             fread(&tqcMaterials[i].color,sizeof(Color),1,materials) != 1){
@@ -62,7 +62,7 @@ int readObjects(){
             return retVal;
 
         }
-        for(int j = 0;j<MATERIALS_COUNT && tqcMaterials[j].name[0]!=0;j++){
+        for(int j = 0; j < TQCMATERIALS_COUNT && tqcMaterials[j].name[0] != 0; j++){
             printf("|%s| - |%s|\n",tempObject->material.name,tqcMaterials[j].name);
             if(strcmp(tempObject->material.name,tqcMaterials[j].name)==0){
                 tempObject->material = tqcMaterials[j];
@@ -134,7 +134,7 @@ int writeMaterials(){
     if(materials == NULL){
         return 1;
     }
-    for(int i = 0;i < MATERIALS_COUNT && !feof(materials); i++){
+    for(int i = 0; i < TQCMATERIALS_COUNT && !feof(materials); i++){
         if( fwrite(tqcMaterials[i].name,NAMESIZE,1,materials)!=1 ||
             fwrite(&tqcMaterials[i].density,sizeof(double),1,materials) != 1 ||
             fwrite(&tqcMaterials[i].color,sizeof(Color),1,materials) != 1){

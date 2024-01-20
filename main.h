@@ -53,8 +53,8 @@ typedef enum{
     POLYCARBONATE
 }tqcMaterialIndex;
 
-#define MATERIALS_COUNT 15
-extern tqcMaterial tqcMaterials[MATERIALS_COUNT];
+#define TQCMATERIALS_COUNT 15
+extern tqcMaterial tqcMaterials[TQCMATERIALS_COUNT];
 
 //////////////////////////////////////////////////////////////
 //------------------------<Shapes>----------------------------//
@@ -101,6 +101,7 @@ typedef struct {
     ShapeType type; //4
     tqcMaterial material;
     Model *model;
+    BoundingBox box;
 }Object;
 
 typedef struct ObjectNode{
@@ -123,9 +124,13 @@ void closeObjectList(ObjectList *source);
 
 Object * getObjectPointer(ObjectList *source, int index);
 
+double getObjectVolume(Object *source);
+
 void deleteObject(ObjectList *source, int index);
 
 void insertObject(ObjectList *source, Object *data, int index);
+
+int isObjectInList(ObjectList *list, Object *source);
 
 
 

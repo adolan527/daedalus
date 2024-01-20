@@ -109,6 +109,64 @@ void nullifyPolynomial(Polynomial *dest){
     }
 }
 
+double getObjectVolume(Object *source){
+    //Todo: add support for hollow shapes
+    double volume = 0;
+
+    switch(source->type){
+        case sRectangle:{
+            if(source->data.thickness==0){
+                volume = source->data.xLength * source->data.yHeight * source->data.zDepth;
+            }
+            else{
+                switch(source->data.facing){
+                    case 'x':{
+                        volume = 2*source->data.thickness * (source->data.yHeight + source->data.zDepth - 2 * source->data.thickness) * source->data.xLength;
+                        break;
+                    }
+                    case 'y':{
+                        volume = 2*source->data.thickness * (source->data.xLength + source->data.zDepth - 2 * source->data.thickness) * source->data.yHeight;
+                        break;
+                    }
+                    case 'z':{
+                        volume = 2*source->data.thickness * (source->data.xLength + source->data.yHeight - 2 * source->data.thickness) * source->data.zDepth;
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+        case sCylinder:{
+            if(source->data.thickness==0){
+                volume = M_PI * source->data.xLength * source->data.xLength * source->data.zDepth;
+            }
+            else{
+                switch(source->data.facing){
+                    case 'x':{
+                        volume = M_PI * source->data.thickness *(source->data.thickness - 2 * source->data.yHeight)*source->data.xLength;
+                        break;
+                    }
+                    case 'y':{
+                        volume = M_PI * source->data.thickness *(source->data.thickness - 2 * source->data.zDepth)*source->data.yHeight;
+
+                        break;
+                    }
+                    case 'z':{
+                        volume = M_PI * source->data.thickness *(source->data.thickness - 2 * source->data.xLength)*source->data.zDepth;
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+        case sSphere:{
+            volume = (4.0/3.0) * M_PI * source->data.xLength * source->data.xLength * source->data.xLength;
+            break;
+        }
+    }
+    return volume;
+}
+
 double computeObject(Object *source, float t){
     // TODO All of the integrals are lacking the term (h-x) where h is the center of mass of the object)
     // TODO Luckily, the simple shapes that this program supports all have very easy to calculate -
@@ -129,7 +187,7 @@ double computeObject(Object *source, float t){
                 switch(source->data.facing){
                     case 'x':{
                         areaFunction.order = 1;
-                        areaFunction.coefficients[0] = 2 * source->data.thickness * (source->data.yHeight + source->data.zDepth - 2);
+                        areaFunction.coefficients[0] = 2 * source->data.thickness * (source->data.yHeight + source->data.zDepth - 2*source->data.thickness);
                         integral = integratePolynomial(&areaFunction, xPosition, xEnd);
                         return integral * source->material.density;
                     }

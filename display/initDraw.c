@@ -50,7 +50,7 @@ int initDraw(){
 
     LoadMaterialsTextures();
 
-    globalFont = LoadFont("resources/default.otf");
+    globalFont = LoadFont("resources/roman.ttf");
 
     if(windowMode == 'f'){
         if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
