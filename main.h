@@ -93,7 +93,7 @@ void stringifyParametric(Parametric *function, char *destString);
 //////////////////////////////////////////////////////////////
 
 typedef struct {
-    char name[NAMESIZE]; //20
+    char name[NAMESIZE]; //32
     Parametric xPos; //in inches  //8
     double yPos; //position is defined as the bottom left corner for rectangles, center for spheres, and center of bottom left face circle.
     double zPos; //8

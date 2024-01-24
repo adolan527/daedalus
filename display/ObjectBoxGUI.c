@@ -5,118 +5,69 @@
 
 
 
-void InitOBGUI(ObjectBoxGUI *source){
-    source->companion = NULL;
-    
-    source->tb[obgName] = InitTextBox((Rectangle){source->pos.x + screenWidth*.005,source->pos.y + screenHeight*.005,screenWidth*.19,screenHeight*.05},20);
-    strcpy(source->tb[obgName]->text,"Name");
-    source->tb[obgName]->textIndex+=4;
+ObjectBoxGUI* InitOBGUI(void){
+    ObjectBoxGUI* gui = calloc(1, sizeof(ObjectBoxGUI));
+    printf("%llu bytes allocated for obg\n",sizeof(ObjectBoxGUI ));
+    gui->pos = (Vector2){(float)screenWidth * .79f, (float)screenHeight * .025f};
+
+    gui->companion = NULL;
+
+    gui->tb[obgName] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .005, screenWidth * .19, screenHeight * .05}, 20);
+    strcpy(gui->tb[obgName]->text, "Name");
+    gui->tb[obgName]->textIndex+=4;
 
     //Position elements
 
-    source->tb[obgXPosC] = InitTextBox((Rectangle){source->pos.x + screenWidth*.005,source->pos.y + screenHeight*.0875,screenWidth*.04,screenHeight*.025},6);
-    strcpy(source->tb[obgXPosC]->text,"X");
-    source->tb[obgXPosC]->textIndex+=1;
+    gui->tb[obgXPosC] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .0875, screenWidth * .04, screenHeight * .025}, 6);
+    strcpy(gui->tb[obgXPosC]->text, "0");
+    gui->tb[obgXPosC]->textIndex=0;
 
-    source->tb[obgXPosM] = InitTextBox((Rectangle){source->pos.x + screenWidth*.05,source->pos.y + screenHeight*.0875,screenWidth*.04,screenHeight*.025},6);
-    strcpy(source->tb[obgXPosM]->text,"X P");
-    source->tb[obgXPosM]->textIndex+=3;
+    gui->tb[obgXPosM] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .05, gui->pos.y + screenHeight * .0875, screenWidth * .04, screenHeight * .025}, 6);
+    strcpy(gui->tb[obgXPosM]->text, "0");
+    gui->tb[obgXPosM]->textIndex=0;
 
-    source->tb[obgYPos] = InitTextBox((Rectangle){source->pos.x + screenWidth*.095,source->pos.y + screenHeight*.0875,screenWidth*.04,screenHeight*.025},6);
-    strcpy(source->tb[obgYPos]->text,"Y");
-    source->tb[obgYPos]->textIndex+=1;
+    gui->tb[obgYPos] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .095, gui->pos.y + screenHeight * .0875, screenWidth * .04, screenHeight * .025}, 6);
+    strcpy(gui->tb[obgYPos]->text, "0");
+    gui->tb[obgYPos]->textIndex=0;
 
-    source->tb[obgZPos] = InitTextBox((Rectangle){source->pos.x + screenWidth*.14,source->pos.y + screenHeight*.0875,screenWidth*.04,screenHeight*.025},6);
-    strcpy(source->tb[obgZPos]->text,"Z");
-    source->tb[obgZPos]->textIndex+=1;
+    gui->tb[obgZPos] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .14, gui->pos.y + screenHeight * .0875, screenWidth * .04, screenHeight * .025}, 6);
+    strcpy(gui->tb[obgZPos]->text, "0");
+    gui->tb[obgZPos]->textIndex=0;
 
     //Size elements
 
-    source->tb[obgXLength] = InitTextBox((Rectangle){source->pos.x + screenWidth*.005,source->pos.y + screenHeight*.15,screenWidth*.04,screenHeight*.025},6);
-    strcpy(source->tb[obgXLength]->text,"X");
-    source->tb[obgXLength]->textIndex+=1;
+    gui->tb[obgXLength] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .15, screenWidth * .04, screenHeight * .025}, 6);
+    strcpy(gui->tb[obgXLength]->text, "1");
+    gui->tb[obgXLength]->textIndex=0;
 
-    source->tb[obgYHeight] = InitTextBox((Rectangle){source->pos.x + screenWidth*.05,source->pos.y + screenHeight*.15,screenWidth*.04,screenHeight*.025},6);
-    strcpy(source->tb[obgYHeight]->text,"Y");
-    source->tb[obgYHeight]->textIndex+=1;
+    gui->tb[obgYHeight] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .05, gui->pos.y + screenHeight * .15, screenWidth * .04, screenHeight * .025}, 6);
+    strcpy(gui->tb[obgYHeight]->text, "1");
+    gui->tb[obgYHeight]->textIndex=0;
 
-    source->tb[obgZDepth] = InitTextBox((Rectangle){source->pos.x + screenWidth*.095,source->pos.y + screenHeight*.15,screenWidth*.04,screenHeight*.025},6);
-    strcpy(source->tb[obgZDepth]->text,"Z");
-    source->tb[obgZDepth]->textIndex+=1;
+    gui->tb[obgZDepth] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .095, gui->pos.y + screenHeight * .15, screenWidth * .04, screenHeight * .025}, 6);
+    strcpy(gui->tb[obgZDepth]->text, "1");
+    gui->tb[obgZDepth]->textIndex=0;
 
     //Other
 
-    source->tb[obgThickness] = InitTextBox((Rectangle){source->pos.x + screenWidth*.005 + MeasureTextEx(globalFont,"Thickness:  ",screenHeight/32, GETSPACING(screenHeight/32)).x,
-        source->pos.y + screenHeight*.15 + MeasureTextEx(globalFont,"Thickness:  ",screenHeight/32, GETSPACING(screenHeight/32)).y,
-        screenWidth*.075,screenHeight*.025},10);
-    strcpy(source->tb[obgThickness]->text,"T");
-    source->tb[obgThickness]->textIndex+=1;
+    gui->tb[obgThickness] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005 + MeasureTextEx(globalFont, "Thickness:  ", screenHeight / 32, GETSPACING(screenHeight / 32)).x,
+                                                    gui->pos.y + screenHeight * .15 + MeasureTextEx(globalFont, "Thickness:  ", screenHeight / 32, GETSPACING(screenHeight / 32)).y,
+        screenWidth*.075,screenHeight*.025}, 10);
+    strcpy(gui->tb[obgThickness]->text, "T");
+    gui->tb[obgThickness]->textIndex+=1;
 
-    source->tb[obgMaterial] = InitTextBox((Rectangle){source->pos.x + screenWidth*.095,source->pos.y + screenHeight*.215,screenWidth*.08,screenHeight*.05},20);
-    strcpy(source->tb[obgMaterial]->text,"M");
-    source->tb[obgMaterial]->textIndex+=1;
+    gui->tb[obgMaterial] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .095, gui->pos.y + screenHeight * .215, screenWidth * .08, screenHeight * .05}, 20);
+    strcpy(gui->tb[obgMaterial]->text, "M");
+    gui->tb[obgMaterial]->textIndex+=1;
 
-
-
-    source->cancelBut = (Button){
-            "Cancel",
-            (Rectangle){source->pos.x + screenWidth*.105,source->pos.y + screenHeight*.475,screenWidth*.08,screenHeight*0.08},
-            theme.black,
-            theme.white,
-            false,
-            false,
-            false
-    };
-
-    source->materialBut = (Button){
-            "Material",
-            (Rectangle){source->pos.x + screenWidth*.005,source->pos.y + screenHeight*.215, screenWidth*.085,screenHeight*0.05},
-            theme.accent2,
-            theme.white,
-            false,
-            false,
-            false
-    };
-
-    source->facingBut = (Button){
-            "X",
-            (Rectangle){source->pos.x + screenWidth*.095,source->pos.y + screenHeight*.27,screenWidth*.08,screenHeight*0.06},
-            theme.accent2,
-            theme.white,
-            false,
-            false,
-            false
-    };
-
-    source->saveBut = (Button){
-            "Save",
-            (Rectangle){source->pos.x + screenWidth*.01,source->pos.y + screenHeight*.475,screenWidth*.08,screenHeight*0.08},
-            theme.accent1,
-            theme.white,
-            false,
-            false,
-            false
-    };
-
-    source->typeBut = (Button){
-            "Rectangle",
-            (Rectangle){source->pos.x + screenWidth*.01,source->pos.y + screenHeight*.375,screenWidth*.08,screenHeight*0.08},
-            theme.accent2,
-            theme.white,
-            false,
-            false,
-            false
-    };
-
-    source->deleteBut = (Button){
-            "Delete",
-            (Rectangle){source->pos.x + screenWidth*.105,source->pos.y + screenHeight*.375,screenWidth*.08,screenHeight*0.08},
-            theme.dark,
-            theme.white,
-            false,
-            false,
-            false
-    };
+    //Buttons
+    gui->cancelBut = InitButton((Rectangle){gui->pos.x + screenWidth * .105, gui->pos.y + screenHeight * .475, screenWidth * .08, screenHeight * 0.08}, "Cancel", theme.black);
+    gui->materialBut = InitButton((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .215, screenWidth * .085, screenHeight * 0.05}, "Material", theme.accent2);
+    gui->facingBut = InitButton((Rectangle){gui->pos.x + screenWidth * .095, gui->pos.y + screenHeight * .27, screenWidth * .08, screenHeight * 0.06}, "X", theme.accent2);
+    gui->saveBut = InitButton((Rectangle){gui->pos.x + screenWidth * .01, gui->pos.y + screenHeight * .475, screenWidth * .08, screenHeight * 0.08}, "Save", theme.accent1);
+    gui->typeBut = InitButton((Rectangle){gui->pos.x + screenWidth * .01, gui->pos.y + screenHeight * .375, screenWidth * .08, screenHeight * 0.08}, "Rectangle", theme.accent2);
+    gui->deleteBut = InitButton((Rectangle){gui->pos.x + screenWidth * .105, gui->pos.y + screenHeight * .375, screenWidth * .08, screenHeight * 0.08}, "Delete", theme.dark);
+    return gui;
 }
 
 void DrawOBGUI(ObjectBoxGUI *source){
@@ -138,12 +89,12 @@ void DrawOBGUI(ObjectBoxGUI *source){
 
     DrawTextEx(globalFont,"Facing:",(Vector2){source->pos.x + screenWidth*.005,source->pos.y + screenHeight*.27},(float)screenHeight/22,GETSPACING(screenHeight/14),theme.black);
 
-    DrawButton(&source->saveBut);
-    DrawButton(&source->cancelBut);
-    DrawButton(&source->materialBut);
-    DrawButton(&source->facingBut);
-    DrawButton(&source->typeBut);
-    DrawButton(&source->deleteBut);
+    DrawButton(source->saveBut);
+    DrawButton(source->cancelBut);
+    DrawButton(source->materialBut);
+    DrawButton(source->facingBut);
+    DrawButton(source->typeBut);
+    DrawButton(source->deleteBut);
 
 
 }
@@ -153,6 +104,19 @@ void CloseOBGUI(ObjectBoxGUI *source){
         CloseTextBox(source->tb[i]);
     }
     source->companion = NULL;
+    CloseButton(source->saveBut);
+    CloseButton(source->cancelBut);
+    CloseButton(source->materialBut);
+    CloseButton(source->facingBut);
+    CloseButton(source->typeBut);
+    CloseButton(source->deleteBut);
+
+
+
+    free(source);
+    printf("%llu bytes de-allocated for obg\n",sizeof(ObjectBoxGUI ));
+
+
 }
 
 OBGUIRET UpdateOBGUI(ObjectBoxGUI *source){
@@ -168,56 +132,61 @@ OBGUIRET UpdateOBGUI(ObjectBoxGUI *source){
         }
     }
 
+    if(IsKeyPressed(KEY_TAB)){
+        source->tb[obgName]->isTyping = true;
+        return ISTYPING;
+    }
 
-    if(IsButtonPressed(&source->saveBut) || (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_S))) {
+
+    if(IsButtonPressed(source->saveBut) || (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_S))) {
         return DOSAVE;
 
     }
-    if(IsButtonPressed(&source->cancelBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_A))){
+    if(IsButtonPressed(source->cancelBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_A))){
         return DOCANCEL;
     }
 
-    if(IsButtonPressed(&source->deleteBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_D))){
+    if(IsButtonPressed(source->deleteBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_D))){
         return DODELETE;
     }
 
-    if(IsButtonPressed(&source->typeBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_T))){
-        if(source->typeBut.text[0] == 'R'){
-            memset(source->typeBut.text,0,20);
-            strcpy(source->typeBut.text,"Cylinder");
+    if(IsButtonPressed(source->typeBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_T))){
+        if(source->typeBut->text[0] == 'R'){
+            memset(source->typeBut->text,0,20);
+            strcpy(source->typeBut->text,"Cylinder");
         }
-        else if(source->typeBut.text[0] == 'C'){
-            memset(source->typeBut.text,0,20);
-            strcpy(source->typeBut.text,"Sphere");
+        else if(source->typeBut->text[0] == 'C'){
+            memset(source->typeBut->text,0,20);
+            strcpy(source->typeBut->text,"Sphere");
         }
         else{
-            memset(source->typeBut.text,0,20);
-            strcpy(source->typeBut.text,"Rectangle");
+            memset(source->typeBut->text,0,20);
+            strcpy(source->typeBut->text,"Rectangle");
         }
         return DONOTHING;
     }
 
-    if(IsButtonPressed(&source->materialBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_M))){
-        if(source->materialBut.text[0]=='W'){
-            memset(source->materialBut.text,0,20);
-            strcpy(source->materialBut.text,"Material");
+    if(IsButtonPressed(source->materialBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_M))){
+        if(source->materialBut->text[0]=='W'){
+            memset(source->materialBut->text,0,20);
+            strcpy(source->materialBut->text,"Material");
 
         }
         else{
-            memset(source->materialBut.text,0,20);
-            strcpy(source->materialBut.text,"Weight");
+            memset(source->materialBut->text,0,20);
+            strcpy(source->materialBut->text,"Weight");
 
         }
     }
-    if(IsButtonPressed(&source->facingBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_F))){
-        if(source->facingBut.text[0]=='X'){
-            source->facingBut.text[0]='Y';
+    if(IsButtonPressed(source->facingBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_F))){
+        if(source->facingBut->text[0]=='X'){
+            source->facingBut->text[0]='Y';
         }
-        else if(source->facingBut.text[0]=='Y'){
-            source->facingBut.text[0]='Z';
+        else if(source->facingBut->text[0]=='Y'){
+            source->facingBut->text[0]='Z';
         }
         else{
-            source->facingBut.text[0]='X';
+            source->facingBut->text[0]='X';
         }
         return DOFACING;
     }
@@ -228,31 +197,56 @@ OBGUIRET UpdateOBGUI(ObjectBoxGUI *source){
 void GetObjFromOBGUI(ObjectBoxGUI *source){
 
     int x = 0;
+    char *end = NULL;
     printf("%d\n",x++);
     memset(source->companion, 0, sizeof(Object));
 
     strcpy(source->companion->name, source->tb[obgName]->text);
-    source->companion->xPos.constant = strtod(source->tb[obgXPosC]->text, NULL);
-    source->companion->xPos.meter = strtod(source->tb[obgXPosM]->text, NULL);
-    source->companion->yPos = strtod(source->tb[obgYPos]->text, NULL);
-    source->companion->zPos = strtod(source->tb[obgZPos]->text, NULL);
-    source->companion->data.xLength = strtod(source->tb[obgXLength]->text, NULL);
-    source->companion->data.yHeight = strtod(source->tb[obgYHeight]->text, NULL);
-    source->companion->data.zDepth = strtod(source->tb[obgZDepth]->text, NULL);
-    source->companion->data.thickness = strtod(source->tb[obgThickness]->text, NULL);
+    source->companion->xPos.constant = strtod(source->tb[obgXPosC]->text, &end);
+    if(end==source->tb[obgXPosC]->text){
+        source->companion->xPos.constant = 0;
+    }
+    source->companion->xPos.meter = strtod(source->tb[obgXPosM]->text, &end);
+    if(end==source->tb[obgXPosM]->text){
+        source->companion->xPos.meter = 0;
+    }
+    source->companion->yPos = strtod(source->tb[obgYPos]->text, &end);
+    if(end==source->tb[obgYPos]->text){
+        source->companion->yPos = 0;
+    }
+    source->companion->zPos = strtod(source->tb[obgZPos]->text, &end);
+    if(end==source->tb[obgZPos]->text){
+        source->companion->zPos = 0;
+    }
+    source->companion->data.xLength = strtod(source->tb[obgXLength]->text, &end);
+    if(end==source->tb[obgXLength]->text || source->companion->data.xLength <= 0){
+        source->companion->data.xLength = 1;
+    }
+    source->companion->data.yHeight = strtod(source->tb[obgYHeight]->text, &end);
+    if(end==source->tb[obgYHeight]->text || source->companion->data.yHeight <= 0){
+        source->companion->data.yHeight = 1;
+    }
+    source->companion->data.zDepth = strtod(source->tb[obgZDepth]->text, &end);
+    if(end==source->tb[obgZDepth]->text || source->companion->data.zDepth <= 0){
+        source->companion->data.zDepth = 1;
+    }
+    source->companion->data.thickness = strtod(source->tb[obgThickness]->text, &end);
+    if(end==source->tb[obgThickness]->text){
+        source->companion->data.thickness = 0;
+    }
     printf("%d\n",x++);
 
-    if(source->typeBut.text[0] == 'R'){
+    if(source->typeBut->text[0] == 'R'){
         source->companion->type = sRectangle;
     }
-    else if(source->typeBut.text[0] == 'C'){
+    else if(source->typeBut->text[0] == 'C'){
         source->companion->type = sCylinder;
     }
     else{
         source->companion->type = sSphere;
     }
 
-    switch(source->facingBut.text[0]){
+    switch(source->facingBut->text[0]){
         default:
             printf("Unknown facing button value\n");
         case 'X':
@@ -267,7 +261,7 @@ void GetObjFromOBGUI(ObjectBoxGUI *source){
     }
     printf("%d\n",x++);
 
-    if(source->materialBut.text[0]=='W'){
+    if(source->materialBut->text[0]=='W'){
         //weight
         printf("W%d\n",x++);
 
@@ -328,13 +322,13 @@ void GetOBGUIFromObj(ObjectBoxGUI *source){
     //TEMPORARY
     switch(source->companion->type){
         case sRectangle:
-            strcpy(source->typeBut.text, "Rectangle");
+            strcpy(source->typeBut->text, "Rectangle");
             break;
         case sCylinder:
-            strcpy(source->typeBut.text, "Cylinder");
+            strcpy(source->typeBut->text, "Cylinder");
             break;
         case sSphere:
-            strcpy(source->typeBut.text, "Sphere");
+            strcpy(source->typeBut->text, "Sphere");
             break;
     }
 
@@ -342,24 +336,24 @@ void GetOBGUIFromObj(ObjectBoxGUI *source){
         default:
             printf("Unknown facing button value\n");
         case 'x':
-            source->facingBut.text[0] = 'X';
+            source->facingBut->text[0] = 'X';
             break;
         case 'y':
-            source->facingBut.text[0] = 'Y';
+            source->facingBut->text[0] = 'Y';
             break;
         case 'z':
-            source->facingBut.text[0] = 'Z';
+            source->facingBut->text[0] = 'Z';
             break;
     }
 
     if(source->companion->material.name[0] == 'W'){
         //weight
-        strcpy(source->materialBut.text, "Weight");
+        strcpy(source->materialBut->text, "Weight");
         sprintf(source->tb[obgMaterial]->text, "%.2f", source->companion->material.density * getObjectVolume(source->companion));
     }
     else{
         //material
-        strcpy(source->materialBut.text, "Material");
+        strcpy(source->materialBut->text, "Material");
         strcpy(source->tb[obgMaterial]->text, source->companion->material.name);
 
     }

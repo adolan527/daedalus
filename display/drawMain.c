@@ -75,7 +75,6 @@ int drawMain(GameScreen startingScreen)
         case LOGO: InitLogoScreen(); break;
         case TITLE: InitTitleScreen(); break;
         case SETTINGS: InitSettingsScreen(); break;
-        case CREATEPROJECT: InitCreateProjectScreen(); break;
         case PROJECTMAIN: InitProjectMainScreen(); break;
         case EDITOBJECT: InitEditObjectScreen(); break;
         case OPENPROJECT: InitOpenProjectScreen(); break;
@@ -111,7 +110,6 @@ int drawMain(GameScreen startingScreen)
         case LOGO: UnloadLogoScreen(); break;
         case TITLE: UnloadTitleScreen(); break;
         case SETTINGS: UnloadSettingsScreen(); break;
-        case CREATEPROJECT: UnloadCreateProjectScreen(); break;
         case PROJECTMAIN: UnloadProjectMainScreen(); break;
         case EDITOBJECT: UnloadEditObjectScreen(); break;
         case OPENPROJECT: UnloadOpenProjectScreen(); break;
@@ -139,7 +137,6 @@ static void ChangeToScreen(GameScreen screen)
         case LOGO: UnloadLogoScreen(); break;
         case TITLE: UnloadTitleScreen(); break;
         case SETTINGS: UnloadSettingsScreen(); break;
-        case CREATEPROJECT: UnloadCreateProjectScreen(); break;
         case PROJECTMAIN: UnloadProjectMainScreen(); break;
         case EDITOBJECT: UnloadEditObjectScreen(); break;
         case OPENPROJECT: UnloadOpenProjectScreen(); break;
@@ -152,7 +149,6 @@ static void ChangeToScreen(GameScreen screen)
         case LOGO: InitLogoScreen(); break;
         case TITLE: InitTitleScreen(); break;
         case SETTINGS: InitSettingsScreen(); break;
-        case CREATEPROJECT: InitCreateProjectScreen(); break;
         case PROJECTMAIN: InitProjectMainScreen(); break;
         case EDITOBJECT: InitEditObjectScreen(); break;
         case OPENPROJECT: InitOpenProjectScreen(); break;
@@ -191,7 +187,6 @@ static void UpdateTransition(void)
                 case LOGO: UnloadLogoScreen(); break;
                 case TITLE: UnloadTitleScreen(); break;
                 case SETTINGS: UnloadSettingsScreen(); break;
-                case CREATEPROJECT: UnloadCreateProjectScreen(); break;
                 case PROJECTMAIN: UnloadProjectMainScreen(); break;
                 case EDITOBJECT: UnloadEditObjectScreen(); break;
                 case OPENPROJECT: UnloadOpenProjectScreen(); break;
@@ -204,7 +199,6 @@ static void UpdateTransition(void)
                 case LOGO: InitLogoScreen(); break;
                 case TITLE: InitTitleScreen(); break;
                 case SETTINGS: InitSettingsScreen(); break;
-                case CREATEPROJECT: InitCreateProjectScreen(); break;
                 case PROJECTMAIN: InitProjectMainScreen(); break;
                 case EDITOBJECT: InitEditObjectScreen(); break;
                 case OPENPROJECT: InitOpenProjectScreen();break;
@@ -219,7 +213,7 @@ static void UpdateTransition(void)
     }
     else  // Transition fade out logic
     {
-        transAlpha -= 0.10f;
+        transAlpha -= 0.05f;
 
         if (transAlpha < -0.01f)
         {
@@ -279,20 +273,18 @@ static int UpdateDrawFrame(void)
                 }
 
             } break;
-            case CREATEPROJECT:
-            {
-                UpdateCreateProjectScreen();
 
-                if(FinishCreateProjectScreen()!=-1){
-                    TransitionToScreen(FinishCreateProjectScreen());
-                }
-
-            } break;
             case PROJECTMAIN:
             {
                 UpdateProjectMainScreen();
                 if(FinishProjectMainScreen()!=-1){
-                    TransitionToScreen(FinishProjectMainScreen());
+                    if(FinishProjectMainScreen()==OPENPROJECT){
+                        ChangeToScreen(OPENPROJECT);
+                    }
+                    else{
+                        TransitionToScreen(FinishProjectMainScreen());
+                    }
+
                 }
 
             } break;
@@ -307,7 +299,12 @@ static int UpdateDrawFrame(void)
             {
                 UpdateOpenProjectScreen();
                 if(FinishOpenProjectScreen()!=-1){
-                    TransitionToScreen(FinishOpenProjectScreen());
+                    if(FinishOpenProjectScreen() == PROJECTMAIN){
+                        ChangeToScreen(PROJECTMAIN);
+                    }
+                    else{
+                        TransitionToScreen(FinishOpenProjectScreen());
+                    }
                 }
             }
             default: break;
@@ -328,7 +325,6 @@ static int UpdateDrawFrame(void)
         case LOGO: DrawLogoScreen(); break;
         case TITLE: DrawTitleScreen(); break;
         case SETTINGS: DrawSettingsScreen(); break;
-        case CREATEPROJECT: DrawCreateProjectScreen(); break;
         case PROJECTMAIN: DrawProjectMainScreen(); break;
         case EDITOBJECT: DrawEditObjectScreen(); break;
         case OPENPROJECT: DrawOpenProjectScreen(); break;
@@ -338,7 +334,8 @@ static int UpdateDrawFrame(void)
     // Draw full screen rectangle in front of everything
     if (onTransition) DrawTransition();
 
-    //DrawFPS(10, 10);
+    DrawFPS(screenWidth/2, 100);
+
 
     if(exitRequest){
         DrawRectangle(0,0,screenWidth,screenHeight,(Color){theme.black.r,theme.black.g,theme.black.b,200});

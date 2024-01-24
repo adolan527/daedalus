@@ -54,6 +54,12 @@ void ModelObject(Object *obj){
     obj->model->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = obj->material.texture;
     obj->model->materials[0].maps[MATERIAL_MAP_DIFFUSE].color = obj->material.color;
     obj->model->transform = MatrixRotateXYZ(rotation);
+    obj->box.min.x = obj->xPos.constant;
+    obj->box.min.y = obj->yPos;
+    obj->box.min.z = obj->zPos;
+    obj->box.max.x = obj->xPos.constant + obj->data.xLength;
+    obj->box.max.y = obj->yPos + obj->data.yHeight;
+    obj->box.max.z = obj->zPos + obj->data.zDepth;
     if(obj->type == sRectangle){
         obj->box.min.x = obj->xPos.constant;
         obj->box.min.y = obj->yPos;
@@ -64,6 +70,8 @@ void ModelObject(Object *obj){
     }
     else{
         // TODO: Bounding box on cylinders that are not facing the y axis is messed up
+        // fixed with a jank solution by drawing the boudninx box for cylinders shifted down
+
         obj->box = GetModelBoundingBox(*obj->model);
         obj->box.min.x+=obj->xPos.constant;
         obj->box.min.y+=obj->yPos;

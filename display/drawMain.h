@@ -49,7 +49,7 @@ typedef struct{
 typedef struct{
     Vector2 pos;
     TextBox *tb[OBGUITBCOUNT];
-    Button saveBut, cancelBut, materialBut, typeBut, facingBut, deleteBut;
+    Button *saveBut, *cancelBut, *materialBut, *typeBut, *facingBut, *deleteBut;
     Object *companion;
 }ObjectBoxGUI;
 
@@ -124,14 +124,6 @@ void DrawSettingsScreen(void);
 void UnloadSettingsScreen(void);
 int FinishSettingsScreen(void);
 
-//----------------------------------------------------------------------------------
-// CreateProject Screen Functions Declaration
-//----------------------------------------------------------------------------------
-void InitCreateProjectScreen(void);
-void UpdateCreateProjectScreen(void);
-void DrawCreateProjectScreen(void);
-void UnloadCreateProjectScreen(void);
-int FinishCreateProjectScreen(void);
 
 //----------------------------------------------------------------------------------
 // ProjectMain Screen Functions Declaration
@@ -162,7 +154,8 @@ int FinishOpenProjectScreen(void);
 
 
 
-
+Button* InitButton(Rectangle r,char *t, Color c);
+void CloseButton(Button *source);
 void DrawButton(Button *source);
 void PressButton(Button *source);
 void UnPressButton(Button *source);
@@ -180,7 +173,7 @@ void DrawObject(Object *source, float pmt);
 void ModelObject(Object *obj);
 void ReModelObject(Object *obj);
 
-void InitOBGUI(ObjectBoxGUI *source);
+ObjectBoxGUI* InitOBGUI(void);
 void DrawOBGUI(ObjectBoxGUI *source);
 void CloseOBGUI(ObjectBoxGUI *source);
 OBGUIRET UpdateOBGUI(ObjectBoxGUI *source);

@@ -12,6 +12,8 @@ Font globalFont;
 
 int initDraw(){
 
+    SetTextLineSpacing(20);
+
     screenWidth = 0;
     screenHeight = 0;
 

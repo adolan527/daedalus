@@ -6,10 +6,11 @@
 
 int isObjectInList(ObjectList *list, Object *source){
     int i = 0;
-    for(ObjectNode *current = list->head; current != NULL; current = current->next){
-        if(strcmp(current->data->name,source->name)==0){
+    for(ObjectNode *node = list->head; node != NULL; node = node->next){
+        if(node->data == source){
             return i;
         }
+
         i++;
     }
     return -1;

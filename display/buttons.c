@@ -3,6 +3,22 @@
 //
 #include "drawMain.h"
 
+Button* InitButton(Rectangle r,char *t, Color c){
+    Button* b = calloc(1,sizeof(Button));
+    b->rect = r;
+    b->color = c;
+    b->textColor = (c.r==theme.white.r ? theme.black : theme.white);
+    strncpy(b->text,t,NAMESIZE);
+    b->isPressed = false;
+    b->isSelected = false;
+    b->isToggle = false;
+    return b;
+}
+
+void CloseButton(Button *source){
+    free(source);
+}
+
 void DrawButton(Button *source) {
     Rectangle tempButton;
     if (source->isPressed == true && source->isToggle == false) {

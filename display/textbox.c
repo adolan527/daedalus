@@ -18,6 +18,8 @@ TextBox* InitTextBox(Rectangle rect, int charCount){
 void CloseTextBox(TextBox *t){
     free(t->text);
     free(t);
+    t = NULL;
+
 }
 
 void DrawTextBox(TextBox *source){
@@ -38,7 +40,16 @@ void DrawTextBox(TextBox *source){
 bool IsTextBoxActive(TextBox *source){
     if(source->isTyping==true){
         int c = GetKeyPressed();
-        if(c== KEY_ENTER){
+        if(IsKeyDown(KEY_LEFT_CONTROL)){
+            if(c == KEY_A){
+                memset(source->text,0,source->charCount);
+                source->textIndex = 0;
+            }
+            return true;
+
+        }
+
+        if(c== KEY_ENTER && !IsKeyDown(KEY_LEFT_SHIFT)){
             source->isTyping = false;
             return false;
         }
@@ -56,6 +67,10 @@ bool IsTextBoxActive(TextBox *source){
         else if(source->textIndex < source->charCount && c != 0 && c!= KEY_LEFT_SHIFT){
             if(!IsKeyDown(KEY_LEFT_SHIFT)){
                 c = c | 0x20;
+            }
+            if(c==KEY_ENTER){
+                c = '\n';
+                printf("newline detected\n");
             }
 
             source->text[source->textIndex] = (char)c;

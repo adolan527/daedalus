@@ -39,6 +39,23 @@ int createProject(char *name, char *notes){
     if(objects == NULL){
         return 1;
     }
+    fwrite(&(Object){
+            .name = "axis",
+            .xPos.constant = 0,
+            .xPos.meter = 0,
+            .yPos = 0,
+            .zPos = -4,
+            .data = {
+                    .xLength = 1,
+                    .yHeight = 1,
+                    .zDepth = 8,
+                    .thickness = 0,
+                    .facing = 'z',
+                    .isHole = false
+            },
+            .material = tqcMaterials[0],
+            .type = sCylinder,
+        },sizeof(Object),1,objects);
     fclose(objects);
 
     chdir("..");

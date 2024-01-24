@@ -35,9 +35,7 @@ typedef struct{
 
 static int framesCounter = 0;
 static int finishScreen = 0;
-static Button settingsBut = {0};
-static Button createBut = {0};
-static Button openBut = {0};
+static Button *settingsBut, *openBut;
 static float buttonHeight = 100;
 static float buttonWidth = 250;
 
@@ -54,11 +52,14 @@ void InitTitleScreen(void)
     // TODO: Initialize TITLE screen variables here!
     framesCounter = 0;
     finishScreen = -1;
-    buttonHeight = screenHeight/9;
-    buttonWidth = buttonHeight * 2.5;
-    createBut = (Button){"Create New Project", {(screenWidth - buttonWidth*1.25) / 2, screenHeight / 2 - 0.25 * buttonHeight, buttonWidth*1.25, buttonHeight*1.25}, theme.accent2, theme.white, false, false, false};
-    openBut = (Button){"Open Project", {(screenWidth-buttonWidth)/2,screenHeight/2 + 1.5 * buttonHeight,buttonWidth,buttonHeight}, theme.accent2, theme.white, false, false, false};
-    settingsBut = (Button){"Settings", {(screenWidth - buttonWidth) / 2, screenHeight / 2 + 3 * buttonHeight, buttonWidth, buttonHeight}, theme.accent2, theme.white, false, false, false};
+    buttonHeight = (float)screenHeight/9.0f;
+    buttonWidth = buttonHeight * 2.5f;
+
+    openBut = InitButton((Rectangle){(screenWidth - buttonWidth*1.5) / 2, screenHeight / 2 + 0.5 * buttonHeight, buttonWidth*1.5, buttonHeight*1.5},
+                         "Open Project", theme.dark);
+    settingsBut = InitButton((Rectangle){(screenWidth - buttonWidth) / 2, screenHeight / 2 + 2.25 * buttonHeight, buttonWidth, buttonHeight},
+                             "Settings", theme.accent2);
+
 
     for(int i = 0;i<triangleCount;i++){
         triangles[i].d = GetRandomValue(screenWidth/45,screenWidth/15);
@@ -132,22 +133,13 @@ void UpdateTitleScreen(void)
         }
     }
 
-
-
-
-
-
-
     // Press enter or tap to change to GAMEPLAY screen
-    if(IsButtonPressed(&settingsBut) == true){
+    if(IsButtonPressed(settingsBut) == true){
         finishScreen = SETTINGS;
         return;
     }
-    if(IsButtonPressed(&createBut) == true){
-        finishScreen = CREATEPROJECT;
-        return;
-    }
-    if(IsButtonPressed(&openBut)==true){
+
+    if(IsButtonPressed(openBut)==true){
         finishScreen = OPENPROJECT;
         return;
     }
@@ -175,9 +167,8 @@ void DrawTitleScreen(void)
     }
     DrawText("Torque Calculator", screenWidth/2 - textWidth/2,  screenHeight/2 - 1.5 * fontSize, fontSize, theme.accent1);
 
-    DrawButton(&settingsBut);
-    DrawButton(&createBut);
-    DrawButton(&openBut);
+    DrawButton(settingsBut);
+    DrawButton(openBut);
 
 
 
@@ -187,8 +178,10 @@ void DrawTitleScreen(void)
 void UnloadTitleScreen(void)
 {
     // TODO: Unload TITLE screen variables here!
+    CloseButton(settingsBut);
+    CloseButton(openBut);
+    
 }
-
 // Title Screen should finish?
 int FinishTitleScreen(void)
 {

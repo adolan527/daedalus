@@ -47,8 +47,7 @@ set(SOURCES
     "display/screens/titleScreen.c"
     "display/screens/settingsScreen.c"
     "display/screens/editObjectScreen.c"
-    "display/screens/createProjectScreen.c"
-    "display/screens/projectMainScreen.c"
+        "display/screens/projectMainScreen.c"
     "display/screens/logoScreen.c"
     display/buttons.c
     display/screens/openProjectScreen.c

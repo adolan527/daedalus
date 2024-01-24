@@ -66,7 +66,14 @@ char * getProjectNames(){
         return 0;
     }
     for(int i = 0;i<projectCount;i++){
-        fscanf_s(projects,"%s",&names[i*NAMESIZE],NAMESIZE);
+        //read up to NAMESIZE characters from projects until you reach a newline, then don't read the newline
+        for(int j = 0; j<NAMESIZE;j++){
+            char buf = fgetc(projects);
+            if(buf == '\n'||buf=='\r'){
+                break;
+            }
+            names[i*NAMESIZE+j] = buf;
+        }
     }
     chdir("../");
     return names;
