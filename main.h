@@ -101,7 +101,7 @@ typedef struct {
     ShapeType type; //4
     tqcMaterial material;
     Model *model;
-    BoundingBox box;
+    //BoundingBox box;
 }Object;
 
 typedef struct ObjectNode{

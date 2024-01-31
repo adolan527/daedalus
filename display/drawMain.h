@@ -173,6 +173,8 @@ void DrawObject(Object *source, float pmt);
 void ModelObject(Object *obj);
 void ReModelObject(Object *obj);
 
+
+#define WEIGHTMATERIAL "Weight"
 ObjectBoxGUI* InitOBGUI(void);
 void DrawOBGUI(ObjectBoxGUI *source);
 void CloseOBGUI(ObjectBoxGUI *source);
@@ -180,5 +182,7 @@ OBGUIRET UpdateOBGUI(ObjectBoxGUI *source);
 void GetObjFromOBGUI(ObjectBoxGUI *source);
 void GetOBGUIFromObj(ObjectBoxGUI *source);
 
-
+Mesh GenMeshRectTube(Object *obj);
+Mesh GenMeshCustom();
+Mesh GenMeshRoundTube(Object *obj);
 #endif //TORQUECALCULATOR_DRAWMAIN_H

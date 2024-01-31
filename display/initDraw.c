@@ -18,7 +18,7 @@ int initDraw(){
     screenHeight = 0;
 
 
-    theme = palettes[4];
+    theme = palettes[6];
     if(*(int*)(&theme.white)==0){
         theme=palettes[0];
     }

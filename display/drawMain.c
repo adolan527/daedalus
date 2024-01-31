@@ -334,7 +334,7 @@ static int UpdateDrawFrame(void)
     // Draw full screen rectangle in front of everything
     if (onTransition) DrawTransition();
 
-    DrawFPS(screenWidth/2, 100);
+    //DrawFPS(screenWidth/2, 100);
 
 
     if(exitRequest){

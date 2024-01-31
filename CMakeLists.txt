@@ -61,6 +61,7 @@ set(SOURCES
         projectManagement/dataIO.c
         display/textbox.c
         display/ObjectBoxGUI.c
+        display/CustomMesh.c
 )
 
 # Our Project

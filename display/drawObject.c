@@ -5,10 +5,13 @@
 void DrawObject(Object *source, float pmt){
     switch(source->type){
         case sRectangle:
-            DrawModel(*source->model,(Vector3){cmpPmt(source->xPos, pmt) + source->data.xLength / 2.0f, source->yPos + source->data.yHeight / 2.0f, source->zPos + source->data.zDepth / 2.0f},1,source->material.color);
-            /*DrawCube((Vector3){cmpPmt(source->xPos, pmt) + source->data.xLength / 2.0f, source->yPos + source->data.yHeight / 2 - .0f, source->zPos + source->data.zDepth / 2.0f},
-                     source->data.xLength, source->data.yHeight, source->data.zDepth, theme.light);
-                     */
+            if(source->data.thickness==0){
+                DrawModel(*source->model,(Vector3){pmt * source->xPos.meter + source->data.xLength/2,source->data.yHeight/2,source->data.zDepth/2},1,source->material.color);
+
+            }
+            else{
+                DrawModel(*source->model,(Vector3){pmt * source->xPos.meter,0,0},1,source->material.color);
+            }
 
             DrawCubeWires((Vector3){cmpPmt(source->xPos, pmt) + source->data.xLength / 2.0f, source->yPos + source->data.yHeight / 2.0f, source->zPos + source->data.zDepth / 2.0f},
                           source->data.xLength, source->data.yHeight, source->data.zDepth, theme.black);
@@ -46,8 +49,9 @@ void DrawObject(Object *source, float pmt){
                 }
 
             }
-            DrawModel(*source->model, (Vector3) {cmpPmt(source->xPos, pmt), source->yPos, source->zPos}, 1,
-                      source->material.color);
+            DrawModel(*source->model,(Vector3){pmt * source->xPos.meter,0,0},1,source->material.color);
+            //DrawModel(*source->model, (Vector3) {cmpPmt(source->xPos, pmt), source->yPos, source->zPos}, 1,
+             //         source->material.color);
             //DrawCylinderWires((Vector3) {cmpPmt(source->xPos, pmt), source->yPos, source->zPos}, radius, radius, height,
               //                CYLINDERRING, source->material.color);
 
@@ -55,7 +59,8 @@ void DrawObject(Object *source, float pmt){
             break;
         }
         case sSphere:
-            DrawModel(*source->model,(Vector3){cmpPmt(source->xPos, pmt), source->yPos, source->zPos},1,source->material.color);
+            DrawModel(*source->model,(Vector3){pmt * source->xPos.meter,0,0},1,source->material.color);
+            //DrawModel(*source->model,(Vector3){cmpPmt(source->xPos, pmt), source->yPos, source->zPos},1,source->material.color);
 
             break;
     }

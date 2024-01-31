@@ -105,8 +105,6 @@ static Object sphere = {
 };
 
 int main(){
-
-
 /*
     Object d = {
             "abcdefghijklmnopqrstuvwxyz123456",

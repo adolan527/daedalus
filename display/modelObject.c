@@ -15,29 +15,39 @@ void ModelObject(Object *obj){
     switch (obj->type){
 
         case sRectangle:{
+            if(obj->data.thickness==0){
+                tempMesh = GenMeshCube(obj->data.xLength,obj->data.yHeight,obj->data.zDepth);
+            }
+            else{
+                tempMesh = GenMeshRectTube(obj);
+            }
 
-            tempMesh = GenMeshCube(obj->data.xLength,obj->data.yHeight,obj->data.zDepth);
             break;
 
         }
         case sCylinder:{
-            switch(obj->data.facing){
-                case 'x':{
-                    rotation.z = DEG2RAD * -90;
-                    tempMesh = GenMeshCylinder(obj->data.yHeight,obj->data.xLength,CYLINDERRING);
-                    break;
-                }
-                case 'y':{
-                    tempMesh = GenMeshCylinder(obj->data.xLength,obj->data.yHeight,CYLINDERRING);
-                    break;
+            if(obj->data.thickness!=0){
+                tempMesh = GenMeshRoundTube(obj);
+            }
+            else {
+                switch (obj->data.facing) {
+                    case 'x': {
+                        rotation.z = DEG2RAD * -90;
+                        tempMesh = GenMeshCylinder(obj->data.yHeight, obj->data.xLength, CYLINDERRING);
+                        break;
+                    }
+                    case 'y': {
+                        tempMesh = GenMeshCylinder(obj->data.xLength, obj->data.yHeight, CYLINDERRING);
+                        break;
+
+                    }
+                    case 'z': {
+                        rotation.x = DEG2RAD * 90;
+                        tempMesh = GenMeshCylinder(obj->data.xLength, obj->data.zDepth, CYLINDERRING);
+                        break;
+                    }
 
                 }
-                case 'z':{
-                    rotation.x = DEG2RAD * 90;
-                    tempMesh = GenMeshCylinder(obj->data.xLength,obj->data.zDepth,CYLINDERRING);
-                    break;
-                }
-
             }
             break;
         }
@@ -53,33 +63,9 @@ void ModelObject(Object *obj){
     *obj->model = LoadModelFromMesh(tempMesh);
     obj->model->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = obj->material.texture;
     obj->model->materials[0].maps[MATERIAL_MAP_DIFFUSE].color = obj->material.color;
-    obj->model->transform = MatrixRotateXYZ(rotation);
-    obj->box.min.x = obj->xPos.constant;
-    obj->box.min.y = obj->yPos;
-    obj->box.min.z = obj->zPos;
-    obj->box.max.x = obj->xPos.constant + obj->data.xLength;
-    obj->box.max.y = obj->yPos + obj->data.yHeight;
-    obj->box.max.z = obj->zPos + obj->data.zDepth;
-    if(obj->type == sRectangle){
-        obj->box.min.x = obj->xPos.constant;
-        obj->box.min.y = obj->yPos;
-        obj->box.min.z = obj->zPos;
-        obj->box.max.x = obj->xPos.constant + obj->data.xLength;
-        obj->box.max.y = obj->yPos + obj->data.yHeight;
-        obj->box.max.z = obj->zPos + obj->data.zDepth;
-    }
-    else{
-        // TODO: Bounding box on cylinders that are not facing the y axis is messed up
-        // fixed with a jank solution by drawing the boudninx box for cylinders shifted down
+    obj->model->transform = MatrixMultiply(MatrixRotateXYZ(rotation), MatrixTranslate(obj->xPos.constant,obj->yPos,obj->zPos));
 
-        obj->box = GetModelBoundingBox(*obj->model);
-        obj->box.min.x+=obj->xPos.constant;
-        obj->box.min.y+=obj->yPos;
-        obj->box.min.z+=obj->zPos;
-        obj->box.max.x+=obj->xPos.constant;
-        obj->box.max.y+=obj->yPos;
-        obj->box.max.z+=obj->zPos;
-    }
+
 
 
 }

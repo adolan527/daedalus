@@ -81,7 +81,7 @@ char * getProjectNames(){
 
 void previewProjectInfo(char *dest, int destSize, char *name){
     if(doesProjectExist(name)!=1) {
-        sprintf(dest,"Project does not exist");
+        sprintf(dest,"Project (%s) does not exist",name);
         return;
     }
     char filename[100] = {0};

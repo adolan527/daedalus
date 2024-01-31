@@ -177,10 +177,13 @@ void InitOpenProjectScreen(void)
 void UpdateOpenProjectScreen(void)
 {
     // TODO: Update OpenProject screen variables here!
+
     bool isAButtonSelected = false;
     if(inConfirmDeleteMode){
         if(IsButtonPressed(&confirmDeleteBut)){
-            deleteProject(projectButtons[deleteIndex].text);
+            printf("Deleting: %s. %d\n",projectButtons[deleteIndex].text,deleteProject(projectButtons[deleteIndex].text));
+
+
             inConfirmDeleteMode = false;
             inDeleteMode = false;
             deleteIndex = -1;

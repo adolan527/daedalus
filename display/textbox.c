@@ -64,7 +64,7 @@ bool IsTextBoxActive(TextBox *source){
             }
             return true;
         }
-        else if(source->textIndex < source->charCount && c != 0 && c!= KEY_LEFT_SHIFT){
+        else if(source->textIndex < source->charCount-1 && c != 0 && c!= KEY_LEFT_SHIFT){
             if(!IsKeyDown(KEY_LEFT_SHIFT)){
                 c = c | 0x20;
             }

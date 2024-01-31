@@ -53,8 +53,8 @@ ObjectBoxGUI* InitOBGUI(void){
     gui->tb[obgThickness] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005 + MeasureTextEx(globalFont, "Thickness:  ", screenHeight / 32, GETSPACING(screenHeight / 32)).x,
                                                     gui->pos.y + screenHeight * .15 + MeasureTextEx(globalFont, "Thickness:  ", screenHeight / 32, GETSPACING(screenHeight / 32)).y,
         screenWidth*.075,screenHeight*.025}, 10);
-    strcpy(gui->tb[obgThickness]->text, "T");
-    gui->tb[obgThickness]->textIndex+=1;
+    strcpy(gui->tb[obgThickness]->text, "0");
+
 
     gui->tb[obgMaterial] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .095, gui->pos.y + screenHeight * .215, screenWidth * .08, screenHeight * .05}, 20);
     strcpy(gui->tb[obgMaterial]->text, "M");
@@ -167,7 +167,7 @@ OBGUIRET UpdateOBGUI(ObjectBoxGUI *source){
     }
 
     if(IsButtonPressed(source->materialBut)|| (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_M))){
-        if(source->materialBut->text[0]=='W'){
+        if(strcmp(source->materialBut->text,WEIGHTMATERIAL)==0){
             memset(source->materialBut->text,0,20);
             strcpy(source->materialBut->text,"Material");
 
@@ -267,7 +267,7 @@ void GetObjFromOBGUI(ObjectBoxGUI *source){
 
         source->companion->material.color = BLUE;
         source->companion->material.texture = (Texture2D){0};
-        strcpy(source->companion->material.name, "Weight");
+        strcpy(source->companion->material.name, WEIGHTMATERIAL);
 
         source->companion->material.density = strtod(source->tb[obgMaterial]->text, NULL) / getObjectVolume(source->companion);
     }
@@ -346,9 +346,9 @@ void GetOBGUIFromObj(ObjectBoxGUI *source){
             break;
     }
 
-    if(source->companion->material.name[0] == 'W'){
+    if(strcmp(source->companion->material.name,WEIGHTMATERIAL)==0){
         //weight
-        strcpy(source->materialBut->text, "Weight");
+        strcpy(source->materialBut->text, WEIGHTMATERIAL);
         sprintf(source->tb[obgMaterial]->text, "%.2f", source->companion->material.density * getObjectVolume(source->companion));
     }
     else{
