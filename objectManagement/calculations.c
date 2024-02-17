@@ -22,6 +22,50 @@ void removeWhitespace(char *srcString, char *destString){
     }
 }
 */
+Vector3 getObjectCOM(Object *source, float t){
+    //gets the object's center of mass
+    Vector3 com = {0,0,0};
+    switch(source->type){
+        case sRectangle:{
+            com.x = cmpPmt(source->xPos, t) + source->data.xLength/2;
+            com.y = source->yPos + source->data.yHeight/2;
+            com.z = source->zPos + source->data.zDepth/2;
+            break;
+        }
+        case sCylinder:{
+            switch(source->data.facing){
+                case 'x':{
+                    com.x = cmpPmt(source->xPos, t) + source->data.xLength/2;
+                    com.y = source->yPos;
+                    com.z = source->zPos;
+                    break;
+                }
+                case 'y':{
+                    com.x = cmpPmt(source->xPos, t);
+                    com.y = source->yPos + source->data.yHeight/2;
+                    com.z = source->zPos;
+                    break;
+                }
+                case 'z':{
+                    com.x = cmpPmt(source->xPos, t);
+                    com.y = source->yPos;
+                    com.z = source->zPos + source->data.zDepth/2;
+                    break;
+                }
+            }
+            break;
+        }
+        case sSphere:{
+            com.x = cmpPmt(source->xPos, t);
+            com.y = source->yPos;
+            com.z = source->zPos;
+            break;
+        }
+    }
+    return com;
+}
+
+
 double computePolynomial(Polynomial *function, double input){
     double sum = 0;
     for(int i = 0; i < POLYNOMIAL_COEFF_COUNT; i++){
@@ -110,7 +154,6 @@ void nullifyPolynomial(Polynomial *dest){
 }
 
 double getObjectVolume(Object *source){
-    //Todo: add support for hollow shapes
     double volume = 0;
 
     switch(source->type){
@@ -141,18 +184,19 @@ double getObjectVolume(Object *source){
                 volume = M_PI * source->data.xLength * source->data.xLength * source->data.zDepth;
             }
             else{
+                // pi*h*t*(2r+t)
                 switch(source->data.facing){
                     case 'x':{
-                        volume = M_PI * source->data.thickness *(source->data.thickness - 2 * source->data.yHeight)*source->data.xLength;
+                        volume = M_PI * source->data.thickness *(source->data.thickness + 2 * source->data.yHeight)*source->data.xLength;
                         break;
                     }
                     case 'y':{
-                        volume = M_PI * source->data.thickness *(source->data.thickness - 2 * source->data.zDepth)*source->data.yHeight;
+                        volume = M_PI * source->data.thickness *(source->data.thickness + 2 * source->data.zDepth)*source->data.yHeight;
 
                         break;
                     }
                     case 'z':{
-                        volume = M_PI * source->data.thickness *(source->data.thickness - 2 * source->data.xLength)*source->data.zDepth;
+                        volume = M_PI * source->data.thickness *(source->data.thickness + 2 * source->data.xLength)*source->data.zDepth;
                         break;
                     }
                 }
@@ -167,79 +211,41 @@ double getObjectVolume(Object *source){
     return volume;
 }
 
-double computeObject(Object *source, float t){
-    // TODO All of the integrals are lacking the term (h-x) where h is the center of mass of the object)
-    // TODO Luckily, the simple shapes that this program supports all have very easy to calculate -
-    // TODO centers of mass.
-    Polynomial areaFunction = {0};
-    double xPosition = cmpPmt(source->xPos,t);
-    double xEnd = xPosition + source->data.xLength;
-    double integral = 0;
-    switch(source->type){
-        case sRectangle:{
-            if(source->data.thickness == 0){
-                areaFunction.order = 1;
-                areaFunction.coefficients[0] = source->data.yHeight * source->data.zDepth;
-                integral = integratePolynomial(&areaFunction, xPosition, xEnd);
-                return integral * source->material.density;
-            }
-            else{
-                switch(source->data.facing){
-                    case 'x':{
-                        areaFunction.order = 1;
-                        areaFunction.coefficients[0] = 2 * source->data.thickness * (source->data.yHeight + source->data.zDepth - 2*source->data.thickness);
-                        integral = integratePolynomial(&areaFunction, xPosition, xEnd);
-                        return integral * source->material.density;
-                    }
-                    case 'y':{
-                        areaFunction.order = 1;
-                        areaFunction.coefficients[0] = source->data.yHeight * source->data.zDepth;
-                        integral = integratePolynomial(&areaFunction, xPosition, xEnd + source->data.thickness);
-                        integral += integratePolynomial(&areaFunction, xEnd - source->data.thickness,xEnd);
-                        areaFunction.coefficients[0] = 2 * source->data.yHeight * source->data.thickness;
-                        integral += integratePolynomial(&areaFunction, xPosition + source->data.thickness, xEnd - source->data.thickness);
-                        return integral * source->material.density;
-                    }
-                    case 'z':{
-                        areaFunction.order = 1;
-                        areaFunction.coefficients[0] = source->data.yHeight * source->data.zDepth;
-                        integral = integratePolynomial(&areaFunction, xPosition, xEnd + source->data.thickness);
-                        integral += integratePolynomial(&areaFunction, xEnd - source->data.thickness,xEnd);
-                        areaFunction.coefficients[0] = 2 * source->data.zDepth * source->data.thickness;
-                        integral += integratePolynomial(&areaFunction, xPosition + source->data.thickness, xEnd - source->data.thickness);
-                        return integral * source->material.density;
-                    }
-                }
-            }
-            break;
-        }
-        case sCylinder:{
-            switch(source->data.facing){
-                case 'x':{
-                    areaFunction.order = 2;
-                    areaFunction.coefficients[0] = 2 * M_PI * source->data.zDepth;
-                    integral = integratePolynomial(&areaFunction, xPosition, xEnd);
-                    return integral * source->material.density;
-                }
-                case 'y':{
+inline double getObjectTorque(Object *source, float t){
 
-                }
-                case 'z':{
+    Vector3 com = getObjectCOM(source, t);
+    return com.x * getObjectWeight(source);
+}
 
-                }
-            }
-        }
-            break;
-        case sSphere:{
-            float xCenter = cmpPmt(source->xPos, t);
-            areaFunction.coefficients[0] = -1;
-            areaFunction.coefficients[1] = 2 * xCenter;
-            areaFunction.coefficients[2] = (source->data.xLength * source->data.xLength) - (xCenter * xCenter);
-            areaFunction.order = 2;
-            integral = integratePolynomial(&areaFunction,xCenter - source->data.xLength, xCenter + source->data.xLength);
-            integral *= M_PI;
-            integral *= source->material.density;
-            return integral;
-        }
+inline double getObjectTorqueCOM(Object *source, Vector3 com){
+    return com.x * getObjectWeight(source);
+}
+
+inline double getObjectWeight(Object *source){
+    if(strcmp(source->material.name,WEIGHTMATERIAL)!=0){
+        double volume = getObjectVolume(source);
+        return volume * source->material.density;
     }
+    else{
+        return source->material.density;
+    }
+}
+
+Vector4 getAverageCOM(ObjectList *list, float t){
+    Vector3 com = {0};
+    Vector4 returnValue;
+    float weight = 0, totalWeight = 0;
+    ObjectNode *ptr = list->head;
+    while(ptr){
+        weight = (float)getObjectWeight(ptr->data);
+        totalWeight += weight;
+        com = Vector3Add(com, Vector3Scale(getObjectCOM(ptr->data,t), weight));
+        ptr = ptr->next;
+    }
+    returnValue.w = com.x;
+    com = Vector3Scale(com, 1/totalWeight);
+    returnValue.x = com.x;
+    returnValue.y = com.y;
+    returnValue.z = com.z;
+    return returnValue;
 }

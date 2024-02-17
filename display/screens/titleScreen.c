@@ -39,13 +39,16 @@ static Button *settingsBut, *openBut;
 static float buttonHeight = 100;
 static float buttonWidth = 250;
 
-
+static int fontSize;
+static Vector2 titlePos,titleSize;
 #define triangleCount 10
 TITLE_Triangle triangles[triangleCount];
+
+
 //----------------------------------------------------------------------------------
 // Title Screen Functions Definition
 //----------------------------------------------------------------------------------
-
+#define TITLE "Daedalus"
 // Title Screen Initialization logic
 void InitTitleScreen(void)
 {
@@ -59,6 +62,16 @@ void InitTitleScreen(void)
                          "Open Project", theme.dark);
     settingsBut = InitButton((Rectangle){(screenWidth - buttonWidth) / 2, screenHeight / 2 + 2.25 * buttonHeight, buttonWidth, buttonHeight},
                              "Settings", theme.accent2);
+
+    fontSize = screenHeight/3;
+    titleSize = MeasureTextEx(titleFont,TITLE,fontSize,GETSPACING(fontSize));
+
+    while(titleSize.x+screenWidth/10>screenWidth){
+        fontSize-=8;
+        titleSize = MeasureTextEx(titleFont,TITLE,fontSize,GETSPACING(fontSize));
+    }
+    titlePos = (Vector2){screenWidth/2 - titleSize.x/2,screenHeight/2 - titleSize.y*.75};
+
 
 
     for(int i = 0;i<triangleCount;i++){
@@ -86,6 +99,7 @@ void InitTitleScreen(void)
         triangles[i].v3.x = cosf(triangles[i].spinDir*(float)offset/100 + 11 *PI/6) * triangles[i].d + triangles[i].c.x;
         triangles[i].v3.y = sinf(triangles[i].spinDir*(float)offset/100 + 11 *PI/6) * triangles[i].d + triangles[i].c.y;
     }
+
 
 
 
@@ -158,14 +172,8 @@ void DrawTitleScreen(void)
         DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
         DrawLineEx(triangles[i].v3,triangles[i].v1,5,theme.light);
     }
-    int fontSize = screenHeight/2;
-    int textWidth = MeasureText("Torque Calculator",fontSize);
 
-    while(textWidth+screenWidth/10>screenWidth){
-        fontSize-=8;
-        textWidth = MeasureText("Torque Calculator",fontSize);
-    }
-    DrawText("Torque Calculator", screenWidth/2 - textWidth/2,  screenHeight/2 - 1.5 * fontSize, fontSize, theme.accent1);
+    DrawTextEx(titleFont,TITLE,titlePos, fontSize, GETSPACING(fontSize),theme.accent1);
 
     DrawButton(settingsBut);
     DrawButton(openBut);

@@ -53,7 +53,7 @@ int createProject(char *name, char *notes){
                     .facing = 'z',
                     .isHole = false
             },
-            .material = tqcMaterials[0],
+            .material = *tqcMaterials.head->data,
             .type = sCylinder,
         },sizeof(Object),1,objects);
     fclose(objects);

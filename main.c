@@ -5,17 +5,6 @@ int projectCount = 0;
 
 Project currentProject = {0};
 
-tqcMaterial tqcMaterials[TQCMATERIALS_COUNT] = {
-/*
-        {"6061-Aluminum", 0.09754374,LIGHTGRAY, {0}},
-        {"6063-Aluminum", 0.09718247,LIGHTGRAY, {0}},
-        {"Steel", 0.283599,DARKGRAY, {0}},
-        {"Pine-Wood", 0.01987002,(Color){240, 215, 93,255}, {0}},
-        {"Polycarbonate", 0.04335278,(Color){ 245, 245, 255, 255 }, {0}},
-        {0}
-*/
-};
-
 ColorPalette palettes[PALETTE_COUNT] ={
 
         {//basic
@@ -72,96 +61,38 @@ ColorPalette palettes[PALETTE_COUNT] ={
          */
 };
 
-static Object dummy = {
-        "Dummy",
-        {0,1},
-        0,5,
-
-        {10,5,7,0,'x',false},
-        sRectangle,
-        (tqcMaterial){0},
-        NULL
-};
-static Object cylinder = {
-        "Cylinder",
-        {5,-2},
-        3,-1,
-
-        {1,7,1,0,'y',false},
-        sCylinder,
-        (tqcMaterial){0},
-        NULL
-};
-static Object sphere = {
-        "Sphere",
-        {-10,1},
-        0,1,
-
-        {2,2,2,0,'y',false},
-        sSphere,
-        (tqcMaterial){0},
-
-        NULL
-};
 
 int main(){
-/*
-    Object d = {
-            "abcdefghijklmnopqrstuvwxyz123456",
-            (double){0xFFFFFFFF},
-            (double){0xEEEE},
-            (double){0xDDDD},
-            (double){0xCCCC},
-            -1235835.0289355f,
-            -195823.085320f,
-            -1235835.0289355f,
-            -195823.085320f,
-            'x',
-            false,
-            (ShapeType){0xBBBBBBBB},
-            "abcdefghijklmnopqrstuvwxyz123456",
-            -1235835.0289355f,
-            244,
-            244,
-            243,
-            243,
-            12,
-            13,
-            14,
-            15,
-            16,
-            NULL
-    };
+    /*
+    initMaterialList();
+    tqcMaterial thing = {"6061-Aluminum",0.099,GRAY};
+    tqcMaterial thing2 = {"Pine-wood",0.00123,BEIGE};
 
-    memset(&d.xPos.constant,0xFF,sizeof(double));
-    memset(&d.xPos.meter,0xEE,sizeof(double));
-    memset(&d.yPos,0xDD,sizeof(double));
-    memset(&d.zPos,0xCC,sizeof(double));
-    memset(&d.type,0xBB,sizeof(ShapeType));
-    memset(&d.data.xLength,0xAA,sizeof(double));
-    memset(&d.data.yHeight,0xbb,sizeof(double));
-    memset(&d.data.zDepth,0xcc,sizeof(double));
-    memset(&d.data.thickness,0xdd,sizeof(double));
-    memset(&d.material.density,0xff,sizeof(double));
-    printf("dummy %s",d.name);
-    return 0;
-    */
+    appendMaterial(&tqcMaterials,&thing);
+    appendMaterial(&tqcMaterials,&thing2);
+
+    writeMaterials(&tqcMaterials);
+*/
     if(initProgram()!=0){
         printf("Init failed");
+
         return 0;
     }
     if(initDraw()!=0){
         printf("Init draw failed");
+
         return 0;
     }
     if(drawMain(LOGO)==1){
         if(initDraw()!=0){
             printf("Init draw failed");
+
             return 0;
         }
         while(drawMain(SETTINGS)==1){
             if(initDraw()==1){
                 printf("Init draw failed");
+
                 return 0;
             }
         }

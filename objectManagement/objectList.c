@@ -30,21 +30,22 @@ void appendObject(ObjectList *source, Object *data){
 }
 
 void closeObjectList(ObjectList *source){
-    printf("H: %p, T: %p\n",source->head,source->tail);
-    int i = 0;
+
     if(source->head == NULL) return;
-    for(ObjectNode* current = source->head; current->next != NULL; current = current->next){
-        printf("I: %d\n",i++);
-        if(current->data->model!=NULL){
-            UnloadModel(*current->data->model);
-            free(current->data->model);
+    while(source->head){
+        ObjectNode *temp = source->head;
+        source->head = source->head->next;
+        if(temp->data->model!=NULL){
+            UnloadModel(*temp->data->model);
+            free(temp->data->model);
         }
-        if(current->data!=NULL){
-            free(current->data);
+        if(temp->data!=NULL){
+            free(temp->data);
         }
 
-        free(current);
+        free(temp);
     }
+
 }
 
 Object * getObjectPointer(ObjectList *source, int index){

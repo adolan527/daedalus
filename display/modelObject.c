@@ -3,6 +3,8 @@
 //
 #include "drawMain.h"
 
+
+
 void ReModelObject(Object *obj){
     UnloadModel(*obj->model);
     free(obj->model);
@@ -64,8 +66,6 @@ void ModelObject(Object *obj){
     obj->model->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = obj->material.texture;
     obj->model->materials[0].maps[MATERIAL_MAP_DIFFUSE].color = obj->material.color;
     obj->model->transform = MatrixMultiply(MatrixRotateXYZ(rotation), MatrixTranslate(obj->xPos.constant,obj->yPos,obj->zPos));
-
-
 
 
 }

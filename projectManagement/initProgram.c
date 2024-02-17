@@ -46,17 +46,20 @@ int makeConfig(int width, int height,char wMode,char doLogo){
 
 
 int initProgram() {
+
+
     int retVal = 0;
 
     if (doesConfigExist() == 0) {
         //program is already initialized
         getProjectCount();
-        retVal += readMaterials();
+        tqcMaterials = initMaterialList();
+        retVal += readMaterials(&tqcMaterials);
         retVal += readColors();
         return retVal;
     }
-    const int defaultWidth = 1600;
-    const int defaultHeight = 900;
+    const int defaultWidth = 1480;
+    const int defaultHeight = 720;
     const char defaultWMode = 'w';
     const char defaultDoLogo = 't';
     retVal += makeConfig(defaultWidth,defaultHeight,defaultWMode,defaultDoLogo);
@@ -66,22 +69,25 @@ int initProgram() {
     }
     fclose(error);
 
+    retVal += mkdir("resources/");
 
 
-    FILE *materials = fopen("materials.dat","w");
+    FILE *materials = fopen("resources/materials.dat","w");
     if(materials == NULL){
         return 1;
     }
     fclose(materials);
 
-    FILE *colors = fopen("colors.dat","w");
+    FILE *colors = fopen("resources/colors.dat","w");
     if(colors == NULL){
         return 1;
     }
     fclose(colors);
 
     retVal += mkdir("projects/");
-    retVal += mkdir("resources/");
+    retVal += mkdir("resources/textures/");
+    retVal += mkdir("resources/fonts/");
+    retVal += mkdir("resources/shaders/");
     retVal += system("dir /b/a:d projects\\ > projects/projects.dat");
 
     return retVal;

@@ -30,5 +30,4 @@ void stringifyPolynomial(Polynomial *function,char *destString);
 
 
 
-
 #endif //GENERALIZEDROBOTARM_STRUCTS_H

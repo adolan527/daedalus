@@ -3,8 +3,7 @@
 //
 #include "projectManagement.h"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnreachableCode"
+
 int openProject(char *name){
     if(currentProject.name[0]!=0){
         closeProject();
@@ -21,4 +20,3 @@ int openProject(char *name){
 
     return 0;
 }
-#pragma clang diagnostic pop

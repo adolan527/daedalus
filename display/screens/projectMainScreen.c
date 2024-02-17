@@ -25,7 +25,6 @@
 
 #include "../drawMain.h"
 
-
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
@@ -34,6 +33,10 @@ static int finishScreen = 0;
 static Camera camera;
 
 static Rectangle torqueBox = {0};
+static Vector2 torqueText = {0};
+static Vector2 comText = {0};
+
+
 static Vector2 pmtSlider = {0};
 static Rectangle pmtLine = {0};
 static float pmtScalar = 0;
@@ -42,16 +45,25 @@ static float pmtCenter = 0;
 static float pmtMin, pmtMax;
 static TextBox *pmtBox;
 static float pmtTextX = 0;
+
+
+
 static Ray mouse;
 
 
+
+
 static ObjectBoxGUI *box = NULL;
+
+static Vector4 comTorque = {0};
+static Vector3 averageCOM = {0};
 
 static float crosshairSize;
 extern bool doesMouseUpdateCamera; //Added in rcamera.h. Changes behavior of UpdateCamera function.
 static bool isObjectScreenOpen;
 static Button backBut, newObjBut;
-static bool isSliding = false;
+static bool ispmtSliding = false;
+
 
 
 static Rectangle infoBox;
@@ -63,49 +75,18 @@ static float infoBoxTextSize,infoBoxTextSpacing;
 //----------------------------------------------------------------------------------
 // ProjectMain Screen Functions Definition
 //----------------------------------------------------------------------------------
-static int index = 0;
 static void UpdateInfoBox(Object *obj){
-    printf("Updated info box\n");
+    //printf("Updated info box\n");
     currentVolume = getObjectVolume(obj);
-    if(strcmp(obj->material.name,WEIGHTMATERIAL)!=0){
-        currentWeight = currentVolume * obj->material.density;
-    }
-    else{
-        printf("Dummy weight detected\n");
-        currentWeight = obj->material.density;
-    }
-
-    currentTorque = computeObject(obj,parameter);
-    if(obj->type == sSphere){
-        currentCOM = (Vector3){obj->xPos.constant,obj->yPos,obj->zPos};
-    }
-    else if(obj->type == sRectangle){
-        currentCOM = (Vector3){obj->xPos.constant+obj->data.xLength/2,obj->yPos+obj->data.yHeight/2,obj->zPos+obj->data.zDepth/2};
-    }
-    else{
-        switch (obj->data.facing) {
-            case 'x': {
-                currentCOM = (Vector3) {obj->xPos.constant + obj->data.xLength / 2, obj->yPos, obj->zPos};
-                break;
-            }
-            case 'y': {
-                currentCOM = (Vector3) {obj->xPos.constant, obj->yPos + obj->data.yHeight / 2, obj->zPos};
-                break;
-            }
-            case 'z': {
-                currentCOM = (Vector3) {obj->xPos.constant, obj->yPos, obj->zPos + obj->data.zDepth / 2};
-                break;
-            }
-        }
-    }
+    currentWeight = getObjectWeight(obj);
+    currentCOM = getObjectCOM(obj,parameter);
+    currentTorque = getObjectTorqueCOM(obj, currentCOM);
 }
 
-Mesh thing = {0};
 
 // ProjectMain Screen Initialization logic
 void InitProjectMainScreen(void)
 {
-
 
     // TODO: Initialize ProjectMain screen variables here!
     camera.position = (Vector3){ 20.0f, 20.0f, 20.0f }; // Camera position
@@ -121,13 +102,17 @@ void InitProjectMainScreen(void)
 
 
 
+
     crosshairSize = (float)screenHeight/250;
     framesCounter = 0;
     finishScreen = -1;
     doesMouseUpdateCamera = true;
     isObjectScreenOpen = false;
-    isSliding = false;
-    torqueBox = (Rectangle){screenWidth*.28,screenHeight*.825,screenWidth*.5,screenHeight*.15};
+    ispmtSliding = false;
+
+    torqueBox = (Rectangle){screenWidth*.25,screenHeight*.825,screenWidth*.53,screenHeight*.15};
+    torqueText = (Vector2){torqueBox.x + torqueBox.width * 0.02, screenHeight*.84 };
+    comText = (Vector2){torqueBox.x + torqueBox.width * 0.02, screenHeight*.88 };
 
     pmtLine = (Rectangle){screenWidth*0.52,screenHeight*0.895,screenWidth*0.25,screenHeight*0.05};
     pmtSlider = (Vector2){pmtLine.x+pmtLine.width/2,screenHeight*0.92};
@@ -137,6 +122,7 @@ void InitProjectMainScreen(void)
     pmtBox = InitTextBox((Rectangle){screenWidth*.52,screenHeight*.84,screenWidth*.25,screenHeight*.05},6);
     pmtScalar = (pmtLine.width-pmtLine.height)/1000;
     pmtTextX = pmtCenter - MeasureTextEx(globalFont,"Parameter",pmtLine.height,GETSPACING(pmtLine.height)).x/2;
+
 
 
     infoBox = (Rectangle){screenWidth*.79,screenHeight*.6025,screenWidth*.2,screenHeight*.2175};
@@ -168,17 +154,14 @@ void InitProjectMainScreen(void)
     };
 
 
-
     for(ObjectNode *obj = currentProject.objList.head; obj != NULL; obj = obj->next){
-        if(obj->data->data.thickness!=0 && obj->data->type==sRectangle && obj->data->data.facing!='x'){
-            obj->data->data.facing='x';
-        }
-        ModelObject(obj->data);
-        UpdateInfoBox(obj->data);
-        printf("Object found\n");
-    }
 
-    thing = GenMeshCustom();
+        ModelObject(obj->data);
+        obj->data->model->materials[0].shader = shader;
+        UpdateInfoBox(obj->data);
+        //printf("Object found\n");
+    }
+    // Load basic lighting shader
 
 }
 
@@ -186,25 +169,26 @@ void InitProjectMainScreen(void)
 void UpdateProjectMainScreen(void)
 {
     // TODO: Update ProjectMain screen variables here!
-
     framesCounter++;
+    float cameraPos[3] = { camera.position.x, camera.position.y, camera.position.z };
+    SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
 
 
+    for (int i = 0; i < MAX_LIGHTS; i++) UpdateLightValues(shader, lights[i]);
 
     if(IsButtonPressed(&newObjBut) || (IsKeyPressed(KEY_N)&&IsKeyDown(KEY_LEFT_CONTROL))){
         isObjectScreenOpen = true;
         box = InitOBGUI();
 
     }
-
-
+    //objGUI logic
     if(isObjectScreenOpen){
         switch(UpdateOBGUI(box)){
             case DOCANCEL:
                 isObjectScreenOpen = false;
                 if(box->companion!=NULL){
-                    box->companion->material.color.a=255;
-                    printf("Brightness readjusted\n");
+                    box->companion->model->materials[0].shader = shader;
+                    //printf("Brightness readjusted\n");
 
                 }
                 CloseOBGUI(box);
@@ -220,13 +204,13 @@ void UpdateProjectMainScreen(void)
 
                 }
                 else{
-                    printf("This object already exists\n");
+                    //printf("This object already exists\n");
                     GetObjFromOBGUI(box);
                     ModelObject(box->companion);
                     UpdateInfoBox(box->companion);
                     if(box->companion!=NULL){
-                        box->companion->material.color.a=255;
-                        printf("Brightness readjusted\n");
+                        box->companion->model->materials[0].shader = shader;
+                        //printf("Brightness readjusted\n");
                     }
                     box->companion = NULL;
                 }
@@ -245,10 +229,10 @@ void UpdateProjectMainScreen(void)
             }
             case ISTYPING:
                 break;
-            case DOFACING:
+            case OBG_DOFACING:
                 break;
             default:
-                printf("Unknown UpdateOBGUI return value\n");
+                //printf("Unknown UpdateOBGUI return value\n");
             case DONOTHING:
                 if(!IsKeyDown(KEY_LEFT_CONTROL)) UpdateCamera(&camera, CAMERA_THIRD_PERSON);
                 break;
@@ -275,8 +259,10 @@ void UpdateProjectMainScreen(void)
                                         MatrixTranslate(parameter*node->data->xPos.meter + node->data->data.xLength/2,node->data->data.yHeight/2,node->data->data.zDepth/2)));
                 }
                 else{
-                    collision = GetRayCollisionMesh(mouse,node->data->model->meshes[0],MatrixMultiply(node->data->model->transform,
-                                                                                                      MatrixTranslate(parameter*node->data->xPos.meter,0,0)));
+                    collision = GetRayCollisionMesh(mouse,node->data->model->meshes[0],
+                                                    MatrixMultiply(node->data->model->transform,
+                                                        MatrixTranslate(parameter*node->data->xPos.meter,0,0)));
+
 
                 }
 
@@ -285,7 +271,7 @@ void UpdateProjectMainScreen(void)
                         closestDistance = collision.distance;
                         closest = node->data;
                     }
-                    printf("Collision with object: %s\n",node->data->name);
+                    //printf("Collision with object: %s\n",node->data->name);
                 }
             }
             if(closest!=NULL){
@@ -294,12 +280,15 @@ void UpdateProjectMainScreen(void)
                 box->companion = closest;
                 GetOBGUIFromObj(box);
                 UpdateInfoBox(box->companion);
-                box->companion->material.color.a=127;
+                box->companion->model->materials[0].shader = (Shader){0};
+
+                ReModelObject(box->companion);
 
             }
         }
     }
 
+    //pmt
     if(IsTextBoxActive(pmtBox)){
         parameter = strtod(pmtBox->text,NULL);
         if(isObjectScreenOpen){
@@ -308,14 +297,14 @@ void UpdateProjectMainScreen(void)
         pmtSlider.x = parameter * pmtScalar + pmtCenter;
     }
 
-    if(IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),pmtSlider,pmtLine.height)){
-        isSliding = true;
+    if(IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),pmtSlider,pmtLine.height/2)){
+        ispmtSliding = true;
     }
 
-    if(isSliding){
+    if(ispmtSliding){
         int mouseX = GetMouseX();
         if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)){
-            isSliding = false;
+            ispmtSliding = false;
         }
 
         if(mouseX>=pmtMax) pmtSlider.x = pmtMax;
@@ -330,6 +319,10 @@ void UpdateProjectMainScreen(void)
             UpdateInfoBox(box->companion);
         }
     }
+
+
+
+
 
 
     if(IsButtonPressed(&backBut) || IsMouseButtonPressed(MOUSE_BUTTON_SIDE)){
@@ -356,8 +349,8 @@ void UpdateProjectMainScreen(void)
 
 
 
-
-
+    comTorque = getAverageCOM(&currentProject.objList, parameter);
+    averageCOM = (Vector3){comTorque.x,comTorque.y,comTorque.z};
 
 
 }
@@ -366,27 +359,35 @@ void UpdateProjectMainScreen(void)
 void DrawProjectMainScreen(void)
 {
     // TODO: Draw ProjectMain screen here!
+
+
     BeginMode3D(camera);
 
 
 
     for(ObjectNode *node = currentProject.objList.head;node!=NULL;node = node->next){
         DrawObject(node->data,parameter);
+
     }
 
+    DrawSphere(averageCOM,0.25f,RED);
     DrawGrid(20, 1.0f);
-
-    //DrawMesh(thing,LoadMaterialDefault(),MatrixIdentity());
-
-
     EndMode3D();
+
 
     DrawRectangleRec(torqueBox,theme.light);
     DrawRectangleLinesEx(torqueBox,torqueBox.height*0.05,theme.black);
+
+    //pmt
     DrawRectangleRounded(pmtLine,1,3,theme.black);
     DrawTextBox(pmtBox);
     DrawTextEx(globalFont,"Parameter",(Vector2){pmtTextX,pmtLine.y},pmtLine.height,GETSPACING(pmtLine.height),theme.white);
     DrawCircleV(pmtSlider,pmtLine.height/2,(Color){theme.accent2.r,theme.accent2.g,theme.accent2.b,127});
+
+    DrawTextEx(globalFont, TextFormat("Torque: %f in/lbs",comTorque.w),torqueText,torqueBox.height*.225,GETSPACING(torqueBox.height*.225),theme.black);
+    DrawTextEx(globalFont, TextFormat("C.o.M.:",comTorque.w),comText,torqueBox.height*.225,GETSPACING(torqueBox.height*.225),theme.black);
+    DrawTextEx(globalFont,TextFormat("(%.4f, %.4f, %.4f)",comTorque.x,comTorque.y,comTorque.z),
+               (Vector2){comText.x,comText.y * 1.05},torqueBox.height*.225,GETSPACING(torqueBox.height*.225),theme.black);
 
 
     DrawButton(&newObjBut);
@@ -396,9 +397,8 @@ void DrawProjectMainScreen(void)
         DrawOBGUI(box);
         DrawRectangleRec(infoBox,theme.light);
         DrawRectangleLinesEx(infoBox,1,theme.black);
-        //    infoBox = (Rectangle){screenWidth*.79,screenHeight*.6025,screenWidth*.2,screenHeight*.2175};
         DrawTextEx(globalFont,"Volume:",
-                   (Vector2){screenWidth*.8,screenHeight*0.6125},infoBoxTextSize,infoBoxTextSpacing,WHITE);
+                   (Vector2){screenWidth*.8,screenHeight*0.6125},infoBoxTextSize,infoBoxTextSpacing,theme.white);
         DrawTextEx(globalFont,"Weight:",
                       (Vector2){screenWidth*.8,screenHeight*0.6525},infoBoxTextSize,infoBoxTextSpacing,WHITE);
         DrawTextEx(globalFont,"Torque:",
@@ -411,11 +411,13 @@ void DrawProjectMainScreen(void)
                    (Vector2){screenWidth*.87,screenHeight*0.6525},infoBoxTextSize,infoBoxTextSpacing,WHITE);
         DrawTextEx(globalFont,TextFormat("%f in/lbs",currentTorque),
                    (Vector2){screenWidth*.87,screenHeight*.6925},infoBoxTextSize,infoBoxTextSpacing,WHITE);
-
+        DrawTextEx(globalFont,TextFormat("(%.4f,%.4f,%.4f)",currentCOM.x,currentCOM.y,currentCOM.z),
+                   (Vector2){screenWidth*.8,screenHeight*0.7725},infoBoxTextSize,infoBoxTextSpacing,WHITE);
 
     }
     DrawRectangle(screenWidth*0.49,screenHeight*0.4975,screenWidth*0.02,crosshairSize,BLACK);
     DrawRectangle((screenWidth-crosshairSize)/2,screenHeight*0.485,crosshairSize,screenHeight*0.03,BLACK);
+
 }
 
 // ProjectMain Screen Unload logic
@@ -425,8 +427,10 @@ void UnloadProjectMainScreen(void)
     if(isObjectScreenOpen){
         CloseOBGUI(box);
     }
+
+
     closeProject();
-    UnloadMesh(thing);
+
 }
 
 // ProjectMain Screen should finish?

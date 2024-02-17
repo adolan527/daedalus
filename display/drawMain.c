@@ -51,12 +51,29 @@ static void DrawTransition(void);           // Draw transition effect (full-scre
 static int UpdateDrawFrame(void);          // Update and draw one frame
 
 
-
+Shader shader;
+Color ambientLightColor;
+Light lights[MAX_LIGHTS];
 //----------------------------------------------------------------------------------
 // Main entry point
 //----------------------------------------------------------------------------------
 int drawMain(GameScreen startingScreen)
 {
+    ambientLightColor = ColorBrightness(theme.white,-0.3f);
+
+    shader = LoadShader("resources/shaders/lighting.vs",
+                        "resources/shaders/lighting.fs");
+
+    shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
+
+    int ambientLoc = GetShaderLocation(shader, "ambient");
+    SetShaderValue(shader, ambientLoc, (float[4]){ 0.1f, 0.1f, 0.1f, 1.0f }, SHADER_UNIFORM_VEC4);
+
+    lights[0] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ 50, 100, 50}, Vector3Zero(), ambientLightColor, shader);
+    lights[1] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ -50, -100, -50}, Vector3Zero(), ambientLightColor, shader);
+    lights[2] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ -50, 100, -50}, Vector3Zero(), ambientLightColor, shader);
+    lights[3] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ 50, -100, 50}, Vector3Zero(), ambientLightColor, shader);
+
 
     int returnValue = 0;
     // Initialization
@@ -78,6 +95,7 @@ int drawMain(GameScreen startingScreen)
         case PROJECTMAIN: InitProjectMainScreen(); break;
         case EDITOBJECT: InitEditObjectScreen(); break;
         case OPENPROJECT: InitOpenProjectScreen(); break;
+        case MATERIALS: InitMaterialsScreen(); break;
         default: break;
     }
     InitLogoScreen();
@@ -113,12 +131,17 @@ int drawMain(GameScreen startingScreen)
         case PROJECTMAIN: UnloadProjectMainScreen(); break;
         case EDITOBJECT: UnloadEditObjectScreen(); break;
         case OPENPROJECT: UnloadOpenProjectScreen(); break;
+        case MATERIALS: UnloadMaterialsScreen(); break;
         default: break;
     }
 
     // Unload global data loaded
-    UnloadMaterialsTextures();
+    closeMaterialList(&tqcMaterials);
     UnloadFont(globalFont);
+    if(returnValue!=1)    UnloadShader(shader);
+
+
+
     CloseWindow();          // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
@@ -140,6 +163,8 @@ static void ChangeToScreen(GameScreen screen)
         case PROJECTMAIN: UnloadProjectMainScreen(); break;
         case EDITOBJECT: UnloadEditObjectScreen(); break;
         case OPENPROJECT: UnloadOpenProjectScreen(); break;
+        case MATERIALS: UnloadMaterialsScreen(); break;
+
         default: break;
     }
 
@@ -152,6 +177,8 @@ static void ChangeToScreen(GameScreen screen)
         case PROJECTMAIN: InitProjectMainScreen(); break;
         case EDITOBJECT: InitEditObjectScreen(); break;
         case OPENPROJECT: InitOpenProjectScreen(); break;
+        case MATERIALS: InitMaterialsScreen(); break;
+
         default: break;
     }
 
@@ -190,6 +217,8 @@ static void UpdateTransition(void)
                 case PROJECTMAIN: UnloadProjectMainScreen(); break;
                 case EDITOBJECT: UnloadEditObjectScreen(); break;
                 case OPENPROJECT: UnloadOpenProjectScreen(); break;
+                case MATERIALS: UnloadMaterialsScreen(); break;
+
                 default: break;
             }
 
@@ -202,6 +231,8 @@ static void UpdateTransition(void)
                 case PROJECTMAIN: InitProjectMainScreen(); break;
                 case EDITOBJECT: InitEditObjectScreen(); break;
                 case OPENPROJECT: InitOpenProjectScreen();break;
+                case MATERIALS: InitMaterialsScreen(); break;
+
                 default: break;
             }
 
@@ -286,6 +317,8 @@ static int UpdateDrawFrame(void)
                     }
 
                 }
+                break;
+
 
             } break;
             case EDITOBJECT:
@@ -294,6 +327,8 @@ static int UpdateDrawFrame(void)
                 if(FinishEditObjectScreen()!=-1){
                     TransitionToScreen(FinishEditObjectScreen());
                 }
+                break;
+
             }
             case OPENPROJECT:
             {
@@ -305,6 +340,14 @@ static int UpdateDrawFrame(void)
                     else{
                         TransitionToScreen(FinishOpenProjectScreen());
                     }
+                }
+                break;
+            }
+            case MATERIALS:
+            {
+                UpdateMaterialsScreen();
+                if(FinishMaterialsScreen()!=-1){
+                    TransitionToScreen(FinishMaterialsScreen());
                 }
             }
             default: break;
@@ -328,6 +371,7 @@ static int UpdateDrawFrame(void)
         case PROJECTMAIN: DrawProjectMainScreen(); break;
         case EDITOBJECT: DrawEditObjectScreen(); break;
         case OPENPROJECT: DrawOpenProjectScreen(); break;
+        case MATERIALS: DrawMaterialsScreen(); break;
         default: break;
     }
 

@@ -31,7 +31,7 @@
 static int framesCounter = 0;
 static int finishScreen = 0;
 //make the above buttons into pointers
-static Button *resolutionBut, *fullscreenBut, *windowBut, *borderlessBut, *applyBut, *backBut, *doLogoBut;
+static Button *resolutionBut, *fullscreenBut, *windowBut, *borderlessBut, *applyBut, *backBut, *doLogoBut, *materialsBut;
 static const int resolutionPresetCount = 7;
 static const int presetResolutions[] = {720,768,900,1080,1152,2160,2304};
 static int resolutionIndex = 0;
@@ -92,6 +92,9 @@ void InitSettingsScreen(void)
                                "Borderless",
                                theme.accent1);
     borderlessBut->isToggle = true;
+
+    materialsBut = InitButton((Rectangle){screenWidth * 0.05, screenHeight * 0.6, screenWidth * 0.15, screenHeight*0.15},
+                              "Materials",theme.accent1);
 
     switch(windowMode){
         case 'f': PressButton(fullscreenBut); break;
@@ -169,6 +172,10 @@ void UpdateSettingsScreen(void)
 
     }
 
+    if(IsButtonPressed(materialsBut)){
+        finishScreen = MATERIALS;
+    }
+
 }
 
 // Settings Screen Draw logic
@@ -182,6 +189,7 @@ void DrawSettingsScreen(void)
     DrawButton(borderlessBut);
     DrawTextEx(globalFont,"Do Logo Animation:",(Vector2){screenWidth*0.05,screenHeight*0.5},screenHeight/16,GETSPACING(screenHeight/24),theme.accent1);
     DrawButton(doLogoBut);
+    DrawButton(materialsBut);
     if(doLogoBut->isPressed == false){
         DrawRectangle(doLogoBut->rect.x + doLogoBut->rect.width * 0.1,
                       doLogoBut->rect.y + doLogoBut->rect.height * 0.1,
@@ -214,6 +222,7 @@ void UnloadSettingsScreen(void)
     CloseButton(applyBut);
     CloseButton(backBut);
     CloseButton(doLogoBut);
+    CloseButton(materialsBut);
 
 }
 

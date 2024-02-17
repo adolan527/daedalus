@@ -36,25 +36,39 @@ extern ColorPalette palettes[PALETTE_COUNT];
 
 
 //////////////////////////////////////////////////////////////
-//------------------------<Materials>----------------------------//
+///------------------------<Materials>----------------------------//
 //////////////////////////////////////////////////////////////
 typedef struct{
     char name[NAMESIZE];
-    double density;
+    double density;// lb/in^3
     Color color;
-    Texture2D texture; // lb/in^3
+    Texture2D texture;
 }tqcMaterial;
 
-typedef enum{
-    ALUMINUM6061,
-    ALUMINUM6063,
-    STEEL,
-    PINEWOOD,
-    POLYCARBONATE
-}tqcMaterialIndex;
+typedef struct MaterialNode{
+    tqcMaterial *data;
+    struct MaterialNode *next;
+}MaterialNode;
 
-#define TQCMATERIALS_COUNT 15
-extern tqcMaterial tqcMaterials[TQCMATERIALS_COUNT];
+typedef struct {
+    MaterialNode *head;
+    MaterialNode *tail;
+}MaterialList;
+
+void LoadMaterialsTextures(MaterialList *source);
+void UnloadMaterialsTextures(MaterialList *list);
+void appendMaterial(MaterialList *source, tqcMaterial *data);
+void closeMaterialList(MaterialList *source);
+void deleteMaterial(MaterialList *source, int index);
+void refreshMaterialList(MaterialList *list);
+int getMaterialCount(MaterialList *source);
+MaterialList initMaterialList();
+
+#define WEIGHTMATERIAL "Weight" //used when a weight is inputted alone, not as a material
+
+
+
+extern MaterialList tqcMaterials;
 
 //////////////////////////////////////////////////////////////
 //------------------------<Shapes>----------------------------//
@@ -101,7 +115,6 @@ typedef struct {
     ShapeType type; //4
     tqcMaterial material;
     Model *model;
-    //BoundingBox box;
 }Object;
 
 typedef struct ObjectNode{
@@ -114,7 +127,9 @@ typedef struct{
     ObjectNode *tail;
 }ObjectList;
 
-double computeObject(Object *source, float t);//gets torque with parametric
+double getObjectTorque(Object *source, float t);//gets torque with parametric
+
+double getObjectTorqueCOM(Object *source, Vector3 com);
 
 ObjectList initObjectList();
 
@@ -125,6 +140,12 @@ void closeObjectList(ObjectList *source);
 Object * getObjectPointer(ObjectList *source, int index);
 
 double getObjectVolume(Object *source);
+
+Vector3 getObjectCOM(Object *source, float t);
+
+double getObjectWeight(Object *source);
+
+Vector4 getAverageCOM(ObjectList *list, float t);
 
 void deleteObject(ObjectList *source, int index);
 
@@ -175,10 +196,9 @@ int makeConfig(int width, int height,char wMode, char doLogo);
 //////////////////////////////////////////////////////////////
 int writeColors();
 
-int writeMaterials();
+int writeMaterials(MaterialList *source);
 
 int writeObjects(ObjectList *objectsList);
 
-int readObjects();
 
 #endif //TORQUECALCULATOR_MAIN_H

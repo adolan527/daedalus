@@ -55,13 +55,16 @@ set(SOURCES
         display/drawTextInRectangle.c
         display/drawObject.c
         main.h
-        display/materials.c
         display/modelObject.c
         projectManagement/projectUtils.c
         projectManagement/dataIO.c
         display/textbox.c
         display/ObjectBoxGUI.c
         display/CustomMesh.c
+        display/rlights.c
+        display/screens/materialsScreen.c
+        projectManagement/materialsList.c
+        display/MaterialsGui.c
 )
 
 # Our Project

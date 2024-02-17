@@ -3,11 +3,22 @@
 //
 #include "drawMain.h"
 
-
+typedef enum{
+    obgName,
+    obgXPosC,
+    obgXPosM,
+    obgYPos,
+    obgZPos,
+    obgXLength,
+    obgYHeight,
+    obgZDepth,
+    obgThickness,
+    obgMaterial //10 total
+}OBGUITEXTBOXES;
 
 ObjectBoxGUI* InitOBGUI(void){
     ObjectBoxGUI* gui = calloc(1, sizeof(ObjectBoxGUI));
-    printf("%llu bytes allocated for obg\n",sizeof(ObjectBoxGUI ));
+    //printf("%llu bytes allocated for obg\n",sizeof(ObjectBoxGUI ));
     gui->pos = (Vector2){(float)screenWidth * .79f, (float)screenHeight * .025f};
 
     gui->companion = NULL;
@@ -114,12 +125,12 @@ void CloseOBGUI(ObjectBoxGUI *source){
 
 
     free(source);
-    printf("%llu bytes de-allocated for obg\n",sizeof(ObjectBoxGUI ));
+    //printf("%llu bytes de-allocated for obg\n",sizeof(ObjectBoxGUI ));
 
 
 }
 
-OBGUIRET UpdateOBGUI(ObjectBoxGUI *source){
+GUIRET UpdateOBGUI(ObjectBoxGUI *source){
     for(int i = 0; i < OBGUITBCOUNT; i++){
         if(IsTextBoxActive(source->tb[i])){
             if(IsKeyPressed(KEY_TAB)){
@@ -188,7 +199,7 @@ OBGUIRET UpdateOBGUI(ObjectBoxGUI *source){
         else{
             source->facingBut->text[0]='X';
         }
-        return DOFACING;
+        return OBG_DOFACING;
     }
 
     return DONOTHING;
@@ -274,23 +285,24 @@ void GetObjFromOBGUI(ObjectBoxGUI *source){
     else{
         //material
         printf("M%d\n",x++);
-
-        for(int i = 0; i < TQCMATERIALS_COUNT;i++){
+        MaterialNode *ptr = tqcMaterials.head;
+        while(ptr){
             printf("M%d\n",x++);
 
-            if(tqcMaterials[i].name[0]==0){
+            if(ptr->data->name[0]==0){
                 printf("End of materials list\n");
-                source->companion->material = tqcMaterials[0];
+                source->companion->material = *tqcMaterials.head->data;
                 return;
 
             }
-            if(strcmp(tqcMaterials[i].name,source->tb[obgMaterial]->text)==0){
-                source->companion->material = tqcMaterials[i];
-                printf("Successful match:  %s with %s\n",source->tb[obgMaterial]->text,tqcMaterials[i].name);
+            if(strcmp(ptr->data->name,source->tb[obgMaterial]->text)==0){
+                source->companion->material = *ptr->data;
+                printf("Successful match:  %s with %s\n",source->tb[obgMaterial]->text,ptr->data->name);
                 return;
             }
-            printf("Failed match:  %s with %s\n",source->tb[obgMaterial]->text,tqcMaterials[i].name);
+            printf("Failed match:  %s with %s\n",source->tb[obgMaterial]->text,ptr->data->name);
 
+            ptr = ptr->next;
         }
         printf("M%d\n",x++);
 
