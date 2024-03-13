@@ -33,7 +33,7 @@ typedef struct{
 #define PALETTE_COUNT 10
 extern ColorPalette theme;
 extern ColorPalette palettes[PALETTE_COUNT];
-
+extern int themeIndex;
 
 //////////////////////////////////////////////////////////////
 ///------------------------<Materials>----------------------------//
@@ -145,7 +145,7 @@ Vector3 getObjectCOM(Object *source, float t);
 
 double getObjectWeight(Object *source);
 
-Vector4 getAverageCOM(ObjectList *list, float t);
+Vector4 getAverageCOM(ObjectList *list, float t, float *weightDestination);
 
 void deleteObject(ObjectList *source, int index);
 
@@ -189,7 +189,10 @@ int getProjectCount();
 
 char * getProjectNames();
 
-int makeConfig(int width, int height,char wMode, char doLogo);
+int makeConfig(int width, int height,char wMode, char doLogo, int colorTheme);
+
+bool doesProjectExist(char *name);
+
 
 //////////////////////////////////////////////////////////////
 //------------------------<Resources>----------------------------//

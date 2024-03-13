@@ -161,10 +161,10 @@ void UpdateSettingsScreen(void)
     if(IsButtonPressed(applyBut)){
         if(presetResolutions[resolutionIndex] != screenHeight || newWM != windowMode || newDoLogo != drawLogo){
             if(newWM == 'b'){
-                makeConfig(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()),newWM,newDoLogo);
+                makeConfig(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()),newWM,newDoLogo,themeIndex);
             }
             else{
-                makeConfig(presetResolutions[resolutionIndex]*16/9,presetResolutions[resolutionIndex],newWM,newDoLogo);
+                makeConfig(presetResolutions[resolutionIndex]*16/9,presetResolutions[resolutionIndex],newWM,newDoLogo,themeIndex);
 
             }
             finishScreen = REINIT;

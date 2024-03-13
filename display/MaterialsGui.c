@@ -17,6 +17,7 @@ void DefaultMGUI(MaterialGUI *source){
         memset(source->tb[i]->text, 0, sizeof(source->tb[i]->textSize));
         source->tb[i]->textIndex = 0;
     }
+
     strcpy(source->tb[mgName]->text, "Name");
     source->tb[mgName]->textIndex+=4;
 
@@ -36,46 +37,47 @@ void DefaultMGUI(MaterialGUI *source){
     strcpy(source->tb[mgB]->text, "B");
     source->tb[mgB]->textIndex+=1;
     source->companion = NULL;
+
+
 }
 
 MaterialGUI* InitMGUI(void){
     MaterialGUI* gui = calloc(1, sizeof(MaterialGUI));
-    gui->pos = (Vector2){(float)screenWidth * .79f, (float)screenHeight * .025f};
+    gui->pos = (Vector2){(float)screenWidth * .18f, (float)screenHeight * .05f};
 
     gui->companion = NULL;
-
     gui->tb[mgName] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .005, screenWidth * .19, screenHeight * .05}, 20);
     strcpy(gui->tb[mgName]->text, "Name");
     gui->tb[mgName]->textIndex+=4;
 
-    gui->tb[mgDensity] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .065, screenWidth * .19, screenHeight * .05}, 20);
+    gui->tb[mgDensity] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .1, screenWidth * .19, screenHeight * .05}, 20);
     strcpy(gui->tb[mgDensity]->text, "Density lbs/in^3");
     gui->tb[mgDensity]->textIndex+=15;
 
-    gui->tb[mgR] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .125, screenWidth * .19, screenHeight * .05}, 20);
+    gui->tb[mgR] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .2, screenWidth * .06, screenHeight * .05}, 4);
     strcpy(gui->tb[mgR]->text, "R");
     gui->tb[mgR]->textIndex+=1;
 
-    gui->tb[mgG] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .185, screenWidth * .19, screenHeight * .05}, 20);
+    gui->tb[mgG] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .07, gui->pos.y + screenHeight * .2, screenWidth * .06, screenHeight * .05}, 4);
     strcpy(gui->tb[mgG]->text, "G");
     gui->tb[mgG]->textIndex+=1;
 
-    gui->tb[mgB] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .005, gui->pos.y + screenHeight * .245, screenWidth * .19, screenHeight * .05}, 20);
+    gui->tb[mgB] = InitTextBox((Rectangle){gui->pos.x + screenWidth * .135, gui->pos.y + screenHeight * .2, screenWidth * .06, screenHeight * .05}, 4);
     strcpy(gui->tb[mgB]->text, "B");
     gui->tb[mgB]->textIndex+=1;
 
 
     //Buttons
-    gui->cancelBut = InitButton((Rectangle){gui->pos.x + screenWidth * .105, gui->pos.y + screenHeight * .475, screenWidth * .08, screenHeight * 0.08}, "Cancel", theme.black);
-    gui->saveBut = InitButton((Rectangle){gui->pos.x + screenWidth * .01, gui->pos.y + screenHeight * .475, screenWidth * .08, screenHeight * 0.08}, "Save", theme.accent1);
-    gui->deleteBut = InitButton((Rectangle){gui->pos.x + screenWidth * .105, gui->pos.y + screenHeight * .375, screenWidth * .08, screenHeight * 0.08}, "Delete", theme.dark);
+    gui->cancelBut = InitButton((Rectangle){gui->pos.x + screenWidth * .00125, gui->pos.y + screenHeight * .26, screenWidth * .065, screenHeight * 0.08}, "Cancel", theme.black);
+    gui->saveBut = InitButton((Rectangle){gui->pos.x + screenWidth * .06625, gui->pos.y + screenHeight * .26, screenWidth * .065, screenHeight * 0.08}, "Save", theme.accent1);
+    gui->deleteBut = InitButton((Rectangle){gui->pos.x + screenWidth * .1325, gui->pos.y + screenHeight * .26, screenWidth * .065, screenHeight * 0.08}, "Delete", theme.dark);
     return gui;
 }
 
 void DrawMGUI(MaterialGUI *source){
-    //x .79, y .025
-    DrawRectangle(source->pos.x,source->pos.y,screenWidth*.20,screenHeight*.5725,theme.light);
-    DrawRectangleLines(source->pos.x,source->pos.y,screenWidth*.20,screenHeight*.5725,theme.black);
+
+    DrawRectangle(source->pos.x,source->pos.y,screenWidth*.20,screenHeight*.8,theme.light);
+    DrawRectangleLines(source->pos.x,source->pos.y,screenWidth*.20,screenHeight*.8,theme.black);
 
     for(int i = 0; i < MATERIALGUITBCOUNT; i++){
         DrawTextBox(source->tb[i]);
@@ -84,7 +86,15 @@ void DrawMGUI(MaterialGUI *source){
     DrawButton(source->saveBut);
     DrawButton(source->cancelBut);
     DrawButton(source->deleteBut);
+    DrawTextEx(globalFont,"Density lb/in^3:",(Vector2){source->pos.x+screenWidth*0.005,source->pos.y+screenHeight*0.055},screenHeight*0.045,GETSPACING(screenHeight*0.045),theme.black);
+    DrawTextEx(globalFont,"Color (RGB):",(Vector2){source->pos.x+screenWidth*0.005,source->pos.y+screenHeight*0.155},screenHeight*0.045,GETSPACING(screenHeight*0.045),theme.black);
 
+    if(source->companion !=NULL){
+        float scale = (screenHeight * 0.45)/source->companion->texture.width;
+        if((screenWidth * 0.19)/source->companion->texture.height<scale) scale = (screenWidth * 0.195)/source->companion->texture.height;
+        DrawTextureEx(source->companion->texture,(Vector2){source->pos.x+screenWidth*0.195,source->pos.y+screenHeight*0.345},90,scale,source->companion->color);
+
+    }
 
 }
 
@@ -174,6 +184,8 @@ void GetMatFromMGUI(MaterialGUI *source, MaterialList *list){
         source->companion->color.b = 0;
     }
 
+    source->companion->color.a = 255;
+
     if(appendToList){
         appendMaterial(list, source->companion);
     }
@@ -184,7 +196,7 @@ void GetMGUIFromMat(MaterialGUI *source){
 
     strcpy(source->tb[mgName]->text, source->companion->name);
     source->tb[mgName]->textIndex = strlen(source->companion->name);
-    sprintf(source->tb[mgDensity]->text, "%.2f", source->companion->density);
+    sprintf(source->tb[mgDensity]->text, "%f", source->companion->density);
     source->tb[mgDensity]->textIndex = strlen(source->tb[mgDensity]->text);
     sprintf(source->tb[mgR]->text, "%d", source->companion->color.r);
     source->tb[mgR]->textIndex = strlen(source->tb[mgR]->text);

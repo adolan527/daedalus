@@ -12,7 +12,7 @@ int createProject(char *name, char *notes){
         printf("Maximum amount of projects reached");
         return 1;
     }
-    if(doesProjectExist(name) == 1){
+    if(doesProjectExist(name)){
         //project already exists
         printf("Already exists");
         return 1;

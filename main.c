@@ -62,7 +62,7 @@ ColorPalette palettes[PALETTE_COUNT] ={
 };
 
 
-int main(){
+int main(int argc, char **argv){
     /*
     initMaterialList();
     tqcMaterial thing = {"6061-Aluminum",0.099,GRAY};
@@ -73,6 +73,7 @@ int main(){
 
     writeMaterials(&tqcMaterials);
 */
+
     if(initProgram()!=0){
         printf("Init failed");
 
@@ -83,7 +84,17 @@ int main(){
 
         return 0;
     }
-    if(drawMain(LOGO)==1){
+
+    GameScreen startingScreen = LOGO;
+    if(argc>1){
+        if(!doesProjectExist(argv[1])){
+            createProject(argv[1],(argc > 2 ? argv[2] : ""));
+        }
+
+        openProject(argv[1]);
+        startingScreen = PROJECTMAIN;
+    }
+    if(drawMain(startingScreen)==1){
         if(initDraw()!=0){
             printf("Init draw failed");
 

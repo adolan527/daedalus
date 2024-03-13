@@ -8,7 +8,7 @@ int openProject(char *name){
     if(currentProject.name[0]!=0){
         closeProject();
     }
-    if(doesProjectExist(name)!=1) return 1;
+    if(!doesProjectExist(name)) return 1;
 
     //assign name
     strncpy(currentProject.name,name,NAMESIZE);

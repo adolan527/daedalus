@@ -9,8 +9,8 @@
 
 #include <sys/stat.h>
 #include "../main.h"
+#define DEFAULTMATERIALNAME "DEFAULT"
 
-int doesProjectExist(char *name);
 
 int readColors();
 

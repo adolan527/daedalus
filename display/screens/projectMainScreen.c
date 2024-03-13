@@ -35,7 +35,7 @@ static Camera camera;
 static Rectangle torqueBox = {0};
 static Vector2 torqueText = {0};
 static Vector2 comText = {0};
-
+static Vector2 weightText = {0};
 
 static Vector2 pmtSlider = {0};
 static Rectangle pmtLine = {0};
@@ -56,6 +56,7 @@ static Ray mouse;
 static ObjectBoxGUI *box = NULL;
 
 static Vector4 comTorque = {0};
+static float totalWeight = 0;
 static Vector3 averageCOM = {0};
 
 static float crosshairSize;
@@ -111,8 +112,10 @@ void InitProjectMainScreen(void)
     ispmtSliding = false;
 
     torqueBox = (Rectangle){screenWidth*.25,screenHeight*.825,screenWidth*.53,screenHeight*.15};
-    torqueText = (Vector2){torqueBox.x + torqueBox.width * 0.02, screenHeight*.84 };
-    comText = (Vector2){torqueBox.x + torqueBox.width * 0.02, screenHeight*.88 };
+    torqueText = (Vector2){torqueBox.x + torqueBox.width * 0.02, screenHeight*.83 };
+    weightText = (Vector2){torqueBox.x + torqueBox.width * 0.02, screenHeight*.86 };
+
+    comText = (Vector2){torqueBox.x + torqueBox.width * 0.02, screenHeight*.89 };
 
     pmtLine = (Rectangle){screenWidth*0.52,screenHeight*0.895,screenWidth*0.25,screenHeight*0.05};
     pmtSlider = (Vector2){pmtLine.x+pmtLine.width/2,screenHeight*0.92};
@@ -158,6 +161,7 @@ void InitProjectMainScreen(void)
 
         ModelObject(obj->data);
         obj->data->model->materials[0].shader = shader;
+
         UpdateInfoBox(obj->data);
         //printf("Object found\n");
     }
@@ -349,7 +353,7 @@ void UpdateProjectMainScreen(void)
 
 
 
-    comTorque = getAverageCOM(&currentProject.objList, parameter);
+    comTorque = getAverageCOM(&currentProject.objList, parameter, &totalWeight);
     averageCOM = (Vector3){comTorque.x,comTorque.y,comTorque.z};
 
 
@@ -385,9 +389,11 @@ void DrawProjectMainScreen(void)
     DrawCircleV(pmtSlider,pmtLine.height/2,(Color){theme.accent2.r,theme.accent2.g,theme.accent2.b,127});
 
     DrawTextEx(globalFont, TextFormat("Torque: %f in/lbs",comTorque.w),torqueText,torqueBox.height*.225,GETSPACING(torqueBox.height*.225),theme.black);
+    DrawTextEx(globalFont, TextFormat("Weight: %f lbs",totalWeight),weightText,torqueBox.height*.225,GETSPACING(torqueBox.height*.225),theme.black);
+
     DrawTextEx(globalFont, TextFormat("C.o.M.:",comTorque.w),comText,torqueBox.height*.225,GETSPACING(torqueBox.height*.225),theme.black);
     DrawTextEx(globalFont,TextFormat("(%.4f, %.4f, %.4f)",comTorque.x,comTorque.y,comTorque.z),
-               (Vector2){comText.x,comText.y * 1.05},torqueBox.height*.225,GETSPACING(torqueBox.height*.225),theme.black);
+               (Vector2){comText.x,comText.y + torqueBox.height * .24},torqueBox.height*.225,GETSPACING(torqueBox.height*.225),theme.black);
 
 
     DrawButton(&newObjBut);
@@ -400,23 +406,23 @@ void DrawProjectMainScreen(void)
         DrawTextEx(globalFont,"Volume:",
                    (Vector2){screenWidth*.8,screenHeight*0.6125},infoBoxTextSize,infoBoxTextSpacing,theme.white);
         DrawTextEx(globalFont,"Weight:",
-                      (Vector2){screenWidth*.8,screenHeight*0.6525},infoBoxTextSize,infoBoxTextSpacing,WHITE);
+                      (Vector2){screenWidth*.8,screenHeight*0.6525},infoBoxTextSize,infoBoxTextSpacing,theme.white);
         DrawTextEx(globalFont,"Torque:",
-                        (Vector2){screenWidth*.8,screenHeight*0.6925},infoBoxTextSize,infoBoxTextSpacing,WHITE);
+                        (Vector2){screenWidth*.8,screenHeight*0.6925},infoBoxTextSize,infoBoxTextSpacing,theme.white);
         DrawTextEx(globalFont,"C.o.M.:",
-                              (Vector2){screenWidth*.8,screenHeight*0.7325},infoBoxTextSize,infoBoxTextSpacing,WHITE);
+                              (Vector2){screenWidth*.8,screenHeight*0.7325},infoBoxTextSize,infoBoxTextSpacing,theme.white);
         DrawTextEx(globalFont,TextFormat("%f in3",currentVolume),
-                   (Vector2){screenWidth*.87,screenHeight*0.6125},infoBoxTextSize,infoBoxTextSpacing,WHITE);
+                   (Vector2){screenWidth*.87,screenHeight*0.6125},infoBoxTextSize,infoBoxTextSpacing,theme.white);
         DrawTextEx(globalFont,TextFormat("%f lbs",currentWeight),
-                   (Vector2){screenWidth*.87,screenHeight*0.6525},infoBoxTextSize,infoBoxTextSpacing,WHITE);
+                   (Vector2){screenWidth*.87,screenHeight*0.6525},infoBoxTextSize,infoBoxTextSpacing,theme.white);
         DrawTextEx(globalFont,TextFormat("%f in/lbs",currentTorque),
-                   (Vector2){screenWidth*.87,screenHeight*.6925},infoBoxTextSize,infoBoxTextSpacing,WHITE);
+                   (Vector2){screenWidth*.87,screenHeight*.6925},infoBoxTextSize,infoBoxTextSpacing,theme.white);
         DrawTextEx(globalFont,TextFormat("(%.4f,%.4f,%.4f)",currentCOM.x,currentCOM.y,currentCOM.z),
-                   (Vector2){screenWidth*.8,screenHeight*0.7725},infoBoxTextSize,infoBoxTextSpacing,WHITE);
+                   (Vector2){screenWidth*.8,screenHeight*0.7725},infoBoxTextSize,infoBoxTextSpacing,theme.white);
 
     }
-    DrawRectangle(screenWidth*0.49,screenHeight*0.4975,screenWidth*0.02,crosshairSize,BLACK);
-    DrawRectangle((screenWidth-crosshairSize)/2,screenHeight*0.485,crosshairSize,screenHeight*0.03,BLACK);
+    DrawRectangle(screenWidth*0.49,screenHeight*0.4975,screenWidth*0.02,crosshairSize,theme.black);
+    DrawRectangle((screenWidth-crosshairSize)/2,screenHeight*0.485,crosshairSize,screenHeight*0.03,theme.black);
 
 }
 

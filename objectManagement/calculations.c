@@ -227,11 +227,12 @@ inline double getObjectWeight(Object *source){
         return volume * source->material.density;
     }
     else{
+        //printf("Object Weight: %.2f\n",source->material.density);
         return source->material.density;
     }
 }
 
-Vector4 getAverageCOM(ObjectList *list, float t){
+Vector4 getAverageCOM(ObjectList *list, float t, float *weightDestination){
     Vector3 com = {0};
     Vector4 returnValue;
     float weight = 0, totalWeight = 0;
@@ -247,5 +248,6 @@ Vector4 getAverageCOM(ObjectList *list, float t){
     returnValue.x = com.x;
     returnValue.y = com.y;
     returnValue.z = com.z;
+    *weightDestination = totalWeight;
     return returnValue;
 }

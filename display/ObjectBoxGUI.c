@@ -274,13 +274,16 @@ void GetObjFromOBGUI(ObjectBoxGUI *source){
 
     if(source->materialBut->text[0]=='W'){
         //weight
-        printf("W%d\n",x++);
+        printf("Weight: %d\n",x++);
 
         source->companion->material.color = BLUE;
         source->companion->material.texture = (Texture2D){0};
         strcpy(source->companion->material.name, WEIGHTMATERIAL);
 
-        source->companion->material.density = strtod(source->tb[obgMaterial]->text, NULL) / getObjectVolume(source->companion);
+        source->companion->material.density = strtof(source->tb[obgMaterial]->text,&end);
+        if(end == source->tb[obgMaterial]->text){
+            source->companion->material.density = 0;
+        }
     }
     else{
         //material
@@ -361,7 +364,7 @@ void GetOBGUIFromObj(ObjectBoxGUI *source){
     if(strcmp(source->companion->material.name,WEIGHTMATERIAL)==0){
         //weight
         strcpy(source->materialBut->text, WEIGHTMATERIAL);
-        sprintf(source->tb[obgMaterial]->text, "%.2f", source->companion->material.density * getObjectVolume(source->companion));
+        sprintf(source->tb[obgMaterial]->text, "%.2f", source->companion->material.density);
     }
     else{
         //material

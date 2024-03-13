@@ -10,7 +10,7 @@ int readColors(){
     }
     for(int i = 0;i < PALETTE_COUNT && !feof(colors); i++){
 
-        if(fread(&palettes[i],sizeof(ColorPalette ),1,colors) != 1){
+        if(fread(&palettes[i], sizeof(ColorPalette ), 1, colors) != 1){
             fclose(colors);
             return 0;
         }
@@ -33,11 +33,16 @@ int readMaterials(MaterialList *list){
             fclose(materials);
             return 0;
         }
-        appendMaterial(list,new);
+        if(strcmp(DEFAULTMATERIALNAME,new->name)==0){
+            free(new);
+        }
+        else{
+            appendMaterial(list,new);
+
+        }
 
     }
     fclose(materials);
-
 
     return 0;
 }
@@ -127,11 +132,13 @@ int writeMaterials(MaterialList *source){
     }
     MaterialNode *ptr = tqcMaterials.head;
     while(ptr){
-        if( fwrite(ptr->data->name,NAMESIZE,1,materials)!=1 ||
-            fwrite(&ptr->data->density,sizeof(double),1,materials) != 1 ||
-            fwrite(&ptr->data->color,sizeof(Color),1,materials) != 1){
-            fclose(materials);
-            return 1;
+        if(strcmp(DEFAULTMATERIALNAME,ptr->data->name)!=0){
+            if( fwrite(ptr->data->name,NAMESIZE,1,materials)!=1 ||
+                fwrite(&ptr->data->density,sizeof(double),1,materials) != 1 ||
+                fwrite(&ptr->data->color,sizeof(Color),1,materials) != 1){
+                fclose(materials);
+                return 1;
+            }
         }
         ptr = ptr->next;
         counter++;

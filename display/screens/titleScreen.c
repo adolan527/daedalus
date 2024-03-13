@@ -166,7 +166,7 @@ void DrawTitleScreen(void)
 {
     // TODO: Draw TITLE screen here!
 
-    for(int i = 0; i<triangleCount;i++){
+    for(int i = 0; i<triangleCount/2;i++){
 
         DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
         DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
@@ -178,6 +178,12 @@ void DrawTitleScreen(void)
     DrawButton(settingsBut);
     DrawButton(openBut);
 
+    for(int i = triangleCount/2; i<triangleCount;i++){
+
+        DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
+        DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
+        DrawLineEx(triangles[i].v3,triangles[i].v1,5,theme.light);
+    }
 
 
 }

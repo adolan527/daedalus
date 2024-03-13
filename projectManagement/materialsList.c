@@ -35,7 +35,13 @@ int isMaterialInList(MaterialList *list, tqcMaterial *source){
 }
 
 MaterialList initMaterialList(){
-    return (MaterialList){NULL,NULL};
+    MaterialList list = {NULL,NULL};
+    tqcMaterial *defaultMaterial = calloc(1,sizeof(tqcMaterial));
+    strcpy(defaultMaterial->name,DEFAULTMATERIALNAME);
+    defaultMaterial->density = 1;
+    defaultMaterial->color = (Color){255,255,255,255};
+    appendMaterial(&list,defaultMaterial);
+    return list;
 }
 
 int getMaterialCount(MaterialList *source){
@@ -48,6 +54,10 @@ int getMaterialCount(MaterialList *source){
 
 void appendMaterial(MaterialList *source, tqcMaterial *data){
     MaterialNode *new = malloc(sizeof(MaterialNode));
+    if(new==NULL){
+        printf("Failed malloc\n");
+        return;
+    }
     new->data = data;
     new->next = NULL;
     if(source->tail != NULL) source->tail->next = new;
@@ -85,7 +95,9 @@ tqcMaterial* getMaterialPointer(MaterialList *source, int index){
 
 void refreshMaterialList(MaterialList *list){
     writeMaterials(list);
+    return;
     closeMaterialList(list);
+    *list = initMaterialList();
     readMaterials(list);
 
 

@@ -25,7 +25,7 @@ int doesConfigExist(){
     return 0;
 }
 
-int makeConfig(int width, int height,char wMode,char doLogo){
+int makeConfig(int width, int height,char wMode,char doLogo, int colorTheme){
 
     FILE *config = fopen("config.dat","w");
     if(config == NULL){
@@ -37,6 +37,7 @@ int makeConfig(int width, int height,char wMode,char doLogo){
     fprintf(config,"\nres:%dx%d\n",width,height);
     fprintf(config,"window:%c\n",wMode);
     fprintf(config,"logo:%c\n",doLogo);
+    fprintf(config,"theme:%d\n",colorTheme);
 
     fclose(config);
     return 0;
@@ -58,11 +59,12 @@ int initProgram() {
         retVal += readColors();
         return retVal;
     }
-    const int defaultWidth = 1480;
+    const int defaultWidth = 1280;
     const int defaultHeight = 720;
     const char defaultWMode = 'w';
     const char defaultDoLogo = 't';
-    retVal += makeConfig(defaultWidth,defaultHeight,defaultWMode,defaultDoLogo);
+    const int defaultColorTheme = 0;
+    retVal += makeConfig(defaultWidth,defaultHeight,defaultWMode,defaultDoLogo,defaultColorTheme);
     FILE *error = fopen("error.log","w");
     if(error == NULL){
         return 1;

@@ -8,6 +8,7 @@ int screenHeight = 0;
 char windowMode = 'w';
 char drawLogo = 't';
 ColorPalette theme;
+int themeIndex = 0;
 Font globalFont, titleFont;
 
 
@@ -21,13 +22,6 @@ int initDraw(){
 
     screenWidth = 0;
     screenHeight = 0;
-
-
-    theme = palettes[4];
-    if(*(int*)(&theme.white)==0){
-        theme=palettes[0];
-    }
-
 
 
     FILE *config = fopen("config.dat","r");
@@ -48,6 +42,10 @@ int initDraw(){
 
     fgets(buffer,16,config);
     drawLogo = *(strchr(buffer,':') + 1);
+
+    fgets(buffer,16,config);
+    themeIndex = strtol(strchr(buffer,':')+1,NULL,10);
+    theme = palettes[themeIndex];
 
     fclose(config);
 

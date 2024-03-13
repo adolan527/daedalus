@@ -3,13 +3,13 @@
 //
 #include "projectManagement.h"
 
-int doesProjectExist(char *name){
+bool doesProjectExist(char *name){
     chdir("projects");
     system("dir /b/a:d > projects.dat");
 
     FILE *projects = fopen("projects.dat", "r");
     if(projects == NULL){
-        return 0;
+        return false;
     }
 
     while(!feof(projects)){
@@ -19,7 +19,7 @@ int doesProjectExist(char *name){
             if(buf == -1){
                 fclose(projects);
                 chdir("../");
-                return 0;
+                return false;
             }
             buffer[bufferIndex] = (char)buf;
             bufferIndex ++;
@@ -28,12 +28,12 @@ int doesProjectExist(char *name){
         if(strcmp(buffer,name)==0){
             fclose(projects);
             chdir("../");
-            return 1;
+            return true;
         }
 
     }
     chdir("../");
-    return 0;
+    return false;
 }
 
 int getProjectCount(){
@@ -80,7 +80,7 @@ char * getProjectNames(){
 }
 
 void previewProjectInfo(char *dest, int destSize, char *name){
-    if(doesProjectExist(name)!=1) {
+    if(!doesProjectExist(name)) {
         sprintf(dest,"Project (%s) does not exist",name);
         return;
     }

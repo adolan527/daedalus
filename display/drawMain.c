@@ -59,7 +59,6 @@ Light lights[MAX_LIGHTS];
 //----------------------------------------------------------------------------------
 int drawMain(GameScreen startingScreen)
 {
-    ambientLightColor = ColorBrightness(theme.white,-0.3f);
 
     shader = LoadShader("resources/shaders/lighting.vs",
                         "resources/shaders/lighting.fs");
@@ -69,11 +68,13 @@ int drawMain(GameScreen startingScreen)
     int ambientLoc = GetShaderLocation(shader, "ambient");
     SetShaderValue(shader, ambientLoc, (float[4]){ 0.1f, 0.1f, 0.1f, 1.0f }, SHADER_UNIFORM_VEC4);
 
+
+    ambientLightColor = ColorBrightness(theme.white,-0.3f);
+
     lights[0] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ 50, 100, 50}, Vector3Zero(), ambientLightColor, shader);
     lights[1] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ -50, -100, -50}, Vector3Zero(), ambientLightColor, shader);
     lights[2] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ -50, 100, -50}, Vector3Zero(), ambientLightColor, shader);
     lights[3] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ 50, -100, 50}, Vector3Zero(), ambientLightColor, shader);
-
 
     int returnValue = 0;
     // Initialization
@@ -136,10 +137,16 @@ int drawMain(GameScreen startingScreen)
     }
 
     // Unload global data loaded
-    closeMaterialList(&tqcMaterials);
-    UnloadFont(globalFont);
-    if(returnValue!=1)    UnloadShader(shader);
 
+    UnloadFont(globalFont);
+    UnloadFont(titleFont);
+
+
+    if(returnValue!=1) {
+        UnloadShader(shader);
+        UnloadMaterialsTextures(&tqcMaterials);
+        closeMaterialList(&tqcMaterials);
+    }
 
 
     CloseWindow();          // Close window and OpenGL context

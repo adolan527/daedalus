@@ -65,6 +65,7 @@ set(SOURCES
         display/screens/materialsScreen.c
         projectManagement/materialsList.c
         display/MaterialsGui.c
+        display/ColorGui.c
 )
 
 # Our Project

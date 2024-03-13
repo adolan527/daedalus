@@ -74,6 +74,15 @@ typedef struct{
     bool isTyping;
 }TextBox;
 
+typedef enum{
+    DONOTHING,
+    DOSAVE,
+    DOCANCEL,
+    ISTYPING,
+    OBG_DOFACING,
+    DODELETE,
+    COL_DOCHANGETHEME
+}GUIRET;
 
 #define OBGUITBCOUNT 10
 typedef struct{
@@ -83,17 +92,6 @@ typedef struct{
     Object *companion;
 }ObjectBoxGUI;
 
-
-
-typedef enum{
-    DONOTHING,
-    DOSAVE,
-    DOCANCEL,
-    ISTYPING,
-    OBG_DOFACING,
-    DODELETE
-}GUIRET;
-
 #define MATERIALGUITBCOUNT 5
 typedef struct{
     Vector2 pos;
@@ -102,6 +100,13 @@ typedef struct{
     tqcMaterial *companion;
 }MaterialGUI;
 
+#define COLORGUICOUNT 18
+typedef struct{
+    Vector2 pos;
+    TextBox *tb[COLORGUICOUNT];
+    Button *saveBut, *cancelBut, *deleteBut, *selectBut;
+    ColorPalette *companion;
+}ColorGUI;
 
 
 
@@ -233,6 +238,18 @@ GUIRET UpdateMGUI(MaterialGUI *source);
 void GetMatFromMGUI(MaterialGUI *source, MaterialList *list);
 void GetMGUIFromMat(MaterialGUI *source);
 void DefaultMGUI(MaterialGUI *source);
+
+
+
+
+void DrawCGUI(ColorGUI *source);
+void CloseCGUI(ColorGUI *source);
+GUIRET UpdateCGUI(ColorGUI *source);
+void GetCGUIFromColor(ColorGUI *source);
+void GetColorFromCGUI(ColorGUI *source);
+ColorGUI* InitCGUI(void);
+
+
 
 Mesh GenMeshRectTube(Object *obj);
 Mesh GenMeshCustom();
