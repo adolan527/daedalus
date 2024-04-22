@@ -13,8 +13,31 @@ The program does create one directory and two files in whatever directory you pu
 3. Run the program
 
 The .exe will create all of the necessary subdirectories and files when it initializes itself.
+See below for information on the customization of the program and its appearance.
 
 # File Structure
+## torqueCalculator.exe
+The main executable. It can be called from the command line, where the first argument is the name or directory of the project you want to open.
+Ex: `>torqueCalculator.exe project1`
+
+## config.dat and error.log
+These two files are created in the same directory as the executable. config.dat is formatted as such:
+```
+torqueCalculator //Mandatory Header
+res:WIDTHxHEIGHT 
+window:WINDOWMODE
+logo:BOOL
+theme:PALETTEINDEX
+```
+WIDTH and HEIGHT are self explanatory. Ex: 1920x1080.
+WINDOWMODE is one of: *w*, *b*, or *f*. Windowed, borderless, or fullscreen.
+BOOL is either *t* or *f*. If true, then the Raylib logo is drawn on startup.
+PALETTEINDEX is an int. It is the index in the array that holds all of the color palettes/themes. Out-of-bounds indexing is an undefined behavior.
+
+None of these values need to be changed through the file manually, as the program provides interfaces for changing all of these values. The exception is weird resolution ratios.
+
+error.log is not implemented. It is never written to or read from. It is only referenced the first time the program is run. 
+The RayLib console TraceLogs are sufficient for detecting errors, but in the future, those could be redirected to this file.
 
 ## Projects
 Contains a folder for each project, in addition to a **projects.dat** file.
