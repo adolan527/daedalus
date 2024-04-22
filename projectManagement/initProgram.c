@@ -53,7 +53,7 @@ int initProgram() {
 
     if (doesConfigExist() == 0) {
         //program is already initialized
-        getProjectCount();
+        getProjectCount(); //updates global variable
         tqcMaterials = initMaterialList();
         retVal += readMaterials(&tqcMaterials);
         retVal += readColors();

@@ -22,7 +22,6 @@ double computePolynomial(Polynomial *function, double input);
 
 double integratePolynomial(Polynomial *function, double a, double b);
 
-
 void stringifyPolynomial(Polynomial *function,char *destString);
 
 

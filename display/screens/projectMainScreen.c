@@ -101,9 +101,6 @@ void InitProjectMainScreen(void)
     currentWeight = 0;
     currentTorque = 0;
 
-
-
-
     crosshairSize = (float)screenHeight/250;
     framesCounter = 0;
     finishScreen = -1;
@@ -143,8 +140,6 @@ void InitProjectMainScreen(void)
             false,
             false
     };
-
-
 
     backBut = (Button){
             "Back",

@@ -120,7 +120,7 @@ void UpdateLogoScreen(void)
                 if (alpha <= 0.0f)
                 {
                     alpha = 0.0f;
-                    finishScreen = 1;   // Jump to next screen
+                    finishScreen = TITLE;   // Jump to next screen
                 }
             }
         }

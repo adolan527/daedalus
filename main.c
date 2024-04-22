@@ -7,7 +7,7 @@ Project currentProject = {0};
 
 ColorPalette palettes[PALETTE_COUNT] ={
 
-        {//basic
+        {// basic/defualt color palette if none are loaded
                 RAYWHITE,BLACK,SKYBLUE,DARKGRAY,DARKGREEN,MAROON
         }/*,
         {//advanced red/yellow/green/white
@@ -63,37 +63,41 @@ ColorPalette palettes[PALETTE_COUNT] ={
 
 
 int main(int argc, char **argv){
-    /*
-    initMaterialList();
-    tqcMaterial thing = {"6061-Aluminum",0.099,GRAY};
-    tqcMaterial thing2 = {"Pine-wood",0.00123,BEIGE};
-
-    appendMaterial(&tqcMaterials,&thing);
-    appendMaterial(&tqcMaterials,&thing2);
-
-    writeMaterials(&tqcMaterials);
-*/
 
     if(initProgram()!=0){
         printf("Init failed");
-
         return 0;
     }
     if(initDraw()!=0){
         printf("Init draw failed");
-
         return 0;
     }
 
     GameScreen startingScreen = LOGO;
+    //I don't like having this much logic in main, but this is a minor last minute addition
     if(argc>1){
-        if(!doesProjectExist(argv[1])){
-            createProject(argv[1],(argc > 2 ? argv[2] : ""));
+        char *substr = strstr(argv[1],"projects\\");;
+        if(substr==NULL){
+            //arg is a project name
+            if(!doesProjectExist(argv[1])){
+                createProject(argv[1],(argc > 2 ? argv[2] : ""));
+            }
+            openProject(argv[1]);
+            startingScreen = PROJECTMAIN;
         }
-
-        openProject(argv[1]);
-        startingScreen = PROJECTMAIN;
+        else{
+            //If arg is a path
+            char name[NAMESIZE+1] = {0};
+            char* endOfName = strchr(substr+9,'\\');
+            if(endOfName!=NULL){
+                strncpy(name,substr+9,endOfName-substr-9);
+                openProject(name);
+                startingScreen = PROJECTMAIN;
+            }
+        }
     }
+
+
     if(drawMain(startingScreen)==1){
         if(initDraw()!=0){
             printf("Init draw failed");

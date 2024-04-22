@@ -41,7 +41,7 @@ static float buttonWidth = 250;
 
 static int fontSize;
 static Vector2 titlePos,titleSize;
-#define triangleCount 10
+#define triangleCount 12 //should be a multiple of 4
 TITLE_Triangle triangles[triangleCount];
 
 
@@ -166,7 +166,7 @@ void DrawTitleScreen(void)
 {
     // TODO: Draw TITLE screen here!
 
-    for(int i = 0; i<triangleCount/2;i++){
+    for(int i = 0; i<triangleCount/4;i++){
 
         DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
         DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
@@ -175,10 +175,22 @@ void DrawTitleScreen(void)
 
     DrawTextEx(titleFont,TITLE,titlePos, fontSize, GETSPACING(fontSize),theme.accent1);
 
+    for(int i = triangleCount/4; i<triangleCount/2;i++){
+
+        DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
+        DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
+        DrawLineEx(triangles[i].v3,triangles[i].v1,5,theme.light);
+    }
     DrawButton(settingsBut);
+    for(int i = triangleCount/2; i<3*triangleCount/4;i++){
+
+        DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
+        DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
+        DrawLineEx(triangles[i].v3,triangles[i].v1,5,theme.light);
+    }
     DrawButton(openBut);
 
-    for(int i = triangleCount/2; i<triangleCount;i++){
+    for(int i = 3*triangleCount/4; i<triangleCount;i++){
 
         DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
         DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);

@@ -58,8 +58,11 @@ int createProject(char *name, char *notes){
         },sizeof(Object),1,objects);
     fclose(objects);
 
+
     chdir("..");
     system("dir /b/a:d > projects.dat");
+
+
     chdir("..");
 
     projectCount++;

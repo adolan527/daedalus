@@ -16,13 +16,9 @@ Font globalFont, titleFont;
 int initDraw(){
 
     SetTextLineSpacing(20);
-
     SetConfigFlags(FLAG_MSAA_4X_HINT);
-
-
     screenWidth = 0;
     screenHeight = 0;
-
 
     FILE *config = fopen("config.dat","r");
     fseek(config,CONFIG_HEADER_SIZE+1,SEEK_CUR);
@@ -49,15 +45,20 @@ int initDraw(){
 
     fclose(config);
 
-
-    InitWindow(screenWidth, screenHeight, "Torque Calculator");
+    InitWindow(screenWidth, screenHeight, "Daedalus");
 
     SetExitKey(KEY_NULL);
 
     LoadMaterialsTextures(&tqcMaterials);
 
-    globalFont = LoadFontEx("resources/fonts/times.ttf",100,NULL,0);
-    titleFont = LoadFontEx("resources/fonts/America.otf",screenHeight/3,NULL,0);
+    globalFont = LoadFontEx("resources/fonts/main.ttf",100,NULL,0);
+    if(globalFont.baseSize != 100){
+        globalFont = LoadFontEx("resources/fonts/main.otf",100,NULL,0);
+    }
+    titleFont = LoadFontEx("resources/fonts/title.ttf",screenHeight/3,NULL,0);
+    if(titleFont.baseSize != screenHeight/3){
+        titleFont = LoadFontEx("resources/fonts/title.otf",screenHeight/3,NULL,0);
+    }
     if(windowMode == 'f'){
         if(IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) == true)ToggleBorderlessWindowed();
 

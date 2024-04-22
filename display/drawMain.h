@@ -110,8 +110,6 @@ typedef struct{
 
 
 
-
-
 int drawMain(GameScreen startingScreen);
 int initDraw(void);
 
