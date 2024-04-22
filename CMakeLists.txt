@@ -47,8 +47,7 @@ set(SOURCES
     "display/screens/titleScreen.c"
     "display/screens/settingsScreen.c"
     "display/screens/editObjectScreen.c"
-    "display/screens/createProjectScreen.c"
-    "display/screens/projectMainScreen.c"
+        "display/screens/projectMainScreen.c"
     "display/screens/logoScreen.c"
     display/buttons.c
     display/screens/openProjectScreen.c
@@ -56,11 +55,17 @@ set(SOURCES
         display/drawTextInRectangle.c
         display/drawObject.c
         main.h
-        display/materials.c
         display/modelObject.c
         projectManagement/projectUtils.c
         projectManagement/dataIO.c
         display/textbox.c
+        display/ObjectBoxGUI.c
+        display/CustomMesh.c
+        display/rlights.c
+        display/screens/materialsScreen.c
+        projectManagement/materialsList.c
+        display/MaterialsGui.c
+        display/ColorGui.c
 )
 
 # Our Project

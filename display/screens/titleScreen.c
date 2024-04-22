@@ -35,30 +35,44 @@ typedef struct{
 
 static int framesCounter = 0;
 static int finishScreen = 0;
-static Button settingsBut = {0};
-static Button createBut = {0};
-static Button openBut = {0};
+static Button *settingsBut, *openBut;
 static float buttonHeight = 100;
 static float buttonWidth = 250;
 
-
-#define triangleCount 10
+static int fontSize;
+static Vector2 titlePos,titleSize;
+#define triangleCount 12 //should be a multiple of 4
 TITLE_Triangle triangles[triangleCount];
+
+
 //----------------------------------------------------------------------------------
 // Title Screen Functions Definition
 //----------------------------------------------------------------------------------
-
+#define TITLE "Daedalus"
 // Title Screen Initialization logic
 void InitTitleScreen(void)
 {
     // TODO: Initialize TITLE screen variables here!
     framesCounter = 0;
     finishScreen = -1;
-    buttonHeight = screenHeight/9;
-    buttonWidth = buttonHeight * 2.5;
-    createBut = (Button){"Create New Project", {(screenWidth - buttonWidth*1.25) / 2, screenHeight / 2 - 0.25 * buttonHeight, buttonWidth*1.25, buttonHeight*1.25}, theme.accent2, theme.white, false, false, false};
-    openBut = (Button){"Open Project", {(screenWidth-buttonWidth)/2,screenHeight/2 + 1.5 * buttonHeight,buttonWidth,buttonHeight}, theme.accent2, theme.white, false, false, false};
-    settingsBut = (Button){"Settings", {(screenWidth - buttonWidth) / 2, screenHeight / 2 + 3 * buttonHeight, buttonWidth, buttonHeight}, theme.accent2, theme.white, false, false, false};
+    buttonHeight = (float)screenHeight/9.0f;
+    buttonWidth = buttonHeight * 2.5f;
+
+    openBut = InitButton((Rectangle){(screenWidth - buttonWidth*1.5) / 2, screenHeight / 2 + 0.5 * buttonHeight, buttonWidth*1.5, buttonHeight*1.5},
+                         "Open Project", theme.dark);
+    settingsBut = InitButton((Rectangle){(screenWidth - buttonWidth) / 2, screenHeight / 2 + 2.25 * buttonHeight, buttonWidth, buttonHeight},
+                             "Settings", theme.accent2);
+
+    fontSize = screenHeight/3;
+    titleSize = MeasureTextEx(titleFont,TITLE,fontSize,GETSPACING(fontSize));
+
+    while(titleSize.x+screenWidth/10>screenWidth){
+        fontSize-=8;
+        titleSize = MeasureTextEx(titleFont,TITLE,fontSize,GETSPACING(fontSize));
+    }
+    titlePos = (Vector2){screenWidth/2 - titleSize.x/2,screenHeight/2 - titleSize.y*.75};
+
+
 
     for(int i = 0;i<triangleCount;i++){
         triangles[i].d = GetRandomValue(screenWidth/45,screenWidth/15);
@@ -85,6 +99,7 @@ void InitTitleScreen(void)
         triangles[i].v3.x = cosf(triangles[i].spinDir*(float)offset/100 + 11 *PI/6) * triangles[i].d + triangles[i].c.x;
         triangles[i].v3.y = sinf(triangles[i].spinDir*(float)offset/100 + 11 *PI/6) * triangles[i].d + triangles[i].c.y;
     }
+
 
 
 
@@ -132,22 +147,13 @@ void UpdateTitleScreen(void)
         }
     }
 
-
-
-
-
-
-
     // Press enter or tap to change to GAMEPLAY screen
-    if(IsButtonPressed(&settingsBut) == true){
+    if(IsButtonPressed(settingsBut) == true){
         finishScreen = SETTINGS;
         return;
     }
-    if(IsButtonPressed(&createBut) == true){
-        finishScreen = CREATEPROJECT;
-        return;
-    }
-    if(IsButtonPressed(&openBut)==true){
+
+    if(IsButtonPressed(openBut)==true){
         finishScreen = OPENPROJECT;
         return;
     }
@@ -160,25 +166,36 @@ void DrawTitleScreen(void)
 {
     // TODO: Draw TITLE screen here!
 
-    for(int i = 0; i<triangleCount;i++){
+    for(int i = 0; i<triangleCount/4;i++){
 
         DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
         DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
         DrawLineEx(triangles[i].v3,triangles[i].v1,5,theme.light);
     }
-    int fontSize = screenHeight/2;
-    int textWidth = MeasureText("Torque Calculator",fontSize);
 
-    while(textWidth+screenWidth/10>screenWidth){
-        fontSize-=8;
-        textWidth = MeasureText("Torque Calculator",fontSize);
+    DrawTextEx(titleFont,TITLE,titlePos, fontSize, GETSPACING(fontSize),theme.accent1);
+
+    for(int i = triangleCount/4; i<triangleCount/2;i++){
+
+        DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
+        DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
+        DrawLineEx(triangles[i].v3,triangles[i].v1,5,theme.light);
     }
-    DrawText("Torque Calculator", screenWidth/2 - textWidth/2,  screenHeight/2 - 1.5 * fontSize, fontSize, theme.accent1);
+    DrawButton(settingsBut);
+    for(int i = triangleCount/2; i<3*triangleCount/4;i++){
 
-    DrawButton(&settingsBut);
-    DrawButton(&createBut);
-    DrawButton(&openBut);
+        DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
+        DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
+        DrawLineEx(triangles[i].v3,triangles[i].v1,5,theme.light);
+    }
+    DrawButton(openBut);
 
+    for(int i = 3*triangleCount/4; i<triangleCount;i++){
+
+        DrawLineEx(triangles[i].v1,triangles[i].v2,5,theme.light);
+        DrawLineEx(triangles[i].v2,triangles[i].v3,5,theme.light);
+        DrawLineEx(triangles[i].v3,triangles[i].v1,5,theme.light);
+    }
 
 
 }
@@ -187,8 +204,10 @@ void DrawTitleScreen(void)
 void UnloadTitleScreen(void)
 {
     // TODO: Unload TITLE screen variables here!
+    CloseButton(settingsBut);
+    CloseButton(openBut);
+    
 }
-
 // Title Screen should finish?
 int FinishTitleScreen(void)
 {

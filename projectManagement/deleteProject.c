@@ -8,8 +8,8 @@ int deleteProject(char *name){
     int retVal = 0;
 
     chdir("projects");
-    char buffer[25];
-    snprintf(buffer,25,"rmdir /S/Q %s\\",name);
+    char buffer[NAMESIZE+20];
+    snprintf(buffer,NAMESIZE+20,"rmdir /S/Q \"%s\"\\",name);
     retVal = system(buffer);
     system("dir /b/a:d > projects.dat");
     projectCount--;

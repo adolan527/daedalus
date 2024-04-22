@@ -11,6 +11,35 @@
 
 
 
+#define MAX_LIGHTS  4         // Max dynamic lights supported by shader
+//----------------------------------------------------------------------------------
+// Types and Structures Definition
+//----------------------------------------------------------------------------------
+
+// Light data
+typedef struct {
+    int type;
+    bool enabled;
+    Vector3 position;
+    Vector3 target;
+    Color color;
+    float attenuation;
+
+    // Shader locations
+    int enabledLoc;
+    int typeLoc;
+    int positionLoc;
+    int targetLoc;
+    int colorLoc;
+    int attenuationLoc;
+} Light;
+
+// Light type
+typedef enum {
+    LIGHT_DIRECTIONAL = 0,
+    LIGHT_POINT
+} LightType;
+
 
 
 typedef enum GameScreen {
@@ -22,7 +51,8 @@ typedef enum GameScreen {
     CREATEPROJECT = 3,
     PROJECTMAIN = 4,
     EDITOBJECT = 5,
-    OPENPROJECT = 6
+    OPENPROJECT = 6,
+    MATERIALS = 7
 }GameScreen;
 
 typedef struct{
@@ -44,12 +74,45 @@ typedef struct{
     bool isTyping;
 }TextBox;
 
+typedef enum{
+    DONOTHING,
+    DOSAVE,
+    DOCANCEL,
+    ISTYPING,
+    OBG_DOFACING,
+    DODELETE,
+    COL_DOCHANGETHEME
+}GUIRET;
+
+#define OBGUITBCOUNT 10
+typedef struct{
+    Vector2 pos;
+    TextBox *tb[OBGUITBCOUNT];
+    Button *saveBut, *cancelBut, *materialBut, *typeBut, *facingBut, *deleteBut;
+    Object *companion;
+}ObjectBoxGUI;
+
+#define MATERIALGUITBCOUNT 5
+typedef struct{
+    Vector2 pos;
+    TextBox *tb[MATERIALGUITBCOUNT];
+    Button *saveBut, *cancelBut, *deleteBut;
+    tqcMaterial *companion;
+}MaterialGUI;
+
+#define COLORGUICOUNT 18
+typedef struct{
+    Vector2 pos;
+    TextBox *tb[COLORGUICOUNT];
+    Button *saveBut, *cancelBut, *deleteBut, *selectBut;
+    ColorPalette *companion;
+}ColorGUI;
+
 
 
 int drawMain(GameScreen startingScreen);
 int initDraw(void);
-void LoadMaterialsTextures(void);
-void UnloadMaterialsTextures(void);
+
 
 //----------------------------------------------------------------------------------
 // Global Variables Declaration (shared by several modules)
@@ -61,11 +124,16 @@ extern int screenHeight;
 extern char windowMode;
 extern char drawLogo;
 
+extern Shader shader;
+extern Color ambientLightColor;
+extern Light lights[MAX_LIGHTS];
+
+
 #define SPACING 16
 #define GETSPACING(_size) (_size < SPACING ? 1 : _size/SPACING)
-extern Font globalFont;
+extern Font globalFont, titleFont;
 
-#define CYLINDERRING 64
+#define CYLINDERRING 32
 
 //----------------------------------------------------------------------------------
 // Logo Screen Functions Declaration
@@ -94,14 +162,6 @@ void DrawSettingsScreen(void);
 void UnloadSettingsScreen(void);
 int FinishSettingsScreen(void);
 
-//----------------------------------------------------------------------------------
-// CreateProject Screen Functions Declaration
-//----------------------------------------------------------------------------------
-void InitCreateProjectScreen(void);
-void UpdateCreateProjectScreen(void);
-void DrawCreateProjectScreen(void);
-void UnloadCreateProjectScreen(void);
-int FinishCreateProjectScreen(void);
 
 //----------------------------------------------------------------------------------
 // ProjectMain Screen Functions Declaration
@@ -130,9 +190,20 @@ void DrawOpenProjectScreen(void);
 void UnloadOpenProjectScreen(void);
 int FinishOpenProjectScreen(void);
 
+//----------------------------------------------------------------------------------
+// Materials Screen Functions Declaration
+//----------------------------------------------------------------------------------
+void InitMaterialsScreen(void);
+void UpdateMaterialsScreen(void);
+void DrawMaterialsScreen(void);
+void UnloadMaterialsScreen(void);
+int FinishMaterialsScreen(void);
 
 
 
+
+Button* InitButton(Rectangle r,char *t, Color c);
+void CloseButton(Button *source);
 void DrawButton(Button *source);
 void PressButton(Button *source);
 void UnPressButton(Button *source);
@@ -149,5 +220,45 @@ bool IsTextBoxActive(TextBox *source);
 void DrawObject(Object *source, float pmt);
 void ModelObject(Object *obj);
 void ReModelObject(Object *obj);
+
+
+ObjectBoxGUI* InitOBGUI(void);
+void DrawOBGUI(ObjectBoxGUI *source);
+void CloseOBGUI(ObjectBoxGUI *source);
+GUIRET UpdateOBGUI(ObjectBoxGUI *source);
+void GetObjFromOBGUI(ObjectBoxGUI *source);
+void GetOBGUIFromObj(ObjectBoxGUI *source);
+
+MaterialGUI* InitMGUI(void);
+void DrawMGUI(MaterialGUI *source);
+void CloseMGUI(MaterialGUI *source);
+GUIRET UpdateMGUI(MaterialGUI *source);
+void GetMatFromMGUI(MaterialGUI *source, MaterialList *list);
+void GetMGUIFromMat(MaterialGUI *source);
+void DefaultMGUI(MaterialGUI *source);
+
+
+
+
+void DrawCGUI(ColorGUI *source);
+void CloseCGUI(ColorGUI *source);
+GUIRET UpdateCGUI(ColorGUI *source);
+void GetCGUIFromColor(ColorGUI *source);
+void GetColorFromCGUI(ColorGUI *source);
+ColorGUI* InitCGUI(void);
+
+
+
+Mesh GenMeshRectTube(Object *obj);
+Mesh GenMeshCustom();
+Mesh GenMeshRoundTube(Object *obj);
+
+
+//----------------------------------------------------------------------------------
+// Module Functions Declaration
+//----------------------------------------------------------------------------------
+Light CreateLight(int type, Vector3 position, Vector3 target, Color color, Shader shader);   // Create a light and get shader locations
+void UpdateLightValues(Shader shader, Light light);         // Send light properties to shader
+
 
 #endif //TORQUECALCULATOR_DRAWMAIN_H

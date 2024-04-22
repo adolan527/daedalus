@@ -3,6 +3,8 @@
 //
 #include "drawMain.h"
 
+
+
 void ReModelObject(Object *obj){
     UnloadModel(*obj->model);
     free(obj->model);
@@ -15,29 +17,39 @@ void ModelObject(Object *obj){
     switch (obj->type){
 
         case sRectangle:{
+            if(obj->data.thickness==0){
+                tempMesh = GenMeshCube(obj->data.xLength,obj->data.yHeight,obj->data.zDepth);
+            }
+            else{
+                tempMesh = GenMeshRectTube(obj);
+            }
 
-            tempMesh = GenMeshCube(obj->data.xLength,obj->data.yHeight,obj->data.zDepth);
             break;
 
         }
         case sCylinder:{
-            switch(obj->data.facing){
-                case 'x':{
-                    rotation.z = DEG2RAD * -90;
-                    tempMesh = GenMeshCylinder(obj->data.yHeight,obj->data.xLength,CYLINDERRING);
-                    break;
-                }
-                case 'y':{
-                    tempMesh = GenMeshCylinder(obj->data.xLength,obj->data.yHeight,CYLINDERRING);
-                    break;
+            if(obj->data.thickness!=0){
+                tempMesh = GenMeshRoundTube(obj);
+            }
+            else {
+                switch (obj->data.facing) {
+                    case 'x': {
+                        rotation.z = DEG2RAD * -90;
+                        tempMesh = GenMeshCylinder(obj->data.yHeight, obj->data.xLength, CYLINDERRING);
+                        break;
+                    }
+                    case 'y': {
+                        tempMesh = GenMeshCylinder(obj->data.xLength, obj->data.yHeight, CYLINDERRING);
+                        break;
+
+                    }
+                    case 'z': {
+                        rotation.x = DEG2RAD * 90;
+                        tempMesh = GenMeshCylinder(obj->data.xLength, obj->data.zDepth, CYLINDERRING);
+                        break;
+                    }
 
                 }
-                case 'z':{
-                    rotation.x = DEG2RAD * 90;
-                    tempMesh = GenMeshCylinder(obj->data.xLength,obj->data.zDepth,CYLINDERRING);
-                    break;
-                }
-
             }
             break;
         }
@@ -53,6 +65,7 @@ void ModelObject(Object *obj){
     *obj->model = LoadModelFromMesh(tempMesh);
     obj->model->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = obj->material.texture;
     obj->model->materials[0].maps[MATERIAL_MAP_DIFFUSE].color = obj->material.color;
-    obj->model->transform = MatrixRotateXYZ(rotation);
+    obj->model->transform = MatrixMultiply(MatrixRotateXYZ(rotation), MatrixTranslate(obj->xPos.constant,obj->yPos,obj->zPos));
+
 
 }

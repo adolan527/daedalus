@@ -51,12 +51,30 @@ static void DrawTransition(void);           // Draw transition effect (full-scre
 static int UpdateDrawFrame(void);          // Update and draw one frame
 
 
-
+Shader shader;
+Color ambientLightColor;
+Light lights[MAX_LIGHTS];
 //----------------------------------------------------------------------------------
 // Main entry point
 //----------------------------------------------------------------------------------
 int drawMain(GameScreen startingScreen)
 {
+
+    shader = LoadShader("resources/shaders/lighting.vs",
+                        "resources/shaders/lighting.fs");
+
+    shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
+
+    int ambientLoc = GetShaderLocation(shader, "ambient");
+    SetShaderValue(shader, ambientLoc, (float[4]){ 0.1f, 0.1f, 0.1f, 1.0f }, SHADER_UNIFORM_VEC4);
+
+
+    ambientLightColor = ColorBrightness(theme.white,-0.3f);
+
+    lights[0] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ 50, 100, 50}, Vector3Zero(), ambientLightColor, shader);
+    lights[1] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ -50, -100, -50}, Vector3Zero(), ambientLightColor, shader);
+    lights[2] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ -50, 100, -50}, Vector3Zero(), ambientLightColor, shader);
+    lights[3] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){ 50, -100, 50}, Vector3Zero(), ambientLightColor, shader);
 
     int returnValue = 0;
     // Initialization
@@ -75,10 +93,10 @@ int drawMain(GameScreen startingScreen)
         case LOGO: InitLogoScreen(); break;
         case TITLE: InitTitleScreen(); break;
         case SETTINGS: InitSettingsScreen(); break;
-        case CREATEPROJECT: InitCreateProjectScreen(); break;
         case PROJECTMAIN: InitProjectMainScreen(); break;
         case EDITOBJECT: InitEditObjectScreen(); break;
         case OPENPROJECT: InitOpenProjectScreen(); break;
+        case MATERIALS: InitMaterialsScreen(); break;
         default: break;
     }
     InitLogoScreen();
@@ -111,16 +129,26 @@ int drawMain(GameScreen startingScreen)
         case LOGO: UnloadLogoScreen(); break;
         case TITLE: UnloadTitleScreen(); break;
         case SETTINGS: UnloadSettingsScreen(); break;
-        case CREATEPROJECT: UnloadCreateProjectScreen(); break;
         case PROJECTMAIN: UnloadProjectMainScreen(); break;
         case EDITOBJECT: UnloadEditObjectScreen(); break;
         case OPENPROJECT: UnloadOpenProjectScreen(); break;
+        case MATERIALS: UnloadMaterialsScreen(); break;
         default: break;
     }
 
     // Unload global data loaded
-    UnloadMaterialsTextures();
+
     UnloadFont(globalFont);
+    UnloadFont(titleFont);
+
+
+    if(returnValue!=1) {
+        UnloadShader(shader);
+        UnloadMaterialsTextures(&tqcMaterials);
+        closeMaterialList(&tqcMaterials);
+    }
+
+
     CloseWindow();          // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
@@ -139,10 +167,11 @@ static void ChangeToScreen(GameScreen screen)
         case LOGO: UnloadLogoScreen(); break;
         case TITLE: UnloadTitleScreen(); break;
         case SETTINGS: UnloadSettingsScreen(); break;
-        case CREATEPROJECT: UnloadCreateProjectScreen(); break;
         case PROJECTMAIN: UnloadProjectMainScreen(); break;
         case EDITOBJECT: UnloadEditObjectScreen(); break;
         case OPENPROJECT: UnloadOpenProjectScreen(); break;
+        case MATERIALS: UnloadMaterialsScreen(); break;
+
         default: break;
     }
 
@@ -152,10 +181,11 @@ static void ChangeToScreen(GameScreen screen)
         case LOGO: InitLogoScreen(); break;
         case TITLE: InitTitleScreen(); break;
         case SETTINGS: InitSettingsScreen(); break;
-        case CREATEPROJECT: InitCreateProjectScreen(); break;
         case PROJECTMAIN: InitProjectMainScreen(); break;
         case EDITOBJECT: InitEditObjectScreen(); break;
         case OPENPROJECT: InitOpenProjectScreen(); break;
+        case MATERIALS: InitMaterialsScreen(); break;
+
         default: break;
     }
 
@@ -191,10 +221,11 @@ static void UpdateTransition(void)
                 case LOGO: UnloadLogoScreen(); break;
                 case TITLE: UnloadTitleScreen(); break;
                 case SETTINGS: UnloadSettingsScreen(); break;
-                case CREATEPROJECT: UnloadCreateProjectScreen(); break;
                 case PROJECTMAIN: UnloadProjectMainScreen(); break;
                 case EDITOBJECT: UnloadEditObjectScreen(); break;
                 case OPENPROJECT: UnloadOpenProjectScreen(); break;
+                case MATERIALS: UnloadMaterialsScreen(); break;
+
                 default: break;
             }
 
@@ -204,10 +235,11 @@ static void UpdateTransition(void)
                 case LOGO: InitLogoScreen(); break;
                 case TITLE: InitTitleScreen(); break;
                 case SETTINGS: InitSettingsScreen(); break;
-                case CREATEPROJECT: InitCreateProjectScreen(); break;
                 case PROJECTMAIN: InitProjectMainScreen(); break;
                 case EDITOBJECT: InitEditObjectScreen(); break;
                 case OPENPROJECT: InitOpenProjectScreen();break;
+                case MATERIALS: InitMaterialsScreen(); break;
+
                 default: break;
             }
 
@@ -219,7 +251,7 @@ static void UpdateTransition(void)
     }
     else  // Transition fade out logic
     {
-        transAlpha -= 0.10f;
+        transAlpha -= 0.05f;
 
         if (transAlpha < -0.01f)
         {
@@ -279,21 +311,21 @@ static int UpdateDrawFrame(void)
                 }
 
             } break;
-            case CREATEPROJECT:
-            {
-                UpdateCreateProjectScreen();
 
-                if(FinishCreateProjectScreen()!=-1){
-                    TransitionToScreen(FinishCreateProjectScreen());
-                }
-
-            } break;
             case PROJECTMAIN:
             {
                 UpdateProjectMainScreen();
                 if(FinishProjectMainScreen()!=-1){
-                    TransitionToScreen(FinishProjectMainScreen());
+                    if(FinishProjectMainScreen()==OPENPROJECT){
+                        ChangeToScreen(OPENPROJECT);
+                    }
+                    else{
+                        TransitionToScreen(FinishProjectMainScreen());
+                    }
+
                 }
+                break;
+
 
             } break;
             case EDITOBJECT:
@@ -302,12 +334,27 @@ static int UpdateDrawFrame(void)
                 if(FinishEditObjectScreen()!=-1){
                     TransitionToScreen(FinishEditObjectScreen());
                 }
+                break;
+
             }
             case OPENPROJECT:
             {
                 UpdateOpenProjectScreen();
                 if(FinishOpenProjectScreen()!=-1){
-                    TransitionToScreen(FinishOpenProjectScreen());
+                    if(FinishOpenProjectScreen() == PROJECTMAIN){
+                        ChangeToScreen(PROJECTMAIN);
+                    }
+                    else{
+                        TransitionToScreen(FinishOpenProjectScreen());
+                    }
+                }
+                break;
+            }
+            case MATERIALS:
+            {
+                UpdateMaterialsScreen();
+                if(FinishMaterialsScreen()!=-1){
+                    TransitionToScreen(FinishMaterialsScreen());
                 }
             }
             default: break;
@@ -328,17 +375,18 @@ static int UpdateDrawFrame(void)
         case LOGO: DrawLogoScreen(); break;
         case TITLE: DrawTitleScreen(); break;
         case SETTINGS: DrawSettingsScreen(); break;
-        case CREATEPROJECT: DrawCreateProjectScreen(); break;
         case PROJECTMAIN: DrawProjectMainScreen(); break;
         case EDITOBJECT: DrawEditObjectScreen(); break;
         case OPENPROJECT: DrawOpenProjectScreen(); break;
+        case MATERIALS: DrawMaterialsScreen(); break;
         default: break;
     }
 
     // Draw full screen rectangle in front of everything
     if (onTransition) DrawTransition();
 
-    //DrawFPS(10, 10);
+    //DrawFPS(screenWidth/2, 100);
+
 
     if(exitRequest){
         DrawRectangle(0,0,screenWidth,screenHeight,(Color){theme.black.r,theme.black.g,theme.black.b,200});

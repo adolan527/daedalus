@@ -4,13 +4,13 @@
 #include "projectManagement.h"
 
 int readColors(){
-    FILE *colors = fopen("colors.dat","rb");
+    FILE *colors = fopen("resources/colors.dat","rb");
     if(colors == NULL){
         return 1;
     }
     for(int i = 0;i < PALETTE_COUNT && !feof(colors); i++){
 
-        if(fread(&palettes[i],sizeof(ColorPalette ),1,colors) != 1){
+        if(fread(&palettes[i], sizeof(ColorPalette ), 1, colors) != 1){
             fclose(colors);
             return 0;
         }
@@ -19,21 +19,31 @@ int readColors(){
     return 0;
 }
 
-int readMaterials(){
-    FILE *materials = fopen("materials.dat","rb");
+int readMaterials(MaterialList *list){
+    FILE *materials = fopen("resources/materials.dat","rb");
     if(materials == NULL){
         return 1;
     }
-    for(int i = 0;i < MATERIALS_COUNT && !feof(materials); i++){
-        if( fread(tqcMaterials[i].name,NAMESIZE,1,materials)!=1 ||
-            fread(&tqcMaterials[i].density,sizeof(double),1,materials) != 1 ||
-            fread(&tqcMaterials[i].color,sizeof(Color),1,materials) != 1){
+    while(!feof(materials)){
+        tqcMaterial *new = calloc(1,sizeof(tqcMaterial));
+        if( fread(new->name,NAMESIZE,1,materials)!=1 ||
+            fread(&new->density,sizeof(double),1,materials) != 1 ||
+            fread(&new->color,sizeof(Color),1,materials) != 1){
+            free(new);
             fclose(materials);
             return 0;
+        }
+        if(strcmp(DEFAULTMATERIALNAME,new->name)==0){
+            free(new);
+        }
+        else{
+            appendMaterial(list,new);
+
         }
 
     }
     fclose(materials);
+
     return 0;
 }
 
@@ -62,33 +72,18 @@ int readObjects(){
             return retVal;
 
         }
-        for(int j = 0;j<MATERIALS_COUNT && tqcMaterials[j].name[0]!=0;j++){
-            printf("|%s| - |%s|\n",tempObject->material.name,tqcMaterials[j].name);
-            if(strcmp(tempObject->material.name,tqcMaterials[j].name)==0){
-                tempObject->material = tqcMaterials[j];
+        MaterialNode *ptr = tqcMaterials.head;
+        while(ptr){
+            if(strcmp(tempObject->material.name,ptr->data->name)==0){
+                tempObject->material = *ptr->data;
                 printf("Material matched\n");
                 break;
             }
+            ptr = ptr->next;
         }
+
         appendObject(&currentProject.objList,tempObject);
 
-        /*
-        if(fread(&tempObject->xPos.constant,sizeof(double),1,objects)!=1) retVal++;
-        if(fread(&tempObject->xPos.meter,sizeof(double),1,objects)!=1) retVal++;
-        if(fread(&tempObject->yPos,sizeof(double),1,objects)!=1) retVal++;
-        if(fread(&tempObject->zPos,sizeof(double),1,objects)!=1) retVal++;
-        if(fread(&tempObject->type,sizeof(ShapeType),1,objects)!=1) retVal++;
-        if(fread(&tempObject->data,sizeof(tqcShape),1,objects)!=1) retVal++;
-        if(fread(&tempObject->material,sizeof(tqcMaterial),1,objects)!=1) retVal++;
-        if(retVal!=0){
-            fclose(objects);
-            free(tempObject);
-            printf("%d errors\n",retVal);
-            return retVal;
-
-        }
-        appendObject(&currentProject.objList,tempObject);
-        */
     }
     fclose(objects);
     return 0;
@@ -113,7 +108,7 @@ int writeObjects(ObjectList *objectsList){
 
 
 int writeColors() {
-    FILE *colors = fopen("colors.dat", "wb");
+    FILE *colors = fopen("resources/colors.dat", "wb");
     if (colors == NULL) {
         return 1;
     }
@@ -129,20 +124,26 @@ int writeColors() {
 }
 
 
-int writeMaterials(){
-    FILE *materials = fopen("materials.dat","wb");
+int writeMaterials(MaterialList *source){
+    int counter = 0;
+    FILE *materials = fopen("resources/materials.dat","wb");
     if(materials == NULL){
         return 1;
     }
-    for(int i = 0;i < MATERIALS_COUNT && !feof(materials); i++){
-        if( fwrite(tqcMaterials[i].name,NAMESIZE,1,materials)!=1 ||
-            fwrite(&tqcMaterials[i].density,sizeof(double),1,materials) != 1 ||
-            fwrite(&tqcMaterials[i].color,sizeof(Color),1,materials) != 1){
-            fclose(materials);
-            return 1;
+    MaterialNode *ptr = tqcMaterials.head;
+    while(ptr){
+        if(strcmp(DEFAULTMATERIALNAME,ptr->data->name)!=0){
+            if( fwrite(ptr->data->name,NAMESIZE,1,materials)!=1 ||
+                fwrite(&ptr->data->density,sizeof(double),1,materials) != 1 ||
+                fwrite(&ptr->data->color,sizeof(Color),1,materials) != 1){
+                fclose(materials);
+                return 1;
+            }
         }
-
+        ptr = ptr->next;
+        counter++;
     }
+
     fclose(materials);
     return 0;
 }

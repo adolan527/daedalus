@@ -25,7 +25,7 @@ int doesConfigExist(){
     return 0;
 }
 
-int makeConfig(int width, int height,char wMode,char doLogo){
+int makeConfig(int width, int height,char wMode,char doLogo, int colorTheme){
 
     FILE *config = fopen("config.dat","w");
     if(config == NULL){
@@ -37,6 +37,7 @@ int makeConfig(int width, int height,char wMode,char doLogo){
     fprintf(config,"\nres:%dx%d\n",width,height);
     fprintf(config,"window:%c\n",wMode);
     fprintf(config,"logo:%c\n",doLogo);
+    fprintf(config,"theme:%d\n",colorTheme);
 
     fclose(config);
     return 0;
@@ -46,42 +47,49 @@ int makeConfig(int width, int height,char wMode,char doLogo){
 
 
 int initProgram() {
+
+
     int retVal = 0;
 
     if (doesConfigExist() == 0) {
         //program is already initialized
-        getProjectCount();
-        retVal += readMaterials();
+        getProjectCount(); //updates global variable
+        tqcMaterials = initMaterialList();
+        retVal += readMaterials(&tqcMaterials);
         retVal += readColors();
         return retVal;
     }
-    const int defaultWidth = 1600;
-    const int defaultHeight = 900;
+    const int defaultWidth = 1280;
+    const int defaultHeight = 720;
     const char defaultWMode = 'w';
     const char defaultDoLogo = 't';
-    retVal += makeConfig(defaultWidth,defaultHeight,defaultWMode,defaultDoLogo);
+    const int defaultColorTheme = 0;
+    retVal += makeConfig(defaultWidth,defaultHeight,defaultWMode,defaultDoLogo,defaultColorTheme);
     FILE *error = fopen("error.log","w");
     if(error == NULL){
         return 1;
     }
     fclose(error);
 
+    retVal += mkdir("resources/");
 
 
-    FILE *materials = fopen("materials.dat","w");
+    FILE *materials = fopen("resources/materials.dat","w");
     if(materials == NULL){
         return 1;
     }
     fclose(materials);
 
-    FILE *colors = fopen("colors.dat","w");
+    FILE *colors = fopen("resources/colors.dat","w");
     if(colors == NULL){
         return 1;
     }
     fclose(colors);
 
     retVal += mkdir("projects/");
-    retVal += mkdir("resources/");
+    retVal += mkdir("resources/textures/");
+    retVal += mkdir("resources/fonts/");
+    retVal += mkdir("resources/shaders/");
     retVal += system("dir /b/a:d projects\\ > projects/projects.dat");
 
     return retVal;

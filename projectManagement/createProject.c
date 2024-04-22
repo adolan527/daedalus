@@ -12,7 +12,7 @@ int createProject(char *name, char *notes){
         printf("Maximum amount of projects reached");
         return 1;
     }
-    if(doesProjectExist(name) == 1){
+    if(doesProjectExist(name)){
         //project already exists
         printf("Already exists");
         return 1;
@@ -39,10 +39,30 @@ int createProject(char *name, char *notes){
     if(objects == NULL){
         return 1;
     }
+    fwrite(&(Object){
+            .name = "axis",
+            .xPos.constant = 0,
+            .xPos.meter = 0,
+            .yPos = 0,
+            .zPos = -4,
+            .data = {
+                    .xLength = 1,
+                    .yHeight = 1,
+                    .zDepth = 8,
+                    .thickness = 0,
+                    .facing = 'z',
+                    .isHole = false
+            },
+            .material = *tqcMaterials.head->data,
+            .type = sCylinder,
+        },sizeof(Object),1,objects);
     fclose(objects);
+
 
     chdir("..");
     system("dir /b/a:d > projects.dat");
+
+
     chdir("..");
 
     projectCount++;

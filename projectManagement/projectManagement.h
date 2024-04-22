@@ -9,12 +9,12 @@
 
 #include <sys/stat.h>
 #include "../main.h"
+#define DEFAULTMATERIALNAME "DEFAULT"
 
-int doesProjectExist(char *name);
 
 int readColors();
 
-int readMaterials();
+int readMaterials(MaterialList *list);
 
 int readObjects();
 #endif //TORQUECALCULATOR_FILEMANAGEMENT_H
