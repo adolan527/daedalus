@@ -1,29 +1,52 @@
-A program that will allow for very basic CAD assemblies and the calculation of how much torque is required to rotate said assemblies around an axis.
-Intended to be useful for robotics design, such as in FRC.
+# What is Daedalus?
 
-The documentation folder has (somewhat deprecated) diagrams.
+TL;DR - A poor man's Solidworks made with Raylib and C.
 
-A working executable can be found [here](https://github.com/adolan527/torqueCalculator/blob/main/cmake-build-debug/torqueCalculator.exe)
+To better learn the C language and the (amazing) Raylib graphics API, I set myself the goal of developing a CAD program to simplify common calculations done when designing
+mechanical systems, particularly to appeal to FRC teams. Specifically, calculating torque on an axis and anything with aluminum rectangular tubing. 
+While the program does accomplish this goal, the other things I learned as a result are arguably more significant.
+
+- File IO for applications utilizing multiple directories/files.
+- Structuring a codebase into multiple encapsulated modules
+- Managing application state across files and closing/opening the application
+- Dynamic mesh generation by uploading vertices to VRAM
+- Basic shaders and GLSL
+- Principles of UI
+     - How to relate a GUI to data/application state and vice versa
+     - Making UI feel response
+     - Customizability/configurability by the user
+     - UI API through standardized inputs and outputs on different features
+- 3D graphics
+- Safe memory management in C
+
+Additionally, as all of this was done in C, I can now appreciate some of the abstractions that C++ offers. Templates alone would have saved hours on this project.
+
+
+A working executable can be found [here](https://github.com/adolan527/daedalus/blob/main/cmake-build-debug/daedalus.exe)
 The program does create one directory and two files in whatever directory you put it in.
 
 
+# 
+
+
+
 ## Guide to Running
-1. Download the .exe [here:](https://github.com/adolan527/torqueCalculator/blob/main/cmake-build-debug/torqueCalculator.exe)
+1. Download the .exe [here:](https://github.com/adolan527/daedalus/blob/main/cmake-build-debug/daedalus.exe)
 2. Create a directory/folder and put the .exe into said directory.
 3. Run the program
 
 The .exe will create all of the necessary subdirectories and files when it initializes itself.
 See below for information on the customization of the program and its appearance.
 
-# File Structure
-## torqueCalculator.exe
+# Program File Structure
+## daedalus.exe
 The main executable. It can be called from the command line, where the first argument is the name or directory of the project you want to open.
-Ex: `>torqueCalculator.exe project1`
+Ex: `>daedalus.exe project1`
 
 ## config.dat and error.log
 These two files are created in the same directory as the executable. config.dat is formatted as such:
 ```
-torqueCalculator //Mandatory Header
+daedalus //Mandatory Header
 res:WIDTHxHEIGHT 
 window:WINDOWMODE
 logo:BOOL
@@ -51,6 +74,7 @@ objects.dat contains the binary data for all of the objects in that project. Thi
 
 ## Resources
 The resources folder that the program generates contains many of the assets that the program uses. Although not necessary they make it look much nicer.
+**For the best experience, copy this repository's resources folder in place of your own**
 
 ### Fonts
 In the fonts folder, a **main** and **title** file can be placed to affect the fonts in those locations. On this repository, you can find the ones I used.
