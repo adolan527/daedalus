@@ -92,5 +92,5 @@ If you have a material named "Steel", you should have a file name **Steel.png** 
 ### Colors and Materials
 These two **.dat** files are stored in a binary format. colors.dat contains all of the palettes stored contiguously (each palette is 10 colors, and each color is 4 bytes RGBA).
 
-   
+Note: If you see "torqueCalculator" or "GeneralizedRobotArm" mentioned anywhere please make an issue of it. Those were the previous names for this project. They should all have been updated to say Daedalus by now, but CLion makes renaming projects difficult.
 
