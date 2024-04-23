@@ -2,8 +2,8 @@
 // Created by Aweso on 11/2/2023.
 //
 
-#ifndef GENERALIZEDROBOTARM_STRUCTS_H
-#define GENERALIZEDROBOTARM_STRUCTS_H
+#ifndef DAEDALUS_STRUCTS_H
+#define DAEDALUS_STRUCTS_H
 
 
 #include "../main.h"
@@ -29,4 +29,4 @@ void stringifyPolynomial(Polynomial *function,char *destString);
 
 
 
-#endif //GENERALIZEDROBOTARM_STRUCTS_H
+#endif //DAEDALUS_STRUCTS_H

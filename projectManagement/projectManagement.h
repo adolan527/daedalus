@@ -2,8 +2,8 @@
 // Created by Aweso on 12/16/2023.
 //
 
-#ifndef TORQUECALCULATOR_FILEMANAGEMENT_H
-#define TORQUECALCULATOR_FILEMANAGEMENT_H
+#ifndef DAEDALUS_FILEMANAGEMENT_H
+#define DAEDALUS_FILEMANAGEMENT_H
 
 
 
@@ -17,4 +17,4 @@ int readColors();
 int readMaterials(MaterialList *list);
 
 int readObjects();
-#endif //TORQUECALCULATOR_FILEMANAGEMENT_H
+#endif //DAEDALUS_FILEMANAGEMENT_H

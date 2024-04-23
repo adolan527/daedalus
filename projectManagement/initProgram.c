@@ -4,7 +4,7 @@
 
 #include "projectManagement.h"
 
-const char header[CONFIG_HEADER_SIZE] = "torqueCalculator";
+const char header[CONFIG_HEADER_SIZE] = "daedalus";
 
 int doesConfigExist(){
     FILE *config = fopen("config.dat","r");

@@ -4,8 +4,8 @@
 
 
 
-#ifndef TORQUECALCULATOR_DRAWMAIN_H
-#define TORQUECALCULATOR_DRAWMAIN_H
+#ifndef DAEDALUS_DRAWMAIN_H
+#define DAEDALUS_DRAWMAIN_H
 
 #include "../main.h"
 
@@ -261,4 +261,4 @@ Light CreateLight(int type, Vector3 position, Vector3 target, Color color, Shade
 void UpdateLightValues(Shader shader, Light light);         // Send light properties to shader
 
 
-#endif //TORQUECALCULATOR_DRAWMAIN_H
+#endif //DAEDALUS_DRAWMAIN_H

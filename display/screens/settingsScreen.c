@@ -59,7 +59,7 @@ void InitSettingsScreen(void)
         }
     }
     doLogoBut = InitButton((Rectangle){screenWidth*0.05 + MeasureTextEx(globalFont,"Do Logo Animation: ",screenHeight/16,GETSPACING(screenHeight/24)).x, (screenHeight * .49), screenHeight/12, screenHeight/12},
-               "Do Logo Animation",
+               "",
                theme.dark);
     doLogoBut->isToggle = true;
 

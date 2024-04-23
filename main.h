@@ -2,8 +2,8 @@
 // Created by Aweso on 12/31/2023.
 //
 
-#ifndef TORQUECALCULATOR_MAIN_H
-#define TORQUECALCULATOR_MAIN_H
+#ifndef DAEDALUS_MAIN_H
+#define DAEDALUS_MAIN_H
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -160,7 +160,7 @@ int isObjectInList(ObjectList *list, Object *source);
 
 #define MAX_PROJECT_COUNT 25
 
-#define CONFIG_HEADER_SIZE 17
+#define CONFIG_HEADER_SIZE 9
 
 typedef struct{
     char name[NAMESIZE];
@@ -203,4 +203,4 @@ int writeMaterials(MaterialList *source);
 int writeObjects(ObjectList *objectsList);
 
 
-#endif //TORQUECALCULATOR_MAIN_H
+#endif //DAEDALUS_MAIN_H
