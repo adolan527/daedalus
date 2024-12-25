@@ -70,7 +70,7 @@ bool IsTextBoxActive(TextBox *source){
             }
             if(c==KEY_ENTER){
                 c = '\n';
-                printf("newline detected\n");
+                //printf("newline detected\n");
             }
 
             source->text[source->textIndex] = (char)c;

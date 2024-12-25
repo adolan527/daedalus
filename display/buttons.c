@@ -20,6 +20,15 @@ void CloseButton(Button *source){
 }
 
 void DrawButton(Button *source) {
+    bool displayCalculationInfo = false;
+    // To make sure that the text size fills the button, it has to "guess and check" with MeasureText()
+    // Due to the complexity of the function it would be very difficult to actually do the math for.
+    // This "guess and check" approach takes place in the while loop, where the text size increases...
+    // until it reaches the size of the rectangle. This would be okay if it were not computed every frame.
+    // As I am working on another project that will involve GUIs in rayLib, I look to remove this
+    // inefficiency by storing the text size in the struct (or in the new project, a class)
+    // The first number is the number of iterations through the while loop, the second is
+    // time in ms to execute those iterations.
     Rectangle tempButton;
     if (source->isPressed == true && source->isToggle == false) {
         tempButton = (Rectangle){source->rect.x + 0.05f * source->rect.width,
@@ -29,7 +38,6 @@ void DrawButton(Button *source) {
     }
     else{
         tempButton = source->rect;
-
     }
     DrawRectangleRec(tempButton, source->color);
     DrawRectangleLinesEx(tempButton,tempButton.height/20,(source->color.r == theme.black.r ? theme.white:theme.black));
@@ -37,15 +45,22 @@ void DrawButton(Button *source) {
     int spacing = (textSize < SPACING ? 1 : textSize/SPACING);
 
     Vector2 measuredSize = MeasureTextEx(globalFont,source->text,textSize,spacing);
+    int x = 0;
+    double t = GetTime();
     while(measuredSize.x + tempButton.width/10>tempButton.width || measuredSize.y + tempButton.height/10>tempButton.height){
         textSize-=2;
         spacing = (textSize < SPACING ? 1 : textSize/SPACING);
         measuredSize = MeasureTextEx(globalFont,source->text,textSize,spacing);
+        x++;
     }
+    if(displayCalculationInfo) t = (GetTime()-t)*1000;
+
     Vector2 textPosition = {tempButton.x + (tempButton.width - measuredSize.x)/2, measuredSize.y/20 + tempButton.y + (tempButton.height - measuredSize.y)/2};
 
     DrawTextEx(globalFont, source->text, textPosition,textSize,spacing,source->textColor);
     if(source->isSelected == true && source->isPressed == false) DrawRectangleRec(tempButton,(Color){255,255,255,64});
+    if(displayCalculationInfo) DrawText(TextFormat("%d, %.2fms",x,t),source->rect.x,source->rect.y,70,BLUE);
+
 }
 
 void PressButton(Button *source){
