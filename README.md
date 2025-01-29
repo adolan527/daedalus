@@ -31,11 +31,12 @@ The program does create one directory and two files in whatever directory you pu
 
 
 ## Guide to Running
-1. Download the .exe [here:](https://github.com/adolan527/daedalus/blob/main/cmake-build-debug/daedalus.exe)
-2. Create a directory/folder and put the .exe into said directory.
+**Note: The file management uses Windows syscalls, and thus the "projectManagement" module of the program would have to be rewritten for other platforms.**
+1. Download the .exe [here:](https://github.com/adolan527/daedalus/blob/main/cmake-build-debug/daedalus.exe) or build using the existing [CMakeLists.txt](https://github.com/adolan527/daedalus/blob/main/CMakeLists.txt).
+2. Create a directory/folder and put the executable into said directory.
 3. Run the program
 
-The .exe will create all of the necessary subdirectories and files when it initializes itself.
+The executable will create all of the necessary subdirectories and files when it initializes itself.
 See below for information on the customization of the program and its appearance.
 
 # Program File Structure
