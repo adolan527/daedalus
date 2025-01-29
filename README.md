@@ -1,6 +1,6 @@
 # What is Daedalus?
 
-TL;DR - A rudimentary CAD made with Raylib and C.
+TL;DR - A rudimentary CAD program made with Raylib and C.
 
 To better learn the C language and the (amazing) Raylib graphics API, I set myself the goal of developing a CAD program to simplify common calculations done when designing
 mechanical systems, particularly to appeal to FRC teams. Specifically, calculating torque on an axis and anything with aluminum rectangular tubing. 
