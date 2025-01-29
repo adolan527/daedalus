@@ -13,7 +13,7 @@ While the program does accomplish this goal, the other things I learned as a res
 - Basic shaders and GLSL
 - Principles of UI
      - How to relate a GUI to data/application state and vice versa
-     - Making UI feel response
+     - Making UI feel responsive
      - Customizability/configurability by the user
      - UI API through standardized inputs and outputs on different features
 - 3D graphics
