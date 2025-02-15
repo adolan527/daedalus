@@ -31,8 +31,8 @@ The program does create one directory and two files in whatever directory you pu
 
 
 ## Guide to Running
-1. Open the project directory
-2. Create a directory/folder and put the .exe into said directory.
+1. Open daedalus/build"
+2. Run "build.bat" for Windows and "build.sh" for Mac/Linux.
 3. Run the program
 
 The executable will create all of the necessary subdirectories and files when it initializes itself.
