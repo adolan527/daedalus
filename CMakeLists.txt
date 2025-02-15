@@ -26,52 +26,48 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
 endif()
 
 set(HEADERS
-        "projectManagement/projectManagement.h"
-        "../csvLib/csv.h"
-        "../csvLib/csvUtils.h"
-        "display/drawMain.h"
+        "src/projectManagement/projectManagement.h"
+        "src/display/drawMain.h"
 
 )
 
 set(SOURCES
-    "projectManagement/createProject.c"
-    "objectManagement/calculations.c"
-    "projectManagement/initProgram.c"
-    "projectManagement/deleteProject.c"
-    "projectManagement/openProject.c"
-    "projectManagement/openProject.c"
-        "projectManagement/closeProject.c"
-    "../csvLib/csv.c"
-    "../csvLib/csvUtils.c"
-    "display/initDraw.c"
-    "display/drawMain.c"
-    "display/screens/titleScreen.c"
-    "display/screens/settingsScreen.c"
-    "display/screens/editObjectScreen.c"
-        "display/screens/projectMainScreen.c"
-    "display/screens/logoScreen.c"
-    display/buttons.c
-    display/screens/openProjectScreen.c
-        objectManagement/objectList.c
-        display/drawTextInRectangle.c
-        display/drawObject.c
-        main.h
-        display/modelObject.c
-        projectManagement/projectUtils.c
-        projectManagement/dataIO.c
-        display/textbox.c
-        display/ObjectBoxGUI.c
-        display/CustomMesh.c
-        display/rlights.c
-        display/screens/materialsScreen.c
-        projectManagement/materialsList.c
-        display/MaterialsGui.c
-        display/ColorGui.c
+    "src/projectManagement/createProject.c"
+    "src/objectManagement/calculations.c"
+    "src/projectManagement/initProgram.c"
+    "src/projectManagement/deleteProject.c"
+    "src/projectManagement/openProject.c"
+    "src/projectManagement/openProject.c"
+        "src/projectManagement/closeProject.c"
+    "src/display/initDraw.c"
+    "src/display/drawMain.c"
+    "src/display/screens/titleScreen.c"
+    "src/display/screens/settingsScreen.c"
+    "src/display/screens/editObjectScreen.c"
+        "src/display/screens/projectMainScreen.c"
+    "src/display/screens/logoScreen.c"
+        src/display/buttons.c
+        src/display/screens/openProjectScreen.c
+        src/objectManagement/objectList.c
+        src/display/drawTextInRectangle.c
+        src/display/drawObject.c
+        src/main.h
+        src/display/modelObject.c
+        src/projectManagement/projectUtils.c
+        src/projectManagement/dataIO.c
+        src/display/textbox.c
+        src/display/ObjectBoxGUI.c
+        src/display/CustomMesh.c
+        src/display/rlights.c
+        src/display/screens/materialsScreen.c
+        src/projectManagement/materialsList.c
+        src/display/MaterialsGui.c
+        src/display/ColorGui.c
 )
 
 # Our Project
 
-add_executable(${PROJECT_NAME} main.c
+add_executable(${PROJECT_NAME} src/main.c
         ${HEADERS}
         ${SOURCES}
 

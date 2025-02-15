@@ -31,7 +31,7 @@ The program does create one directory and two files in whatever directory you pu
 
 
 ## Guide to Running
-1. Download the .exe [here:](https://github.com/adolan527/daedalus/blob/main/cmake-build-debug/daedalus.exe)
+1. Open the project directory
 2. Create a directory/folder and put the .exe into said directory.
 3. Run the program
 
