@@ -1,6 +1,6 @@
 # What is Daedalus?
 
-TL;DR - A poor man's Solidworks made with Raylib and C.
+TL;DR - A rudimentary CAD program made with Raylib and C.
 
 To better learn the C language and the (amazing) Raylib graphics API, I set myself the goal of developing a CAD program to simplify common calculations done when designing
 mechanical systems, particularly to appeal to FRC teams. Specifically, calculating torque on an axis and anything with aluminum rectangular tubing. 
@@ -13,7 +13,7 @@ While the program does accomplish this goal, the other things I learned as a res
 - Basic shaders and GLSL
 - Principles of UI
      - How to relate a GUI to data/application state and vice versa
-     - Making UI feel response
+     - Making UI feel responsive
      - Customizability/configurability by the user
      - UI API through standardized inputs and outputs on different features
 - 3D graphics
@@ -35,7 +35,7 @@ The program does create one directory and two files in whatever directory you pu
 2. Create a directory/folder and put the .exe into said directory.
 3. Run the program
 
-The .exe will create all of the necessary subdirectories and files when it initializes itself.
+The executable will create all of the necessary subdirectories and files when it initializes itself.
 See below for information on the customization of the program and its appearance.
 
 # Program File Structure
